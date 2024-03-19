@@ -1,0 +1,461 @@
+<%- include('../layout/user/header.ejs') %>
+    <style>
+        .card {
+            width: 400px;
+            border: none;
+            height: 300px;
+            /* box-shadow: 0px 5px 20px 0px #d2dae3; */
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center
+        }
+
+        .card h6 {
+            color: black;
+            font-size: 20px
+        }
+
+        .otp {
+            border: 1px solid black;
+
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            margin: 0;
+            border: 1px solid black;
+        }
+
+        .card-2 {
+            background-color: #fff;
+            padding: 10px;
+            width: 350px;
+            height: 100px;
+            bottom: -50px;
+            left: 20px;
+            position: absolute;
+            border-radius: 5px
+        }
+
+        .card-2 .content {
+            margin-top: 50px
+        }
+
+        .card-2 .content a {
+            color: black
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+            border: 2px solid red
+        }
+
+        .validate {
+
+            height: 40px;
+            background-color: black;
+            border: 1px solid black;
+            width: 140px
+        }
+    </style>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-top">
+                <div class="container">
+                    <div class="header-left">
+                        <div class="header-dropdown">
+                            <a href="#">Usd</a>
+                            <div class="header-menu">
+                                <ul>
+                                    <li><a href="#">Eur</a></li>
+                                    <li><a href="#">Usd</a></li>
+                                </ul>
+                            </div><!-- End .header-menu -->
+
+                        </div><!-- End .header-dropdown -->
+
+                        <div class="header-dropdown">
+                            <a href="#">Eng</a>
+                            <div class="header-menu">
+                                <ul>
+                                    <li><a href="#">English</a></li>
+                                    <li><a href="#">French</a></li>
+                                    <li><a href="#">Spanish</a></li>
+                                </ul>
+                            </div><!-- End .header-menu -->
+                        </div><!-- End .header-dropdown -->
+                    </div><!-- End .header-left -->
+
+                    <div class="header-right">
+                        <ul class="top-menu">
+                            <li>
+                                <a href="#">Links</a>
+                                <ul>
+                                    <li><a href="tel:#"><i class="icon-phone"></i>Call: +0123 456 789</a></li>
+                                    <!-- <li><a href="wishlist.html"><i class="icon-heart-o"></i>Wishlist <span>(3)</span></a></li>
+                                    <li><a href="about.html">About Us</a></li>
+                                    <li><a href="contact.html">Contact Us</a></li>  
+                                    <li><a href="#signin-modal" data-toggle="modal"><i class="icon-user"></i>Login</a></li> -->
+                                </ul>
+                            </li>
+                        </ul><!-- End .top-menu -->
+                    </div><!-- End .header-right -->
+                </div><!-- End .container -->
+            </div><!-- End .header-top -->
+
+            <div class="header-middle sticky-header">
+                <div class="container">
+                    <div class="header-left">
+                        <button class="mobile-menu-toggler">
+                            <span class="sr-only">Toggle mobile menu</span>
+                            <i class="icon-bars"></i>
+                        </button>
+
+                        <a href="index.html" class="logo">
+                            <img src="assets/images/logo.png" alt="Molla Logo" width="105" height="25">
+                        </a>
+
+                        <nav class="main-nav">
+                            <ul class="menu sf-arrows">
+                                <li class="megamenu-container active">
+                                    <a href="/home" class="">Home</a>
+                                </li>
+                                <li>
+                                    <a href="/shop">Shop</a>
+                                </li>
+                                <li>
+                                    <a href="#" class="sf--ul">About</a>
+                                </li>
+                                <li>
+                                    <a href="#" class="sf--ul">Contact</a>
+                                </li>
+                                <li>
+                                    <a href="#" class="sf--ul">Profile</a>
+                                </li>
+
+                            </ul><!-- End .menu -->
+                        </nav><!-- End .main-nav -->
+                    </div><!-- End .header-left -->
+
+                    <div class="header-right">
+                        <div class="header-search">
+                            <a href="#" class="search-toggle" role="button" title="Search"><i
+                                    class="icon-search"></i></a>
+                            <form action="#" method="get">
+                                <div class="header-search-wrapper">
+                                    <label for="q" class="sr-only">Search</label>
+                                    <input type="search" class="form-control" name="q" id="q" placeholder="Search in..."
+                                        required>
+                                </div><!-- End .header-search-wrapper -->
+                            </form>
+                        </div><!-- End .header-search -->
+                        <div class="dropdown compare-dropdown">
+                            <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false" data-display="static"
+                                title="Compare Products" aria-label="Compare Products">
+                                <i class="fa-solid fa-heart"></i>
+                            </a>
+                        </div>
+
+                        <div class="dropdown cart-dropdown">
+                            <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false" data-display="static">
+                                <i class="icon-shopping-cart"></i>
+                                <!-- <span class="cart-count">2</span> -->
+                            </a>
+                        </div><!-- End .cart-dropdown -->
+                    </div><!-- End .header-right -->
+                </div><!-- End .container -->
+            </div><!-- End .header-middle -->
+        </header><!-- End .header -->
+
+        <main class="main">
+            <!-- <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
+                <div class="container">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Profile</a>
+                        <li class="breadcrumb-item active" aria-current="page">Register</li>
+                    </ol>
+                </div>
+            </nav> -->
+
+            <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17"
+                style="background-image: url('assets/images/backgrounds/login-bg.jpg')">
+                <div class="container">
+                    <div class="container height-100 d-flex justify-content-center align-items-center">
+                        <div class="position-relative">
+                            <form method="post">
+                                <div class="card p-2 text-center">
+                                    <h6>Please enter the one time password <br> to verify your account</h6>
+                                    <div> <span>A code has been sent to Email <b class="text-danger"
+                                                id="email">
+                                                <%= locals.email %>
+                                            </b></span> </div>
+                                    <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2">
+                                        <input type="hidden" name="email" value="<%= locals.email %>">
+                                        <input class="m-2 text-center form-control rounded otp" type="text" id="first"
+                                            name="digit1" maxlength="1" oninput="moveToNext(this)" />
+                                        <input class="m-2 text-center form-control rounded otp" type="text" id="second"
+                                            name="digit2" maxlength="1" oninput="moveToNext(this)" />
+                                        <input class="m-2 text-center form-control rounded otp" type="text" id="third"
+                                            name="digit3" maxlength="1" oninput="moveToNext(this)" />
+                                        <input class="m-2 text-center form-control rounded otp" type="text" id="fourth"
+                                            name="digit4" maxlength="1" oninput="moveToNext(this)" />
+                                    </div>
+                                    <div class="mt-4"> <button type="submit"
+                                            class="btn btn-danger px-4 validate">Validate</button>
+                                        <button type="submit" id="resendBtn"
+                                            class="btn btn-primary px-4 ml-3">Resend</button>
+                                        <span id="timer"></span>
+                                    </div>
+                                    <br>
+                                    <% if( messages.message ) { %>
+                                        <p style="color: red">
+                                            <%=messages.message %>
+                                        </p>
+                                        <%}%>
+                                </div>
+
+                        </div>
+
+                        </form>
+
+                    </div>
+                </div><!-- End .container -->
+            </div><!-- End .login-page section-bg -->
+        </main><!-- End .main -->
+
+        <footer class="footer">
+            <div class="footer-middle">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget widget-about">
+                                <img src="assets/images/logo.png" class="footer-logo" alt="Footer Logo" width="105"
+                                    height="25">
+                                <p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu vulputate
+                                    magna eros eu erat. </p>
+
+                                <div class="social-icons">
+                                    <a href="#" class="social-icon" target="_blank" title="Facebook"><i
+                                            class="icon-facebook-f"></i></a>
+                                    <a href="#" class="social-icon" target="_blank" title="Twitter"><i
+                                            class="icon-twitter"></i></a>
+                                    <a href="#" class="social-icon" target="_blank" title="Instagram"><i
+                                            class="icon-instagram"></i></a>
+                                    <a href="#" class="social-icon" target="_blank" title="Youtube"><i
+                                            class="icon-youtube"></i></a>
+                                    <a href="#" class="social-icon" target="_blank" title="Pinterest"><i
+                                            class="icon-pinterest"></i></a>
+                                </div><!-- End .soial-icons -->
+                            </div><!-- End .widget about-widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget">
+                                <h4 class="widget-title">Useful Links</h4><!-- End .widget-title -->
+
+                                <ul class="widget-list">
+                                    <li><a href="about.html">About Molla</a></li>
+                                    <li><a href="#">How to shop on Molla</a></li>
+                                    <li><a href="#">FAQ</a></li>
+                                    <li><a href="contact.html">Contact us</a></li>
+                                    <li><a href="login.html">Log in</a></li>
+                                </ul><!-- End .widget-list -->
+                            </div><!-- End .widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget">
+                                <h4 class="widget-title">Customer Service</h4><!-- End .widget-title -->
+
+                                <ul class="widget-list">
+                                    <li><a href="#">Payment Methods</a></li>
+                                    <li><a href="#">Money-back guarantee!</a></li>
+                                    <li><a href="#">Returns</a></li>
+                                    <li><a href="#">Shipping</a></li>
+                                    <li><a href="#">Terms and conditions</a></li>
+                                    <li><a href="#">Privacy Policy</a></li>
+                                </ul><!-- End .widget-list -->
+                            </div><!-- End .widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget">
+                                <h4 class="widget-title">My Account</h4><!-- End .widget-title -->
+
+                                <ul class="widget-list">
+                                    <li><a href="#">Sign In</a></li>
+                                    <li><a href="cart.html">View Cart</a></li>
+                                    <li><a href="#">My Wishlist</a></li>
+                                    <li><a href="#">Track My Order</a></li>
+                                    <li><a href="#">Help</a></li>
+                                </ul><!-- End .widget-list -->
+                            </div><!-- End .widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+                    </div><!-- End .row -->
+                </div><!-- End .container -->
+            </div><!-- End .footer-middle -->
+
+            <div class="footer-bottom">
+                <div class="container">
+                    <p class="footer-copyright">Copyright © 2019 Molla Store. All Rights Reserved.</p>
+                    <!-- End .footer-copyright -->
+                    <figure class="footer-payments">
+                        <img src="assets/images/payments.png" alt="Payment methods" width="272" height="20">
+                    </figure><!-- End .footer-payments -->
+                </div><!-- End .container -->
+            </div><!-- End .footer-bottom -->
+        </footer><!-- End .footer -->
+    </div><!-- End .page-wrapper -->
+    <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
+
+    <div class="mobile-menu-container">
+        <div class="mobile-menu-wrapper">
+            <span class="mobile-menu-close"><i class="icon-close"></i></span>
+
+            <form action="#" method="get" class="mobile-search">
+                <label for="mobile-search" class="sr-only">Search</label>
+                <input type="search" class="form-control" name="mobile-search" id="mobile-search"
+                    placeholder="Search in..." required>
+                <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
+            </form>
+
+            <nav class="mobile-nav">
+                <ul class="mobile-menu">
+                    <li class="active">
+                        <a href="#">Home</a>
+                    </li>
+                    <li>
+                        <a href="#">Shop</a>
+                    </li>
+                    <li>
+                        <a href="#" class="sf-with-ul">About</a>
+                    </li>
+                    <li>
+                        <a href="#">Contact</a>
+                    </li>
+                    <li>
+                        <a href="blog.html">Profile</a>
+                    </li>
+                </ul>
+            </nav><!-- End .mobile-nav -->
+
+            <div class="social-icons">
+                <a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
+            </div><!-- End .social-icons -->
+        </div><!-- End .mobile-menu-wrapper -->
+    </div><!-- End .mobile-menu-container -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.19.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-e4HfEwORxSSnA1XcV1oBYTMYuqU2ELI/FEr/+qNLnD4P6U7g4UjHg7MKt6FeFbGm"
+        crossorigin="anonymous"></script>
+
+    <script>
+        let timer;
+        let timeLeft = 60;
+        let isResendAllowed = true;
+
+
+        function startTimer() {
+            timer = setInterval(() => {
+                if (timeLeft > 0) {
+                    document.getElementById("timer").textContent = `Resend OTP in ${timeLeft} seconds`;
+                    timeLeft--;
+                } else {
+                    clearInterval(timer);
+                    document.getElementById("timer").textContent = "";
+                    isResendAllowed = true;
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            timeLeft = 60;
+            startTimer();
+        }
+
+        function enableResendButton() {
+            document.getElementById("resendBtn").disabled = false;
+        }
+
+        function disableResendButton() {
+            document.getElementById("resendBtn").disabled = true;
+        }
+
+        document.getElementById("resendBtn").addEventListener("click", async () => {
+            if (isResendAllowed) {
+                isResendAllowed = false;
+                const email = document.getElementById("email").value;
+                try {
+                    const response = await fetch("/resend-otp", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ email })
+                    });
+                    if (response.ok) {
+                        resetTimer();
+                        enableResendButton();
+                        document.getElementById("errorMessage").textContent = "";
+                    } else {
+                        throw new Error("Failed to resend OTP");
+                    }
+                } catch (error) {
+                    console.error(error);
+                    enableResendButton();
+                    document.getElementById("errorMessage").textContent = "Failed to resend OTP. Please try again.";
+                }
+            }
+        });
+
+        window.addEventListener("load", () => {
+            startTimer();
+            disableResendButton();
+        });
+
+
+    </script>
+
+
+
+    <script>
+        function togglePasswordVisibility() {
+            var passwordInput = document.getElementById("register-password-2");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+            } else {
+                passwordInput.type = "password";
+            }
+        }
+    </script>
+    <script>
+        function moveToNext(currentInput) {
+            const maxLength = parseInt(currentInput.getAttribute('maxlength'), 10);
+            const value = currentInput.value;
+
+            if (value.length === maxLength) {
+                const nextInput = currentInput.nextElementSibling;
+
+                if (nextInput) {
+                    nextInput.focus();
+                }
+            }
+        }
+    </script>
+    <%- include('../layout/user/footer.ejs') %>

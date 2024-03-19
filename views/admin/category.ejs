@@ -1,0 +1,229 @@
+<%-include('../layout/admin/header.ejs') %>
+    <!-- ============================================================== -->
+    <!-- Preloader - style you can find in spinners.css -->
+    <!-- ============================================================== -->
+    <div class="preloader">
+        <div class="lds-ripple">
+            <div class="lds-pos"></div>
+            <div class="lds-pos"></div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- Main wrapper - style you can find in pages.scss -->
+    <!-- ============================================================== -->
+    <div id="main-wrapper" data-theme="light" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+        data-sidebar-position="fixed" data-header-position="fixed" data-boxed-layout="full">
+        <!-- ============================================================== -->
+        <!-- Topbar header - style you can find in pages.scss -->
+        <!-- ============================================================== -->
+        <%-include('../layout/admin/navbar.ejs') %>
+        <!-- ============================================================== -->
+        <!-- End Topbar header -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Left Sidebar - style you can find in sidebar.scss  -->
+        <!-- ============================================================== -->
+        <%-include('../layout/admin/nav.ejs') %>
+        <!-- ============================================================== -->
+        <!-- End Left Sidebar - style you can find in sidebar.scss  -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+
+        <!-- Page wrapper  -->
+        <!-- ============================================================== -->
+        <div class="page-wrapper">
+            <a style="margin-left: 5%; " href="/admin/addCategory"><button style="margin-top:4%;"
+                    class="btn btn-primary">Add Category</button></a>
+
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- ============================================================== -->
+                <!-- basic table -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Column -->
+
+                                    <!-- Column -->
+                                </div>
+                                <div class="table-responsive">
+                                    <table id="example" class="table table-striped table-bordered no-wrap">
+                                        <thead>
+                                            <tr>
+                                                <th>Si.No</th>
+                                                <th>Category name</th>
+                                                <th>Description</th>
+                                                <th>Edit</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% if(category.length>0){ %>
+                                                <% let serialNumber=1; %>
+                                                    <% category.forEach((category)=> { %>
+
+
+                                                        <tr>
+                                                            <td><span class="badge badge-light-warning">
+                                                                    <%= serialNumber %>
+                                                                </span></td>
+                                                            <td><a href="javascript:void(0)"
+                                                                    class="font-weight-medium link"></a>
+                                                                <%= category.name %>
+                                                            </td>
+                                                            <td >
+                                                                <a href="javascript:void(0)" class="font-bold link"></a>
+                                                                <%= category.description %>
+                                                            </td>
+                                                            <td>
+                                                                <a href="/admin/editCategory?categoryId=<%= category._id %>">
+                                                                    <button class="btn btn-outline-primary btn-sm"
+                                                                        type="submit">Edit</button></a>
+                                                            </td>
+                                                            <td>
+                                                                <span id="status_<%=category._id%>"
+                                                                    class="status-badge">
+                                                                    <% if(category.isListed) { %>
+                                                                        <span
+                                                                            class="badge rounded-pill alert-warning">Listed
+                                                                        </span>
+                                                                        <% } else { %>
+                                                                            <span
+                                                                                class="badge rounded-pill alert-warning">Unlisted
+                                                                            </span>
+                                                                            <%}%>
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <button class="btn btn-primary category-status"
+                                                                    data-category-id="<%= category._id %>"
+                                                                    data-current-status="<%= category.isListed ? 'Listed' : 'Unlisted' %>">
+                                                                    <%= category.isListed ? 'Unlist ' : 'List' %>
+                                                                </button>
+                                                            </td>
+
+                                                        </tr>
+                                                        <% serialNumber++ %>
+                                                            <% }) %>
+                                                                <% } else { %>
+                                                                    <tr>
+                                                                        <td colspan="5">Category not found</td>
+                                                                    </tr>
+                                                                    <% } %>
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- ============================================================== -->
+            <!-- End Container fluid  -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+            <!-- footer -->
+            <!-- ============================================================== -->
+            <footer class="footer text-center text-muted">
+                All Rights Reserved by Adminmart. Designed and Developed by <a
+                    href="https://wrappixel.com">WrapPixel</a>.
+            </footer>
+            <!-- ============================================================== -->
+            <!-- End footer -->
+            <!-- ============================================================== -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Page wrapper  -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Wrapper -->
+    <!-- ============================================================== -->
+    <!-- End Wrapper -->
+    <!-- ============================================================== -->
+    <!-- All Jquery -->
+    <!-- ============================================================== -->
+
+    <!-- include jquery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Include DataTables -->
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+
+    <script>
+
+        var $j = jQuery.noConflict();
+        
+        $j(document).ready(function () {
+            $j('#example').DataTable();
+            attachEventListeners();
+        });
+        
+        function attachEventListeners() {
+            $j('.category-status').on('click', function () {
+                const currentStatus = $j(this).data('current-status');
+                const newStatus = (currentStatus === 'Listed') ? 'Unlist' : 'List';
+                const confirmButtonText = (newStatus === 'List') ? 'list the category!' : 'Unlist the category!';
+        
+                Swal.fire({
+                    title: "Are you sure?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: confirmButtonText
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const categoryId = $j(this).data('category-id');
+                        updateCategoryStatus(categoryId, newStatus);
+                        Swal.fire({
+                            title: "Updated!",
+                            text: "Category status has been updated.",
+                            icon: "success"
+                        });
+                    }
+                });
+            });
+        }
+        
+        function updateCategoryStatus(categoryId, action) {
+            fetch(`/admin/category/${action}/${categoryId}`, {
+                method: 'POST'
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+        
+                    // Update the UI
+                    const statusElement = $j(`#status_${categoryId}`);
+                    const buttonElement = $j(`.category-status[data-category-id="${categoryId}"]`);
+        
+                    if (data.category.is_listed) {
+                        statusElement.html('<span class="badge rounded-pill alert-warning">Listed</span>');
+                        buttonElement.text('Unlist');
+                    } else {
+                        statusElement.html('<span class="badge rounded-pill alert-success">Unlisted</span>');
+                        buttonElement.text('List');
+                    }
+                })
+                .catch((error) => {
+                    console.log("error:", error);
+                });
+        }
+        
+        </script>
+        
+
+
+<%-include('../layout/admin/footer.ejs') %>
