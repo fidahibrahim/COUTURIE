@@ -2,8 +2,41 @@ const category = require('../models/category');
 
 const loadCategory = async (req, res) => {
     try {
-        const categoryData = await category.find({});
-        res.render('category', { category: categoryData });
+        let page = 1;
+        if(req.query.id){
+            page = req.query.id
+        }
+
+        const limit = 5;
+        let Next = page + 1;
+        let Previous = page > 1 ? page-1:1
+
+        const count = await category.find().count()
+
+        const totalPages = Math.ceil(count/limit)
+
+        if(Next > totalPages){
+            Next = totalPages
+        }
+
+        
+        const categoryData = await category.find({})
+        .limit(limit)
+        .skip((page-1)*limit)
+        .sort({ createdAt : -1})
+        .exec()
+        
+
+        res.render('category', { 
+            category: categoryData,
+            page: page,
+            Previous: Previous,
+            Next: Next,
+            totalPages: totalPages ,
+            currentPage: page, 
+            pageSize: limit
+        });
+
     } catch (error) {
         console.log(error);
 
@@ -12,7 +45,9 @@ const loadCategory = async (req, res) => {
 
 const loadAddCatogery = async (req, res) => {
     try {
+
         res.render('addCategory');
+
     } catch (error) {
         console.log(error);
     }

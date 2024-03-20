@@ -28,7 +28,7 @@ const verifyLogin = async (req, res) => {
         }
 
         if (user.is_admin === 1) {
-            req.session.admin=user._id
+            req.session.admin = user._id
             res.redirect("/admin/adminDashboard");
         } else {
             req.flash("message", "You are not authorized as an admin");
@@ -42,8 +42,8 @@ const verifyLogin = async (req, res) => {
 
 const loadDashboard = async (req, res) => {
     try {
-        const user=await User.findOne({_id:req.session.admin})
-        res.render('adminDashboard',{user:user});
+        const user = await User.findOne({ _id: req.session.admin })
+        res.render('adminDashboard', { user: user });
 
     } catch (error) {
         console.log(error);
@@ -53,8 +53,43 @@ const loadDashboard = async (req, res) => {
 
 const loadUsers = async (req, res) => {
     try {
-        const users = await User.find({ is_admin: 0 })
-        res.render('userManagment', { users: users })
+        let page = 1;
+        if (req.query.id) {
+            page = req.query.id
+        }
+        let limit = 5;
+        let Next = page + 1;
+        let Previous = page > 1 ? page - 1 : 1
+
+
+        const count = await User.find({
+            is_admin: 0
+        }).count()
+
+        let totalPages = Math.ceil(count / limit)
+        if (Next > totalPages) {
+            Next = totalPages
+        }
+
+        const users = await User.find({ is_admin: 0, })
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .sort({ createdAt: -1 })
+            .exec()
+
+
+
+
+        res.render('userManagment',
+            {
+                users: users,
+                page: page,
+                Previous: Previous,
+                Next: Next,
+                totalPages: totalPages,
+                currentPage: page, 
+                pageSize: limit
+            })
     } catch (error) {
         console.log("error");
 
@@ -83,13 +118,13 @@ const userStatus = async (req, res) => {
 };
 
 
-const logout=async(req,res)=>{
+const logout = async (req, res) => {
     try {
-        req.session.admin=null
+        req.session.admin = null
         res.redirect('/admin/')
     } catch (error) {
         console.log(erro);
-        
+
     }
 }
 
@@ -100,5 +135,5 @@ module.exports = {
     loadUsers,
     userStatus,
     logout
-   
+
 }

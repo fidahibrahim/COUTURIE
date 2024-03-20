@@ -15,8 +15,6 @@ const userController = require('./controller/userController')
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-
-
 app.use(
     session({
         secret: process.env.SECRET,
@@ -27,17 +25,12 @@ app.use(
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public/assets')));
 
-
-
-
-
 app.set("view engine", "ejs");
 
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
 app.use(nocache())
-
 
 
 app.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
@@ -47,7 +40,6 @@ app.get('/google/callback', passport.authenticate('google', { failureRedirect: '
         res.redirect('/success',);
     })
 app.get('/success', userController.googleLogin);
-
 
 
 const userRoute = require("./routes/userRoute");

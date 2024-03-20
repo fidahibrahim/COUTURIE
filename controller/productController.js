@@ -1,13 +1,42 @@
 const category = require('../models/category');
 const product = require('../models/productModel');
-const path=require('path')
-const fs=require('fs')
+const path = require('path')
+const fs = require('fs')
 const sharp = require("sharp");
 
 const loadProduct = async (req, res) => {
     try {
-        const products = await product.find({}).populate('category').sort({createdAt:-1})
-        res.render('product', { products: products })
+        let page = 1;
+        if (req.query.id) {
+            page = req.query.id
+        }
+        const limit = 5
+        let Next = page + 1
+        let Previous = page > 1 ? page - 1 : 1
+
+        let count = await product.find().count()
+
+        let totalPages = Math.ceil(count / limit)
+        if (Next > totalPages) {
+            Next = totalPages
+        }
+
+        const products = await product.find({})
+            .populate('category')
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .exec()
+
+        res.render('product',
+            {
+                products: products,
+                Next: Next,
+                Previous: Previous,
+                totalPages: totalPages,
+                currentPage: page, 
+                pageSize: limit
+            })
     } catch (error) {
         console.log(error);
     }
@@ -112,7 +141,7 @@ const editProduct = async (req, res) => {
                 return res.redirect(`/admin/editProduct?productId=${id}`);
             }
 
-           
+
             imageData = await Promise.all(req.files.map(async (file) => {
                 const resizedPath = path.join(__dirname, "../public/assets/images/productImg/sharpedImg", file.filename);
                 await sharp(file.path).resize(500, 500, { fit: "fill" }).toFile(resizedPath);
@@ -121,8 +150,8 @@ const editProduct = async (req, res) => {
         }
 
 
-        console.log("hi",req.files);
-        console.log("fidu",imageData);
+        console.log("hi", req.files);
+        console.log("fidu", imageData);
 
         const selectedCategory = await category.findOne({ _id: Category, isListed: true });
 
@@ -149,18 +178,18 @@ const editProduct = async (req, res) => {
 
 const deleteImg = async (req, res) => {
     try {
-      const { image, prdtId } = req.body;
-      console.log(req.body,"hi");
-  
-      fs.unlink(path.join(__dirname, "../public/assets/images/productImg/sharpedImg/", image), () => { });
-  
-      await product.updateOne({ _id: prdtId }, { $pull: { image } });
-  
-      res.send({ success: true });
+        const { image, prdtId } = req.body;
+        console.log(req.body, "hi");
+
+        fs.unlink(path.join(__dirname, "../public/assets/images/productImg/sharpedImg/", image), () => { });
+
+        await product.updateOne({ _id: prdtId }, { $pull: { image } });
+
+        res.send({ success: true });
     } catch (error) {
-      res.redirect('/500')
+        res.redirect('/500')
     }
-  };
+};
 
 
 
@@ -172,5 +201,5 @@ module.exports = {
     loadeditProduct,
     editProduct,
     deleteImg,
-    
+
 }

@@ -339,6 +339,9 @@ const loadContact = async(req,res)=>{
     }
 }
 
+
+
+
 module.exports = {
     loadHome,
     loadRegister,
