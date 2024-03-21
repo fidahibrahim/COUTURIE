@@ -194,16 +194,13 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-    <!-- Include DataTables -->
-    <!-- <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script> -->
-
-
+   
     <script>
 
         var $j = jQuery.noConflict();
         
         $j(document).ready(function () {
-            $j('#example').DataTable();
+        
             attachEventListeners();
         });
         
@@ -246,7 +243,7 @@
                     const statusElement = $j(`#status_${categoryId}`);
                     const buttonElement = $j(`.category-status[data-category-id="${categoryId}"]`);
         
-                    if (data.category.is_listed) {
+                    if (data.category.isListed) {
                         statusElement.html('<span class="badge rounded-pill alert-warning">Listed</span>');
                         buttonElement.text('Unlist');
                     } else {

@@ -27,6 +27,7 @@
                                             <div class="form-group">
                                                 <input type="text" name="productDescription" id="productDescription"
                                                     class="form-control" placeholder="Enter Description">
+                                                    <span id="descriptionError" class="text-danger"></span>
                                             </div>
                                             <div class="form-group">
                                                 <input type="text" name="Price" id="Price" class="form-control"
@@ -55,7 +56,8 @@
                                                     placeholder="Enter Quantity">
                                                 <span id="quantityError" class="text-danger"></span>
                                             </div>
-                                            <span id="imagePreview" class="mt-2 "></span>
+                                            <div id="imagePreview" class="mt-2"></div>
+
                                             <div class="form-group">
                                                 <div class="input-group mb-3">
                                                     <div class="input-group-prepend">
@@ -91,26 +93,37 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Get the file input element
-            const fileInput = document.getElementById('productImage');
-
-            // Get the image preview container
+            const fileInput = document.getElementById('productImage')
             const imagePreviewContainer = document.getElementById('imagePreview');
-
-            // Add an event listener to the file input
             fileInput.addEventListener('change', function () {
-                // Remove existing preview images
                 imagePreviewContainer.innerHTML = '';
 
-                // Loop through selected files and create image previews
                 for (const file of fileInput.files) {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'd-inline-block mr-2';
+
                     const img = document.createElement('img');
                     img.src = URL.createObjectURL(file);
-                    img.className = 'img-sm img-thumbnail mr-2';
+                    img.className = 'img-sm img-thumbnail';
                     img.alt = 'Image Preview';
                     img.style.width = '80px';
                     img.style.height = '80px';
-                    imagePreviewContainer.appendChild(img);
+
+                    const deselectIcon = document.createElement('i');
+                    deselectIcon.className = 'fa-solid fa-xmark text-black mt-1';
+                    deselectIcon.style.cursor = 'pointer';
+                    deselectIcon.addEventListener('click', function () {
+                        imgContainer.parentNode.removeChild(imgContainer);
+                        // Remove the corresponding file from the file input
+                        const index = Array.from(fileInput.files).findIndex(f => f === file);
+                        if (index !== -1) {
+                            fileInput.files = Array.from(fileInput.files).filter((_, i) => i !== index);
+                        }
+                    });
+
+                    imgContainer.appendChild(img);
+                    imgContainer.appendChild(deselectIcon);
+                    imagePreviewContainer.appendChild(imgContainer);
                 }
             });
         });
@@ -129,6 +142,15 @@
             } else {
                 document.getElementById('productNameError').innerText = '';
             }
+
+            const description = document.getElementById('productDescription').value.trim();
+            if (description === '') {
+                document.getElementById('descriptionError').innerText = 'Description cannot be empty';
+                event.preventDefault();
+            } else {
+                document.getElementById('descriptionError').innerText = '';
+            }
+
 
             const price = document.getElementById('Price').value.trim();
             if (isNaN(price) || price === '') {
@@ -168,5 +190,6 @@
             }
         });
     </script>
+
 
     <%-include('../layout/admin/footer.ejs') %>

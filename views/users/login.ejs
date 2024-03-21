@@ -61,10 +61,10 @@
                                     <a href="/shop" class="sf--ul">Shop</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="sf--ul">About</a>
+                                    <a href="/about" class="sf--ul">About</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="sf--ul">contact</a>
+                                    <a href="/contact" class="sf--ul">contact</a>
                                 </li>
                                 <li>
                                     <a href="#" class="sf--ul">Profile</a>
@@ -133,6 +133,12 @@
                                                 <%=messages.message %>
                                             </p>
                                             <%}%>
+
+                                            <% if (locals.message) { %>
+                                                <p style="color: red;">
+                                                    <%= message %>
+                                                </p>
+                                                <% } %>
 
                                                 <div class="form-footer">
                                                     <button type="submit" class="btn btn-outline-primary-2">
@@ -229,7 +235,7 @@
 
                                 <ul class="widget-list">
                                     <li><a href="#">Sign In</a></li>
-                                    <li><a href="cart.html">View Cart</a></li>
+                                    <li><a href="#">View Cart</a></li>
                                     <li><a href="#">My Wishlist</a></li>
                                     <li><a href="#">Track My Order</a></li>
                                     <li><a href="#">Help</a></li>
@@ -270,16 +276,16 @@
             <nav class="mobile-nav">
                 <ul class="mobile-menu">
                     <li class="active">
-                        <a href="#">Home</a>
+                        <a href="/">Home</a>
                     </li>
                     <li>
-                        <a href="#">Shop</a>
+                        <a href="/shop">Shop</a>
                     </li>
                     <li>
-                        <a href="product.html" class="sf--ul">About</a>
+                        <a href="/about" class="sf--ul">About</a>
                     </li>
                     <li>
-                        <a href="#">Contact</a>
+                        <a href="/contact">Contact</a>
                     </li>
                     <li>
                         <a href="#">Profile</a>

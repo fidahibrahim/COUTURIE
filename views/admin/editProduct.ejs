@@ -90,6 +90,11 @@
                                             </div>
                                             <br>
                                             <button type="submit" class="btn btn-primary">Submit</button>
+                                            <% if( messages.message ) { %>
+                                                <p style="color: red">
+                                                  <%=messages.message %>
+                                                </p>
+                                                <%}%> 
                                         </form>
                                     </div>
                                 </div>
@@ -143,17 +148,17 @@
                 document.getElementById('quantityError').innerText = '';
             }
 
-            // const fileInput = document.getElementById('inputGroupFile01');
-            // const file = fileInput.files[0];
+            const fileInput = document.getElementById('inputGroupFile01');
+            const file = fileInput.files[0];
 
 
-            // const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
-            // if (!allowedExtensions.test(fileInput.value)) {
-            //     document.getElementById('imageError').innerText = 'Please select a valid image file (jpg, jpeg, png, gif)';
-            //     event.preventDefault();
-            // } else {
-            //     document.getElementById('imageError').innerText = '';
-            // }
+            const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+            if (!allowedExtensions.test(fileInput.value)) {
+                document.getElementById('imageError').innerText = 'Please select a valid image file (jpg, jpeg, png, gif)';
+                event.preventDefault();
+            } else {
+                document.getElementById('imageError').innerText = '';
+            }
 
         });
     </script>
@@ -180,14 +185,11 @@
         });
     </script>
 
-
-
     <script>
         const deleteImage = async (event, image, prdtId, index) => {
             try {
                 event.preventDefault()
 
-                // Show SweetAlert confirmation modal
                 const result = await Swal.fire({
                     title: 'Confirmation',
                     text: 'Are you sure you want to delete this image?',

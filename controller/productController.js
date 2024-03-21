@@ -136,6 +136,8 @@ const editProduct = async (req, res) => {
         if (req.files) {
             const allowedImageFormats = ['image/jpeg', 'image/png'];
 
+            
+
             if (existingProduct.images.length + req.files.length !== 3 || req.files.some(file => !allowedImageFormats.includes(file.mimetype))) {
                 req.flash("message", "Please upload 3 images of JPEG or PNG format");
                 return res.redirect(`/admin/editProduct?productId=${id}`);
@@ -146,15 +148,13 @@ const editProduct = async (req, res) => {
                 const resizedPath = path.join(__dirname, "../public/assets/images/productImg/sharpedImg", file.filename);
                 await sharp(file.path).resize(500, 500, { fit: "fill" }).toFile(resizedPath);
                 return file.filename;
+                
             }));
+           
         }
-
-
-        console.log("hi", req.files);
-        console.log("fidu", imageData);
+        
 
         const selectedCategory = await category.findOne({ _id: Category, isListed: true });
-
         const updatedProduct = await product.findByIdAndUpdate(
             id,
             {
@@ -179,15 +179,14 @@ const editProduct = async (req, res) => {
 const deleteImg = async (req, res) => {
     try {
         const { image, prdtId } = req.body;
-        console.log(req.body, "hi");
 
         fs.unlink(path.join(__dirname, "../public/assets/images/productImg/sharpedImg/", image), () => { });
 
-        await product.updateOne({ _id: prdtId }, { $pull: { image } });
+        await product.updateOne({ _id: prdtId }, { $pull: { images:image } });
 
         res.send({ success: true });
     } catch (error) {
-        res.redirect('/500')
+    console.log(error);
     }
 };
 

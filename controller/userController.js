@@ -44,7 +44,7 @@ const securePassword = async (password) => {
 
 const verifyRegister = async (req, res) => {
     try {
-      
+
 
         const { userName, email, password, mobile } = req.body
         console.log(req.body);
@@ -78,7 +78,6 @@ const verifyRegister = async (req, res) => {
             });
             sendOtpVerification(userData, res)
             await userData.save();
-           
 
         }
     } catch (error) {
@@ -87,21 +86,21 @@ const verifyRegister = async (req, res) => {
 }
 
 
-const googleLogin = async(req,res,next)=>{
-    
+const googleLogin = async (req, res, next) => {
+
     const name = req.user.displayName;
     const email = req.user.email;
 
     const userAlready = await User.findOne({ email: email });
 
     try {
-        if(userAlready){
+        if (userAlready) {
             console.log("entered");
             req.flash('message', 'This User is Already Existing.');
             return res.redirect('/login');
-       
-        }else{
-            const user = new User({username:name, email});
+
+        } else {
+            const user = new User({ username: name, email });
             await user.save();
             req.session.userId = user;
             res.redirect('/home');
@@ -165,6 +164,12 @@ const verifyOtp = async (req, res) => {
             return res.redirect(`/otp?email=${email}`);
         }
 
+        if (userVerification.isExpired()) {
+            req.flash('message', 'OTP has expired. Please request a new OTP.');
+            await UserVerification.deleteOne({ email });
+            return res.redirect(`/otp?email=${email}`);
+        }
+
         const { otp: hashOtp } = userVerification;
         const validOtp = await bcrypt.compare(otp, hashOtp);
 
@@ -187,6 +192,29 @@ const verifyOtp = async (req, res) => {
         return res.redirect(`/otp?email=${email}`);
     }
 };
+
+
+
+const resendOtp = async (req, res) => {
+    try {
+        const email = req.body.email;
+
+        if (!email) {
+            return res.status(400).json({ message: "Email is required" });
+        }
+        const user = await User.findOne({ email: email });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        await UserVerification.deleteOne({ email: email });
+        await sendOtpVerification(user, res);
+       
+
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 
 
 const verifyLogin = async (req, res) => {
@@ -230,12 +258,14 @@ const loadShop = async (req, res) => {
         const products = await product.find({
             is_Listed: true,
             category: { $in: Category.map(cat => cat._id) }
-        });
+        }).sort({createdAt:-1});
         res.render('shop', { user: user, products: products, categories: Category });
     } catch (error) {
         console.log(error);
     }
 }
+
+
 
 const loadFilter = async (req, res) => {
     try {
@@ -282,60 +312,19 @@ const loadBlockedUser = async (req, res) => {
     }
 }
 
-const resendOtp = async (req, res) => {
-    try {
-        const { email } = req.body
-        const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
-        const hashOtp = await bcrypt.hash(otp, 10);
-        let userVerification = await UserVerification.findOne({ email });
-        if (!userVerification) {
-            userVerification = new UserVerification({ email, otp: hashOtp });
-        } else {
-            userVerification.otp = hashOtp;
-        }
-        await userVerification.save();
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            host: 'smtp.gmail.com',
-            port: 465,
-            secure: true,
-            auth: {
-                user: "fidahibrahim2@gmail.com",
-                pass: "hzul wvdm qijl dweg"
-            }
-        });
-
-        const emailOptions = {
-            from: 'fidahIbrahim2@gmail.com',
-            to: email,
-            subject: 'Verify your email',
-            html: `Your new OTP is ${otp}`
-        };
-
-        await transporter.sendMail(emailOptions);
-
-        res.status(200).json({ message: 'OTP resent successfully' });
-
-    } catch (error) {
-        console.log(error);
-
-    }
-}
-
-
-const loadAbout = async(req,res)=>{
+const loadAbout = async (req, res) => {
     try {
         res.render('about');
     } catch (error) {
-       console.log(error); 
+        console.log(error);
     }
 }
 
-const loadContact = async(req,res)=>{
+const loadContact = async (req, res) => {
     try {
         res.render('contact');
     } catch (error) {
-       console.log(error); 
+        console.log(error);
     }
 }
 

@@ -25,7 +25,7 @@ userRoute.get('/logout', userAuth.isLogin, userController.logout)
 
 userRoute.get('/otp', userAuth.isLogout, userController.loadOtp);
 userRoute.post('/otp', userController.verifyOtp);
-// userRoute.post('/resend-otp',userAuth.isLogout,userController.resendOtp)
+userRoute.post('/resend-otp',userAuth.isLogout,userController.resendOtp)
 
 userRoute.get('/shop', userAuth.isBlocked, userController.loadShop);
 userRoute.post('/filter',userController.loadFilter)

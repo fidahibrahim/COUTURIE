@@ -128,10 +128,10 @@
                                     <a href="/shop">Shop</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="sf--ul">About</a>
+                                    <a href="/about" class="sf--ul">About</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="sf--ul">Contact</a>
+                                    <a href="/contact" class="sf--ul">Contact</a>
                                 </li>
                                 <li>
                                     <a href="#" class="sf--ul">Profile</a>
@@ -192,10 +192,11 @@
                             <form method="post">
                                 <div class="card p-2 text-center">
                                     <h6>Please enter the one time password <br> to verify your account</h6>
-                                    <div> <span>A code has been sent to Email <b class="text-danger"
-                                                id="email">
+                                    <div>
+                                        <span>A code has been sent to Email <b class="text-danger" id="email">
                                                 <%= locals.email %>
-                                            </b></span> </div>
+                                            </b></span>
+                                    </div>
                                     <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2">
                                         <input type="hidden" name="email" value="<%= locals.email %>">
                                         <input class="m-2 text-center form-control rounded otp" type="text" id="first"
@@ -207,12 +208,15 @@
                                         <input class="m-2 text-center form-control rounded otp" type="text" id="fourth"
                                             name="digit4" maxlength="1" oninput="moveToNext(this)" />
                                     </div>
-                                    <div class="mt-4"> <button type="submit"
-                                            class="btn btn-danger px-4 validate">Validate</button>
-                                        <button type="submit" id="resendBtn"
-                                            class="btn btn-primary px-4 ml-3">Resend</button>
-                                        <span id="timer"></span>
+                                    <div class="mt-2 d-flex justify-content-between align-items-center">
+                                        <button type="submit" class="btn btn-danger px-4 validate">Validate</button>
+                                        <div id="resend-container">
+                                            <button style="margin-left: 7%;" type="button" id="resend-btn"
+                                                class="btn btn-secondary" onclick="resendOtp()" disabled>Resend</button>
+                                        </div>
                                     </div>
+                                    <span id="otp-message"></span>
+                                    <div id="timer">Time remaining: <span id="timer-countdown">60</span> seconds</div>
                                     <br>
                                     <% if( messages.message ) { %>
                                         <p style="color: red">
@@ -220,14 +224,11 @@
                                         </p>
                                         <%}%>
                                 </div>
+                            </form>
 
                         </div>
-
-                        </form>
-
-                    </div>
-                </div><!-- End .container -->
-            </div><!-- End .login-page section-bg -->
+                    </div><!-- End .container -->
+                </div><!-- End .login-page section-bg -->
         </main><!-- End .main -->
 
         <footer class="footer">
@@ -261,11 +262,11 @@
                                 <h4 class="widget-title">Useful Links</h4><!-- End .widget-title -->
 
                                 <ul class="widget-list">
-                                    <li><a href="about.html">About Molla</a></li>
+                                    <li><a href="/about">About Molla</a></li>
                                     <li><a href="#">How to shop on Molla</a></li>
                                     <li><a href="#">FAQ</a></li>
-                                    <li><a href="contact.html">Contact us</a></li>
-                                    <li><a href="login.html">Log in</a></li>
+                                    <li><a href="/contact">Contact us</a></li>
+                                    <li><a href="/login">Log in</a></li>
                                 </ul><!-- End .widget-list -->
                             </div><!-- End .widget -->
                         </div><!-- End .col-sm-6 col-lg-3 -->
@@ -291,7 +292,7 @@
 
                                 <ul class="widget-list">
                                     <li><a href="#">Sign In</a></li>
-                                    <li><a href="cart.html">View Cart</a></li>
+                                    <li><a href="#">View Cart</a></li>
                                     <li><a href="#">My Wishlist</a></li>
                                     <li><a href="#">Track My Order</a></li>
                                     <li><a href="#">Help</a></li>
@@ -332,19 +333,19 @@
             <nav class="mobile-nav">
                 <ul class="mobile-menu">
                     <li class="active">
-                        <a href="#">Home</a>
+                        <a href="/home">Home</a>
                     </li>
                     <li>
-                        <a href="#">Shop</a>
+                        <a href="/shop">Shop</a>
                     </li>
                     <li>
-                        <a href="#" class="sf-with-ul">About</a>
+                        <a href="/about" class="sf-with-ul">About</a>
                     </li>
                     <li>
-                        <a href="#">Contact</a>
+                        <a href="contact">Contact</a>
                     </li>
                     <li>
-                        <a href="blog.html">Profile</a>
+                        <a href="#">Profile</a>
                     </li>
                 </ul>
             </nav><!-- End .mobile-nav -->
@@ -364,73 +365,66 @@
         crossorigin="anonymous"></script>
 
     <script>
-        let timer;
-        let timeLeft = 60;
-        let isResendAllowed = true;
-
+        let timer = 60;
+        let countdownTimer;
 
         function startTimer() {
-            timer = setInterval(() => {
-                if (timeLeft > 0) {
-                    document.getElementById("timer").textContent = `Resend OTP in ${timeLeft} seconds`;
-                    timeLeft--;
-                } else {
-                    clearInterval(timer);
-                    document.getElementById("timer").textContent = "";
-                    isResendAllowed = true;
+            countdownTimer = setInterval(function () {
+                timer--;
+                document.getElementById("timer-countdown").textContent = timer;
+                if (timer <= 0) {
+                    clearInterval(countdownTimer);
+                    document.getElementById("timer").style.display = "none";
+                    document.getElementById("resend-btn").removeAttribute("disabled");
                 }
             }, 1000);
         }
 
-        function resetTimer() {
-            clearInterval(timer);
-            timeLeft = 60;
-            startTimer();
-        }
+        function resendOtp() {
+            const email = document.querySelector('input[name="email"]').value;
 
-        function enableResendButton() {
-            document.getElementById("resendBtn").disabled = false;
-        }
+            // Clear any previous error messages
+            document.getElementById("otp-message").textContent = '';
 
-        function disableResendButton() {
-            document.getElementById("resendBtn").disabled = true;
-        }
-
-        document.getElementById("resendBtn").addEventListener("click", async () => {
-            if (isResendAllowed) {
-                isResendAllowed = false;
-                const email = document.getElementById("email").value;
-                try {
-                    const response = await fetch("/resend-otp", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({ email })
-                    });
-                    if (response.ok) {
-                        resetTimer();
-                        enableResendButton();
-                        document.getElementById("errorMessage").textContent = "";
-                    } else {
-                        throw new Error("Failed to resend OTP");
+            fetch('/resend-otp', {
+                method: "post",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
                     }
-                } catch (error) {
+                    return response.json();
+                })
+                .then(data => {
+                    // Show success message
+                    document.getElementById("otp-message").textContent = "OTP resent successfully.";
+
+                    clearInterval(countdownTimer);
+
+                    timer = 60;
+                    document.getElementById("timer-countdown").textContent = timer;
+                    document.getElementById("timer").style.display = "block";
+                    document.getElementById("resend-btn").setAttribute("disabled", "true");
+
+                    startTimer();
+                })
+                .catch(error => {
                     console.error(error);
-                    enableResendButton();
-                    document.getElementById("errorMessage").textContent = "Failed to resend OTP. Please try again.";
-                }
-            }
-        });
+                    // Show error message
+                    document.getElementById("otp-message").textContent = "Failed to resend OTP. Please try again.";
+                });
 
-        window.addEventListener("load", () => {
-            startTimer();
-            disableResendButton();
-        });
+            console.log('Resend OTP clicked');
+        }
 
-
+        startTimer();
     </script>
-
 
 
     <script>
