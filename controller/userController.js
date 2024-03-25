@@ -208,7 +208,7 @@ const resendOtp = async (req, res) => {
         }
         await UserVerification.deleteOne({ email: email });
         await sendOtpVerification(user, res);
-       
+
 
     } catch (error) {
         return res.status(500).json({ message: "Internal server error" });
@@ -249,6 +249,15 @@ const verifyLogin = async (req, res) => {
 }
 
 
+const loadForgotPassword = async(req,res)=>{
+    try {
+        res.render('forgotPassword')
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
 
 
 const loadShop = async (req, res) => {
@@ -258,7 +267,7 @@ const loadShop = async (req, res) => {
         const products = await product.find({
             is_Listed: true,
             category: { $in: Category.map(cat => cat._id) }
-        }).sort({createdAt:-1});
+        }).sort({ createdAt: -1 });
         res.render('shop', { user: user, products: products, categories: Category });
     } catch (error) {
         console.log(error);
@@ -329,6 +338,37 @@ const loadContact = async (req, res) => {
 }
 
 
+const loadProfile = async (req, res) => {
+    try {
+        id = req.session.userId;
+        const userData = await User.findOne({ _id: id })
+        res.render('profile', { user: userData });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const loadEditProfile = async (req, res) => {
+    try {
+        const id = req.session.userId;
+        const userData = await User.findOne({ _id: id })
+        res.render('editProfile', { user: userData });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const editProfile = async (req, res) => {
+    try {
+        const id = req.session.userId
+        const { username, mobile } = req.body
+       
+        await User.findByIdAndUpdate(id, { username: username, mobile: mobile });
+        res.redirect('/profile');
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 
 module.exports = {
@@ -339,6 +379,7 @@ module.exports = {
     loadOtp,
     verifyOtp,
     verifyLogin,
+    loadForgotPassword,
     loadShop,
     loadProductDetails,
     logout,
@@ -347,5 +388,8 @@ module.exports = {
     googleLogin,
     loadAbout,
     resendOtp,
-    loadContact
+    loadContact,
+    loadProfile,
+    loadEditProfile,
+    editProfile
 }

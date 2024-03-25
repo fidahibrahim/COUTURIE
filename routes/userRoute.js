@@ -2,9 +2,9 @@ const express = require("express");
 const userRoute = express();
 
 
-
 const userController = require("../controller/userController");
 const userAuth = require('../middleware/userAuth');
+const profileController = require("../controller/profileController"); // Require profile controller
 
 
 userRoute.set('view engine', 'ejs');
@@ -25,7 +25,11 @@ userRoute.get('/logout', userAuth.isLogin, userController.logout)
 
 userRoute.get('/otp', userAuth.isLogout, userController.loadOtp);
 userRoute.post('/otp', userController.verifyOtp);
-userRoute.post('/resend-otp',userAuth.isLogout,userController.resendOtp)
+userRoute.post('/resend-otp',userAuth.isLogout,userController.resendOtp);
+
+userRoute.get('/forgotPassword',userController.loadForgotPassword);
+
+
 
 userRoute.get('/shop', userAuth.isBlocked, userController.loadShop);
 userRoute.post('/filter',userController.loadFilter)
@@ -35,5 +39,11 @@ userRoute.get('/blocked-user', userAuth.isLogin, userController.loadBlockedUser)
 
 userRoute.get('/about',userController.loadAbout);
 userRoute.get('/contact',userController.loadContact);
+
+userRoute.get('/profile',userAuth.isLogin,profileController.loadProfile);
+userRoute.get('/editProfile',userAuth.isLogin,userController.loadEditProfile);
+userRoute.post('/editProfile',userController.editProfile);
+userRoute.get('/changePass',userAuth.isLogin,profileController.loadChangePass);
+userRoute.post('/changePass',profileController.changePass);
 
 module.exports = userRoute

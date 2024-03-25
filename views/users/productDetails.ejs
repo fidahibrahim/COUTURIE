@@ -749,20 +749,20 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var image = document.querySelector('.product-main-image img');
-            var container = document.getElementById('product-main-image');
+            let image = document.querySelector('.product-main-image img');
+            let container = document.getElementById('product-main-image');
 
             container.addEventListener('mousemove', function (e) {
-                var rect = container.getBoundingClientRect();
-                var x = e.clientX - rect.left;
-                var y = e.clientY - rect.top;
-                var centerX = rect.width / 2;
-                var centerY = rect.height / 2;
-                var offsetX = (centerX - x) / centerX;
-                var offsetY = (centerY - y) / centerY;
-                var scaleFactor = 1.6;
-                var translateFactor = 8;
-                var transformValue = 'scale(' + scaleFactor + ') translate(' + (offsetX * translateFactor) + 'px, ' + (offsetY * translateFactor) + 'px)';
+                let rect = container.getBoundingClientRect();
+                let x = e.clientX - rect.left;
+                let y = e.clientY - rect.top;
+                let centerX = rect.width / 2;
+                let centerY = rect.height / 2;
+                let offsetX = (centerX - x) / centerX;
+                let offsetY = (centerY - y) / centerY;
+                let scaleFactor = 1.6;
+                let translateFactor = 8;
+                let transformValue = 'scale(' + scaleFactor + ') translate(' + (offsetX * translateFactor) + 'px, ' + (offsetY * translateFactor) + 'px)';
 
                 image.style.transform = transformValue;
             });

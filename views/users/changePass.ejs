@@ -1,5 +1,4 @@
 <%- include('../layout/user/header.ejs') %>
-
     <div class="page-wrapper">
         <header class="header">
             <div class="header-top">
@@ -33,6 +32,8 @@
                                 <a href="#">Links</a>
                                 <ul>
                                     <li><a href="tel:#"><i class="icon-phone"></i>Call: +0123 456 789</a></li>
+
+                                    <li><a href="/login"><i class="icon-user"></i>Login</a></li>
                                 </ul>
                             </li>
                         </ul><!-- End .top-menu -->
@@ -54,20 +55,22 @@
 
                         <nav class="main-nav">
                             <ul class="menu sf-arrows">
-                                <li class="megamenu-container active">
-                                    <a href="/" class="sf--ul">Home</a>
+                                <li>
+                                    <a href="/" class="sf-ul">Home</a>
                                 </li>
                                 <li>
-                                    <a href="/shop" class="sf--ul">Shop</a>
+                                    <a href="/shop" class="sf-ul">Shop</a>
                                 </li>
                                 <li>
-                                    <a href="/about" class="sf--ul">About</a>
+                                    <a href="/about" class="sf-ul">About</a>
                                 </li>
                                 <li>
-                                    <a href="/contact" class="sf--ul">contact</a>
+                                    <a href="/contact" class="sf-ul">Contact</a>
                                 </li>
-                                <li>
-                                    <a href="#" class="sf--ul">Profile</a>
+                                <li class="active">
+                                    <a href="/profile" class="sf-ul">
+                                        <%= locals.user ? user.username :"Profile" %>
+                                    </a>
                                 </li>
                             </ul><!-- End .menu -->
                         </nav><!-- End .main-nav -->
@@ -85,98 +88,130 @@
                                 </div><!-- End .header-search-wrapper -->
                             </form>
                         </div><!-- End .header-search -->
+                        <div class="dropdown compare-dropdown">
+                            <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false" data-display="static"
+                                title="Compare Products" aria-label="Compare Products">
+                                <i class="icon-heart-o"></i>
+                            </a>
 
+
+                        </div><!-- End .compare-dropdown -->
 
                         <div class="dropdown cart-dropdown">
                             <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false" data-display="static">
                                 <i class="icon-shopping-cart"></i>
+                                <span class="cart-count">2</span>
                             </a>
 
-                        </div><!-- End .header-middle -->
+
+                        </div><!-- End .cart-dropdown -->
+                    </div><!-- End .header-right -->
+                </div><!-- End .container -->
+            </div><!-- End .header-middle -->
         </header><!-- End .header -->
 
         <main class="main">
-
-            <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17"
-                style="background-image: url('assets/images/backgrounds/login-bg.jpg')">
+            <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
                 <div class="container">
-                    <div class="form-box">
-                        <div class="form-tab">
-                            <ul class="nav nav-pills nav-fill" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active" id="signin-tab-2" data-toggle="tab" href="#signin-2"
-                                        role="tab" aria-controls="signin-2" aria-selected="true">Sign In</a>
-                                </li>
-                            </ul>
-                            <div class="tab-content">
-                                <div class="tab-pane fade show active" id="signin-2" role="tabpanel"
-                                    aria-labelledby="signin-tab-2">
-                                    <form method="post" onsubmit="return validateLoginForm()">
-                                        <div class="form-group">
-                                            <label for="singin-email-2"> Email </label>
-                                            <input type="text" class="form-control" id="singin-email-2" name="email"
-                                                value="<%= locals.email %>">
-                                            <span id="email-error" style="color: red;"></span>
-                                        </div><!-- End .form-group -->
-
-                                        <div class="form-group">
-                                            <label for="singin-password-2">Password </label>
-                                            <input type="password" class="form-control" id="singin-password-2"
-                                                name="password" value="<%= locals.password %>">
-                                            <span id="password-error" style="color: red;"></span>
-                                        </div><!-- End .form-group -->
-
-
-                                        <% if( messages.message ) { %>
-                                            <p style="color: red">
-                                                <%=messages.message %>
-                                            </p>
-                                            <%}%>
-
-                                            <% if (locals.message) { %>
-                                                <p style="color: red;">
-                                                    <%= message %>
-                                                </p>
-                                                <% } %>
-
-                                                <div class="form-footer">
-                                                    <button type="submit" class="btn btn-outline-primary-2">
-                                                        <span>LOG IN</span>
-                                                        <i class="icon-long-arrow-right"></i>
-                                                    </button>
-                                                    <a href="/forgotPassword" class="forgot-link">Forgot Your Password?</a>
-
-                                                </div><!-- End .form-footer -->
-
-                                    </form>
-                                    <span>Not a Member ? <a href="/register">Register</a></span>
-                                    
-
-                                    <div class="form-choice">
-                                        <p class="text-center">or sign in with</p>
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <a href="/google" class="btn btn-login btn-g">
-                                                    <i class="icon-google"></i>
-                                                    Login With Google
-                                                </a>
-                                            </div><!-- End .col-6 -->
-                                            <!-- <div class="col-sm-6">
-                                                <a href="#" class="btn btn-login btn-f">
-                                                    <i class="icon-facebook-f"></i>
-                                                    Login With Facebook
-                                                </a>
-                                            </div> -->
-                                        </div><!-- End .row -->
-                                    </div><!-- End .form-choice -->
-                                </div><!-- .End .tab-pane -->
-                            </div><!-- End .tab-content -->
-                        </div><!-- End .form-tab -->
-                    </div><!-- End .form-box -->
+                    <h1 class="page-title">My Account<span>Shop</span></h1>
                 </div><!-- End .container -->
-            </div>
-            <!-- End .login-page section-bg -->
+            </div><!-- End .page-header -->
+            <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+                <div class="container">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/home">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">My Account</li>
+                    </ol>
+                </div><!-- End .container -->
+            </nav><!-- End .breadcrumb-nav -->
+
+            <div class="page-content">
+                <div class="dashboard">
+                    <div class="container">
+                        <div class="row">
+                            <aside class="col-md-4 col-lg-3">
+                                <ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link " id="tab-dashboard-link" href="/profile" role="tab"
+                                            aria-controls="tab-dashboard" aria-selected="true">Account Details</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="tab-orders-link" href="/editProfile" role="tab"
+                                            aria-controls="tab-orders" aria-selected="false">Edit Profile</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="tab-downloads-link" href="#" role="tab"
+                                            aria-controls="tab-downloads" aria-selected="false">Change
+                                            Password</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="tab-address-link" href="#" role="tab"
+                                            aria-controls="tab-address" aria-selected="false">Adresses</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="tab-account-link" href="#" role="tab"
+                                            aria-controls="tab-account" aria-selected="false">Orders</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#" role="tab"
+                                            aria-controls="tab-account" aria-selected="false">Wallet</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#" role="tab"
+                                            aria-controls="tab-account" aria-selected="false">Wishlist</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#">Sign Out</a>
+                                    </li>
+                                </ul>
+                            </aside><!-- End .col-lg-3 -->
+
+                            <div class="col-md-8 col-lg-9">
+                                <div class="tab-content">
+
+                                    <div class="tab-pane fade show active" id="tab-account" role="tabpanel"
+                                        aria-labelledby="tab-account-link">
+                                        <form method="post">
+                                           
+                                                <div class="col-sm-6">
+                                                    <label>Current Password *</label>
+                                                    <input type="password" name="currentPass" class="form-control"
+                                                        required>
+                                                </div><!-- End .col-sm-6 -->
+
+                                                <div class="col-sm-6">
+
+                                                    <label>New Password *</label>
+                                                    <input type="password" name="newPass" class="form-control" required>
+                                                </div>
+
+                                                <div class="col-sm-6">
+
+                                                    <label>Confirm Password *</label>
+                                                    <input type="password" name="confirmPass" class="form-control"
+                                                        required>
+                                                </div>
+                                          
+
+                                            <button style="margin-left: 1%;" type="submit" class="btn btn-outline-primary-2">Submit</button>
+
+                                                    <% if( messages.message ) { %>
+                                                        <p style="color: red">
+                                                            <%=messages.message %>
+                                                        </p>
+                                                        <%}%>
+            
+                                        </form>
+                                        
+                                    </div><!-- .End .tab-pane -->
+                                </div>
+                            </div><!-- End .col-lg-9 -->
+                        </div><!-- End .row -->
+                    </div><!-- End .container -->
+                </div><!-- End .dashboard -->
+            </div><!-- End .page-content -->
         </main><!-- End .main -->
 
         <footer class="footer">
@@ -239,8 +274,8 @@
                                 <h4 class="widget-title">My Account</h4><!-- End .widget-title -->
 
                                 <ul class="widget-list">
-                                    <li><a href="#">Sign In</a></li>
-                                    <li><a href="#">View Cart</a></li>
+                                    <li><a href="/login">Sign In</a></li>
+                                    <li><a href="cart.html">View Cart</a></li>
                                     <li><a href="#">My Wishlist</a></li>
                                     <li><a href="#">Track My Order</a></li>
                                     <li><a href="#">Help</a></li>
@@ -280,20 +315,20 @@
 
             <nav class="mobile-nav">
                 <ul class="mobile-menu">
-                    <li class="active">
+                    <li>
                         <a href="/">Home</a>
                     </li>
                     <li>
                         <a href="/shop">Shop</a>
                     </li>
                     <li>
-                        <a href="/about" class="sf--ul">About</a>
+                        <a href="/about" class="sf-with-ul">about</a>
                     </li>
                     <li>
-                        <a href="/contact">Contact</a>
+                        <a href="/contact">contact</a>
                     </li>
-                    <li>
-                        <a href="#">Profile</a>
+                    <li class="active">
+                        <a href="/profile">profile</a>
                     </li>
                 </ul>
             </nav><!-- End .mobile-nav -->
@@ -307,33 +342,5 @@
         </div><!-- End .mobile-menu-wrapper -->
     </div><!-- End .mobile-menu-container -->
 
-    <script>
-        function validateLoginForm() {
-            let isValid = true;
-
-            // Reset error messages
-            document.getElementById('email-error').textContent = '';
-            document.getElementById('password-error').textContent = '';
-
-            // Validate email
-            let emailInput = document.getElementById('singin-email-2').value.trim();
-            let emailError = document.getElementById('email-error');
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput)) {
-                emailError.textContent = 'Invalid email address.';
-                isValid = false;
-            }
-
-            // Validate password
-            let passwordInput = document.getElementById('singin-password-2').value;
-            let passwordError = document.getElementById('password-error');
-            if (passwordInput.length < 6) {
-                passwordError.textContent = 'Password should be at least 6 characters long.';
-                isValid = false;
-            }
-
-            return isValid;
-        }
-
-    </script>
 
     <%- include('../layout/user/footer.ejs') %>

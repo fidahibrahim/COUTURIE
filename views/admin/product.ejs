@@ -1,53 +1,23 @@
 <%-include('../layout/admin/header.ejs') %>
-    <!-- ============================================================== -->
-    <!-- Preloader - style you can find in spinners.css -->
-    <!-- ============================================================== -->
     <div class="preloader">
         <div class="lds-ripple">
             <div class="lds-pos"></div>
             <div class="lds-pos"></div>
         </div>
     </div>
-    <!-- ============================================================== -->
-    <!-- Main wrapper - style you can find in pages.scss -->
-    <!-- ============================================================== -->
     <div id="main-wrapper" data-theme="light" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
         data-sidebar-position="fixed" data-header-position="fixed" data-boxed-layout="full">
-        <!-- ============================================================== -->
-        <!-- Topbar header - style you can find in pages.scss -->
-        <!-- ============================================================== -->
         <%-include('../layout/admin/navbar.ejs') %>
-            <!-- ============================================================== -->
-            <!-- End Topbar header -->
-            <!-- ============================================================== -->
-            <!-- ============================================================== -->
-            <!-- Left Sidebar - style you can find in sidebar.scss  -->
-            <!-- ============================================================== -->
             <%-include('../layout/admin/nav.ejs') %>
-                <!-- ============================================================== -->
-                <!-- End Left Sidebar - style you can find in sidebar.scss  -->
-                <!-- ============================================================== -->
-                <!-- ============================================================== -->
-
-                <!-- Page wrapper  -->
-                <!-- ============================================================== -->
                 <div class="page-wrapper">
                     <a style="margin-left: 5%; " href="/admin/addProduct"><button style="margin-top:4%;"
                             class="btn btn-primary">Add Product</button></a>
-
                     <div class="container-fluid">
-                        <!-- ============================================================== -->
-                        <!-- Start Page Content -->
-                        <!-- ============================================================== -->
-                        <!-- basic table -->
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="row">
-                                            <!-- Column -->
-
-                                            <!-- Column -->
                                         </div>
                                         <div class="table-responsive">
                                             <div class="mb-3" style="margin-left: 70%;">
@@ -77,7 +47,7 @@
                                                 </thead>
                                                 <tbody>
                                                     <% if(products.length> 0) {%>
-                                                        <% let si = (currentPage - 1) * pageSize + 1; %>
+                                                        <% let si=(currentPage - 1) * pageSize + 1; %>
                                                             <% products.forEach((product)=>{ %>
                                                                 <tr>
                                                                     <td><span class="badge badge-light-warning">
@@ -115,19 +85,20 @@
                                                                             <%= product.is_Listed ? 'Unlist ' : 'List'
                                                                                 %>
                                                                         </button>
-                                                                        <a href="/admin/editProduct?productId=<%= product._id %>"><button
+                                                                        <a
+                                                                            href="/admin/editProduct?productId=<%= product._id %>"><button
                                                                                 class="btn btn-danger">Edit</button>
-                                                                            </a>
+                                                                        </a>
                                                                     </td>
 
                                                                 </tr>
                                                                 <% si++ %>
-                                                                <% }) %>
-                                                                    <% } else { %>
-                                                                        <tr>
-                                                                            <td colspan="5">product not found</td>
-                                                                        </tr>
-                                                                        <% } %>
+                                                                    <% }) %>
+                                                                        <% } else { %>
+                                                                            <tr>
+                                                                                <td colspan="5">product not found</td>
+                                                                            </tr>
+                                                                            <% } %>
                                                 </tbody>
                                             </table>
                                             <nav aria-label="Page navigation example" style="margin-left: 37%;">
@@ -161,33 +132,12 @@
                             </div>
                         </div>
                     </div>
-
-
-                    <!-- ============================================================== -->
-                    <!-- End Container fluid  -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- footer -->
-                    <!-- ============================================================== -->
                     <footer class="footer text-center text-muted">
                         All Rights Reserved by Adminmart. Designed and Developed by <a
                             href="https://wrappixel.com">WrapPixel</a>.
                     </footer>
-                    <!-- ============================================================== -->
-                    <!-- End footer -->
-                    <!-- ============================================================== -->
                 </div>
-                <!-- ============================================================== -->
-                <!-- End Page wrapper  -->
-                <!-- ============================================================== -->
     </div>
-    <!-- ============================================================== -->
-    <!-- End Wrapper -->
-    <!-- ============================================================== -->
-    <!-- End Wrapper -->
-    <!-- ============================================================== -->
-    <!-- All Jquery -->
-    <!-- ============================================================== -->
 
     <!-- include jquery -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -198,17 +148,17 @@
     <script>
 
         var $j = jQuery.noConflict();
-        
+
         $j(document).ready(function () {
             attachEventListeners();
         });
-        
+
         function attachEventListeners() {
             $j('.product-status').on('click', function () {
                 const currentStatus = $j(this).data('current-status');
                 const newStatus = (currentStatus === 'Listed') ? 'Unlist' : 'List';
                 const confirmButtonText = (newStatus === 'List') ? 'list the product!' : 'Unlist the product!';
-        
+
                 Swal.fire({
                     title: "Are you sure?",
                     icon: "warning",
@@ -229,7 +179,7 @@
                 });
             });
         }
-        
+
         function updateProductStatus(productId, action) {
             fetch(`/admin/product/${action}/${productId}`, {
                 method: 'POST'
@@ -237,11 +187,10 @@
                 .then((response) => response.json())
                 .then((data) => {
                     console.log(data);
-        
                     // Update the UI
                     const statusElement = $j(`#status_${productId}`);
                     const buttonElement = $j(`.product-status[data-product-id="${productId}"]`);
-        
+
                     if (data.product.is_Listed) {
                         statusElement.html('<span class="badge rounded-pill alert-warning">Listed</span>');
                         buttonElement.text('Unlist');
@@ -254,38 +203,38 @@
                     console.log("error:", error);
                 });
         }
-        
-        </script>
+
+    </script>
 
 
 
-<script>
-    $(document).ready(function () {
-        $('#searchInput').on('input', function () {
-            var searchText = $(this).val().toLowerCase();
-            $('#example tbody tr').each(function () {
-                var rowData = $(this).text().toLowerCase();
-                if (rowData.includes(searchText)) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
+    <script>
+        $(document).ready(function () {
+            $('#searchInput').on('input', function () {
+                var searchText = $(this).val().toLowerCase();
+                $('#example tbody tr').each(function () {
+                    var rowData = $(this).text().toLowerCase();
+                    if (rowData.includes(searchText)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+
+            $('#clearInput').click(function () {
+                $('#searchInput').val('');
+                $('#example tbody tr').show();
             });
         });
-
-        $('#clearInput').click(function () {
-            $('#searchInput').val('');
-            $('#example tbody tr').show();
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#clearInput').click(function () {
+                $('#searchInput').val('');
+            });
         });
-    });
-</script>
-<script>
-    $(document).ready(function () {
-        $('#clearInput').click(function () {
-            $('#searchInput').val('');
-        });
-    });
-</script>
+    </script>
 
 
     <%-include('../layout/admin/footer.ejs') %>

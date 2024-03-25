@@ -77,9 +77,6 @@ const loadUsers = async (req, res) => {
             .sort({ createdAt: -1 })
             .exec()
 
-
-
-
         res.render('userManagment',
             {
                 users: users,
@@ -123,7 +120,7 @@ const logout = async (req, res) => {
         req.session.admin = null
         res.redirect('/admin/')
     } catch (error) {
-        console.log(erro);
+        console.log(error);
 
     }
 }

@@ -330,13 +330,11 @@
         function validateForm() {
             let isValid = true;
 
-            // Reset error messages
             document.getElementById('username-error').textContent = '';
             document.getElementById('email-error').textContent = '';
             document.getElementById('mobile-error').textContent = '';
             document.getElementById('password-error').textContent = '';
 
-            // Validate username (only letters, no whitespaces)
             let usernameInput = document.getElementById('register-username-2').value.trim();
             let usernameError = document.getElementById('username-error');
             if (!/^[a-zA-Z\s]+$/.test(usernameInput)) {
@@ -344,23 +342,20 @@
                 isValid = false;
             }
 
-            // Validate email
+        
             let emailInput = document.getElementById('register-email-2').value.trim();
             let emailError = document.getElementById('email-error');
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput)) {
                 emailError.textContent = 'Invalid email address.';
                 isValid = false;
             }
-
-            // Validate mobile number (exactly 10 digits)
             let mobileInput = document.getElementById('register-mobile-2').value.trim();
             let mobileError = document.getElementById('mobile-error');
             if (!/^\d{10}$/.test(mobileInput)) {
                 mobileError.textContent = 'Mobile number should be 10 digits.';
                 isValid = false;
             }
-
-            // Validate password (add any additional password validation rules here)
+     
             let passwordInput = document.getElementById('register-password-2').value;
             let passwordError = document.getElementById('password-error');
             const uppercaseRegex = /[A-Z]/;

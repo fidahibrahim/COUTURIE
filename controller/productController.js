@@ -132,7 +132,6 @@ const editProduct = async (req, res) => {
         const categories = await category.find({ isListed: true });
 
         let imageData = [];
-
         if (req.files) {
             const allowedImageFormats = ['image/jpeg', 'image/png'];
 
@@ -179,12 +178,10 @@ const editProduct = async (req, res) => {
 const deleteImg = async (req, res) => {
     try {
         const { image, prdtId } = req.body;
-
         fs.unlink(path.join(__dirname, "../public/assets/images/productImg/sharpedImg/", image), () => { });
-
         await product.updateOne({ _id: prdtId }, { $pull: { images:image } });
-
         res.send({ success: true });
+
     } catch (error) {
     console.log(error);
     }
