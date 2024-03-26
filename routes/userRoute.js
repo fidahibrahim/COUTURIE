@@ -27,8 +27,10 @@ userRoute.get('/otp', userAuth.isLogout, userController.loadOtp);
 userRoute.post('/otp', userController.verifyOtp);
 userRoute.post('/resend-otp',userAuth.isLogout,userController.resendOtp);
 
-userRoute.get('/forgotPassword',userController.loadForgotPassword);
-
+userRoute.get('/forgotPassword',userAuth.isLogout,userController.loadForgotPassword);
+userRoute.post('/forgotPassword',userController.forgotPasswordVerify);
+userRoute.get('/resetPassword',userController.loadResetPassword);
+userRoute.post('/resetPassword',userController.resetPassword);
 
 
 userRoute.get('/shop', userAuth.isBlocked, userController.loadShop);

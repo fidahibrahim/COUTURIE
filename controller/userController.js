@@ -2,6 +2,7 @@ const User = require('../models/userModel');
 const UserVerification = require('../models/userOtpVerification');
 const nodemailer = require('nodemailer')
 const bcrypt = require('bcrypt');
+const randomstring = require('randomstring')
 const userOtpVerification = require('../models/userOtpVerification');
 const category = require('../models/category');
 const product = require('../models/productModel');
@@ -34,6 +35,7 @@ const loadLogin = async (req, res) => {
 
 const securePassword = async (password) => {
     try {
+        console.log(password,"pass,,,,,,,,,,");
         const securePass = await bcrypt.hash(password, 10);
         return securePass;
 
@@ -257,6 +259,111 @@ const loadForgotPassword = async(req,res)=>{
     }
 }
 
+const forgotPasswordVerify = async(req,res)=>{
+    try {
+        const email = req.body.email;
+        const userData = await User.findOne({ email:email });
+        if(userData){
+            
+            if(userData.verified === 0){
+
+                req.flash("message", "Verify Your Mail");
+                return res.redirect("/forgotPassword");
+
+            }else{
+
+                const randomString = randomstring.generate();
+                const updatedData = await User.updateOne({email:email},{$set:{token:randomString}});
+                sendResetPasswordMail(userData.name,userData.email,randomString);
+                req.flash("message", "Please Check Your Mail to Reset Your Password");
+                return res.redirect("/forgotPassword");
+            }
+
+        }else{
+            req.flash("message", "Email Not Found");
+            return res.redirect("/forgotPassword");
+        }
+
+    } catch (error) {
+       console.log(error); 
+    }
+}
+
+
+const sendResetPasswordMail = async(name,email,token)=>{
+    try {
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+                user: "fidahibrahim2@gmail.com",
+                pass: "hzul wvdm qijl dweg"
+            }
+        });
+
+        const resetPage = `http://localhost:3000/resetPassword?token=${token}`
+
+        const emailOptions = {
+            from: 'fidahibrahim2@gmail.com',
+            to: email,
+            subject: 'For Reset Password',
+            html: `your reset password link is ${resetPage}`
+        }
+
+        await transporter.sendMail(emailOptions);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+const loadResetPassword = async(req,res)=>{
+    try {
+      const token = req.query.token; 
+      const tokenData = await User.findOne({ token:token});
+      if(tokenData){
+        res.render('resetPassword',{ user_id:tokenData._id});
+
+      }else{
+        req.flash("message", "Token is Invalid");
+        return res.redirect("/forgotPassword");
+      }
+    } catch (error) {
+      console.log(error);  
+    }
+}
+
+const resetPassword = async(req,res)=>{
+    try {
+        const {newPassword,confirmPassword,id:user} = req.body;
+        console.log("my user",user);
+        const userData = await User.findOne({ _id:user})
+        const oldPassword = await bcrypt.compare(newPassword,userData.password);
+        if(oldPassword){
+            return res.render('resetPassword',{
+                message: "New password must be different from old password",
+                user_id: user,
+            });
+        }
+
+        if (newPassword !== confirmPassword) {
+            return res.render("resetPassword", {
+              message: "New password and confirm password should match",
+              user_id: user
+            });
+          }
+
+
+        const hashedNewPassword = await securePassword(newPassword);
+        const updatedData = await User.findByIdAndUpdate({ _id:user},{ $set:{password:hashedNewPassword,token:''}}) 
+        res.redirect('/login')
+
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 
 
@@ -379,7 +486,12 @@ module.exports = {
     loadOtp,
     verifyOtp,
     verifyLogin,
+    securePassword,
     loadForgotPassword,
+    forgotPasswordVerify,
+    sendResetPasswordMail,
+    loadResetPassword,
+    resetPassword,
     loadShop,
     loadProductDetails,
     logout,
