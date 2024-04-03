@@ -4,7 +4,8 @@ const userRoute = express();
 
 const userController = require("../controller/userController");
 const userAuth = require('../middleware/userAuth');
-const profileController = require("../controller/profileController"); // Require profile controller
+const profileController = require("../controller/profileController");
+const cartController = require("../controller/cartController")
 
 
 userRoute.set('view engine', 'ejs');
@@ -47,5 +48,15 @@ userRoute.get('/editProfile',userAuth.isLogin,userController.loadEditProfile);
 userRoute.post('/editProfile',userController.editProfile);
 userRoute.get('/changePass',userAuth.isLogin,profileController.loadChangePass);
 userRoute.post('/changePass',profileController.changePass);
+userRoute.get('/address',profileController.loadAddress);
+userRoute.get('/addAddress',userAuth.isLogin,profileController.loadAddAddress);
+userRoute.post('/addAddress',userAuth.isLogin,profileController.addAddress);
+userRoute.get('/editAddress',profileController.loadEditAddress);
+userRoute.post('/editAddress',userAuth.isLogin,profileController.editAddress);
+userRoute.post('/deleteAddress',userAuth.isLogin,profileController.deleteAddress);
+userRoute.post('/addToCart',cartController.addToCart);
+userRoute.get('/cart',userAuth.isLogin,cartController.loadCart);
+userRoute.post('/deleteCart',userAuth.isLogin,cartController.deleteCart);
+userRoute.post('/updateQuantity',cartController.updateQuantity);
 
 module.exports = userRoute

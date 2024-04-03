@@ -78,7 +78,7 @@ const addProduct = async (req, res) => {
                 price: parseFloat(Price),
                 category: selectedCategory._id,
                 description: productDescription,
-                stock: parseInt(Quantity),
+                quantity: parseInt(Quantity),
                 images: arrImages
             });
             const savedProduct = await Product.save();
@@ -161,7 +161,7 @@ const editProduct = async (req, res) => {
                 description: productDescription,
                 price: Price,
                 category: selectedCategory._id,
-                stock: Quantity,
+                quantity: Quantity,
                 $push: { images: { $each: imageData } },
             },
             { new: true }

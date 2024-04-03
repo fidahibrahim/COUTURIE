@@ -149,6 +149,7 @@
                                             <i class="icon-arrows"></i>
                                         </a>
                                     </figure>
+                                    <input type="hidden" id="productId" value="<%= product._id%>">
 
                                     <div id="product-zoom-gallery" class="product-image-gallery">
                                         <a class="product-gallery-item" href="#"
@@ -231,13 +232,13 @@
                                     <div class="details-filter-row details-row-size">
                                         <label for="qty">Qty:</label>
                                         <div class="product-details-quantity">
-                                            <input type="number" id="qty" class="form-control" value="1" min="1"
-                                                max="10" step="1" data-decimals="0" required>
+                                            <input type="text" id="quantity" class="form-control" value="1" min="1"
+                                                max="10" step="1" data-decimals="0" readonly>
                                         </div><!-- End .product-details-quantity -->
                                     </div><!-- End .details-filter-row -->
 
                                     <div class="product-details-action">
-                                        <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        <a href="#" class="btn-product btn-cart" onclick="addToCart()"><span>add to cart</span></a>
 
                                         <div class="details-action-wrapper">
                                             <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to
@@ -735,17 +736,7 @@
         </div><!-- End .modal-dialog -->
     </div><!-- End .modal -->
 
-    <!-- Plugins JS File -->
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/jquery.hoverIntent.min.js"></script>
-    <script src="assets/js/jquery.waypoints.min.js"></script>
-    <script src="assets/js/superfish.min.js"></script>
-    <script src="assets/js/owl.carousel.min.js"></script>
-    <script src="assets/js/bootstrap-input-spinner.js"></script>
-    <script src="assets/js/jquery.elevateZoom.min.js"></script>
-    <script src="assets/js/bootstrap-input-spinner.js"></script>
-    <script src="assets/js/jquery.magnific-popup.min.js"></script>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -772,23 +763,70 @@
             });
         });
     </script>
-
-
     <script>
         function changeProductImage(imageSrc) {
             document.getElementById('main-product-image').src = "/assets/images/productImg/sharpedImg/" + imageSrc;
         }
     </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    async function addToCart() {
+        try {
+            const productId = document.getElementById('productId').value
+            const quantity = document.getElementById('quantity').value
+            const data = {
+                productId: productId,
+                quantity: quantity
+            }
+            
+            const response = await fetch('/addToCart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            
+            const responseData = await response.json();
+
+            if (responseData.success) {
+                Swal.fire({
+                    title: "Success",
+                    text: "Product Added to Cart",
+                    icon: "Success",
+                    showCancelButton: true,
+                    confirmButtonText: "Go to Cart",
+                    cancelButtonText: "Continue Shopping",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/cart';
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        window.location.href = '/shop';
+                    }
+                });
+            } else {
+                console.log("Login required block");
+                console.log(responseData);
+                Swal.fire({
+                    title: "Error adding to cart",
+                    text: "Please login to continue",
+                    icon: "error",
+                    showCancelButton: true,
+                    confirmButtonText: "Login",
+                    cancelButtonText: "Cancel",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/login';
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        // Handle cancel action if needed
+                    }
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    } 
+</script>
 
 
-
-
-
-
-
-
-    <!-- Main JS File -->
-    <script src="assets/js/main.js"></script>
-    </body>
-
-    </html>
+    <%- include('../layout/user/footer.ejs') %>

@@ -402,7 +402,6 @@ const loadProductDetails = async (req, res) => {
     try {
         const productId = req.query.productId
         const productData = await product.findOne({ _id: productId }).populate('category')
-        console.log(productData);
         res.render('productDetails', { product: productData })
     } catch (error) {
         console.log(error);

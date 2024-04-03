@@ -19,6 +19,28 @@ const userSchema = mongoose.Schema({
         required: false
     },
 
+    address: [
+        {
+            name:{
+                type:String
+            },
+            state:{
+                type:String
+            },
+            city:{
+                type:String
+            },
+            pincode:{
+                type:Number
+            },
+            mobile:{
+                type:Number
+            }
+        }
+    ],
+
+
+
     verified: {
         type: Boolean,
         default: false
