@@ -566,7 +566,6 @@
 
                 try {
                     const response = await updateCartQuantity(cartId, productId, quantity);
-                    console.log("qwertyuiiii", response);
 
                     const totalColElement = input.closest('tr').querySelector('.total-col');
                     const subtotalElement = document.querySelector('.summary-subtotal td:last-child');

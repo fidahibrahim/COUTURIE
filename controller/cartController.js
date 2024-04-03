@@ -141,8 +141,7 @@ const deleteCart = async (req, res) => {
         }
 
         const productToUpdate = existingCart.products.find(p=>p.productId.equals(productId));
-        console.log("werthjhbgvc",productToUpdate);
-
+       
         if(!productToUpdate){
             req.flash('message','Product Not Found In The Cart');
         }
