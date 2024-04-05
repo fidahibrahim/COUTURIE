@@ -83,10 +83,10 @@ const loadCart = async (req, res) => {
             cartId = cartDetails._id;
         } else {
           
-            return res.render('cart', { cartDetails,user, subTotal: 0, discountAmnt: 0, cartId });
+            return res.render('cart', { cartDetails,user, subTotal: 0, cartId });
         }
 
-        res.render('cart', { cartDetails, user, subTotal, discountAmnt: 0, cartId });
+        res.render('cart', { cartDetails, user, subTotal, cartId });
     } catch (error) {
         console.log(error);
       

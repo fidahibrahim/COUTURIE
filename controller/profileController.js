@@ -89,7 +89,6 @@ const loadAddress = async (req, res) => {
 
 const loadAddAddress = async (req, res) => {
     try {
-
         res.render('addAddress')
     } catch (error) {
         console.log(error);

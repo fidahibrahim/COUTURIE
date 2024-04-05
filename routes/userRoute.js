@@ -5,7 +5,9 @@ const userRoute = express();
 const userController = require("../controller/userController");
 const userAuth = require('../middleware/userAuth');
 const profileController = require("../controller/profileController");
-const cartController = require("../controller/cartController")
+const cartController = require("../controller/cartController");
+const checkoutController = require('../controller/checkoutController');
+const orderController = require('../controller/orderController');
 
 
 userRoute.set('view engine', 'ejs');
@@ -54,9 +56,25 @@ userRoute.post('/addAddress',userAuth.isLogin,profileController.addAddress);
 userRoute.get('/editAddress',profileController.loadEditAddress);
 userRoute.post('/editAddress',userAuth.isLogin,profileController.editAddress);
 userRoute.post('/deleteAddress',userAuth.isLogin,profileController.deleteAddress);
-userRoute.post('/addToCart',cartController.addToCart);
+
+
 userRoute.get('/cart',userAuth.isLogin,cartController.loadCart);
+userRoute.post('/addToCart',cartController.addToCart);
 userRoute.post('/deleteCart',userAuth.isLogin,cartController.deleteCart);
 userRoute.post('/updateQuantity',cartController.updateQuantity);
+
+
+userRoute.get('/checkout',userAuth.isLogin,checkoutController.loadCheckout);
+userRoute.get('/checkoutAddAddress',checkoutController.loadAddCheckoutAddress);
+userRoute.post('/checkoutAddAddress',checkoutController.addCheckoutAddress)
+userRoute.get('/checkoutEditAddress',checkoutController.loadEditCheckoutAddress);
+userRoute.post('/checkoutEditAddress',checkoutController.editCheckoutAddress);
+
+
+userRoute.get('/order/:id',orderController.loadOrder);
+userRoute.post('/placeOrder',orderController.placeOrder);
+userRoute.get('/viewOrders',orderController.loadViewOrder);
+
+
 
 module.exports = userRoute
