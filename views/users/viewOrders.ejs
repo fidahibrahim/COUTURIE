@@ -133,7 +133,7 @@
                                 <td> <%= moment(order.date).format('DD/MM/YYYY')%></td>
                                 <td><%=order.paymentMethod%></td>
                                 <td><%=moment(order.expectedDelivery).format('DD/MM/YYYY')%></td>
-                                <td> <a href="/orderDetails"><button class="btn btn-outline-primary mt-1" style="width: 150px">
+                                <td> <a href="/orderDetails?orderId=<%=order._id%>"><button class="btn btn-outline-primary mt-1" style="width: 150px">
                                     View Details
                                   </button></a></td>
 							</tr>

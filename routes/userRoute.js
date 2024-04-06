@@ -27,7 +27,7 @@ userRoute.get('/success',userController.googleLogin);
 userRoute.get('/logout', userAuth.isLogin, userController.logout)
 
 userRoute.get('/otp', userAuth.isLogout, userController.loadOtp);
-userRoute.post('/otp', userController.verifyOtp);
+userRoute.post('/otp', userAuth.isLogout, userController.verifyOtp);
 userRoute.post('/resend-otp',userAuth.isLogout,userController.resendOtp);
 
 userRoute.get('/forgotPassword',userAuth.isLogout,userController.loadForgotPassword);
@@ -47,10 +47,10 @@ userRoute.get('/contact',userController.loadContact);
 
 userRoute.get('/profile',userAuth.isLogin,profileController.loadProfile);
 userRoute.get('/editProfile',userAuth.isLogin,userController.loadEditProfile);
-userRoute.post('/editProfile',userController.editProfile);
+userRoute.post('/editProfile',userAuth.isLogin,userController.editProfile);
 userRoute.get('/changePass',userAuth.isLogin,profileController.loadChangePass);
-userRoute.post('/changePass',profileController.changePass);
-userRoute.get('/address',profileController.loadAddress);
+userRoute.post('/changePass',userAuth.isLogin,profileController.changePass);
+userRoute.get('/address',userAuth.isLogin,profileController.loadAddress);
 userRoute.get('/addAddress',userAuth.isLogin,profileController.loadAddAddress);
 userRoute.post('/addAddress',userAuth.isLogin,profileController.addAddress);
 userRoute.get('/editAddress',profileController.loadEditAddress);
@@ -61,19 +61,20 @@ userRoute.post('/deleteAddress',userAuth.isLogin,profileController.deleteAddress
 userRoute.get('/cart',userAuth.isLogin,cartController.loadCart);
 userRoute.post('/addToCart',cartController.addToCart);
 userRoute.post('/deleteCart',userAuth.isLogin,cartController.deleteCart);
-userRoute.post('/updateQuantity',cartController.updateQuantity);
+userRoute.post('/updateQuantity',userAuth.isLogin,cartController.updateQuantity);
 
 
 userRoute.get('/checkout',userAuth.isLogin,checkoutController.loadCheckout);
-userRoute.get('/checkoutAddAddress',checkoutController.loadAddCheckoutAddress);
-userRoute.post('/checkoutAddAddress',checkoutController.addCheckoutAddress)
-userRoute.get('/checkoutEditAddress',checkoutController.loadEditCheckoutAddress);
-userRoute.post('/checkoutEditAddress',checkoutController.editCheckoutAddress);
+userRoute.get('/checkoutAddAddress',userAuth.isLogin,checkoutController.loadAddCheckoutAddress);
+userRoute.post('/checkoutAddAddress',userAuth.isLogin,checkoutController.addCheckoutAddress)
+userRoute.get('/checkoutEditAddress',userAuth.isLogin,checkoutController.loadEditCheckoutAddress);
+userRoute.post('/checkoutEditAddress',userAuth.isLogin,checkoutController.editCheckoutAddress);
 
 
-userRoute.get('/order/:id',orderController.loadOrder);
-userRoute.post('/placeOrder',orderController.placeOrder);
-userRoute.get('/viewOrders',orderController.loadViewOrder);
+userRoute.get('/order/:id',userAuth.isLogin,orderController.loadOrder);
+userRoute.post('/placeOrder',userAuth.isLogin,orderController.placeOrder);
+userRoute.get('/viewOrders',userAuth.isLogin,orderController.loadViewOrder);
+userRoute.get('/orderDetails',userAuth.isLogin,orderController.loadOrderDetails)
 
 
 

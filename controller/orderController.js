@@ -87,8 +87,33 @@ const loadViewOrder = async(req,res)=>{
     }
 
 }
+const loadOrderDetails = async(req,res)=>{
+    try {
+        const userId = req.session.userId;
+        const orderId = req.query.orderId;
+        const order = await Order.findOne({_id:orderId,userId:userId})
+            .populate('products.productId')
+            .populate({ path: 'userId', populate: { path: 'address' } });
+        const user = await User.findById(userId).populate('address');
+        res.render('orderDetails',{order,user,moment});
+    } catch (error) {
+        console.log(error); 
+    }
+}
+
+const loadAdminOrders = async(req,res)=>{
+    try {
+        const order = await Order.find({}).populate('products.productId').populate('userId').sort({date:-1})
+        res.render('orders',{order,moment})
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     loadOrder,
     placeOrder,
-    loadViewOrder
+    loadViewOrder,
+    loadOrderDetails,
+    loadAdminOrders
 }

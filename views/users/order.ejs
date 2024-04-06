@@ -1,55 +1,55 @@
 <%- include('../layout/user/header.ejs') %>
-<style>
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
 
-  th,
-  td {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
-  }
+    th,
+    td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
 
-  th {
-    background-color: #f2f2f2;
-  }
-</style>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    /* background-color: #000000; */
-    margin: 0;
-    padding: 0;
-    text-align: center;
-  }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      /* background-color: #000000; */
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
 
-  #header,
-  #order-success {
-    background-color: #ffffff;
-    color: rgb(0, 0, 0);
-    padding: 20px;
-  }
+    #header,
+    #order-success {
+      background-color: #ffffff;
+      color: rgb(0, 0, 0);
+      padding: 20px;
+    }
 
-  table {
-    width: 80%;
-    margin: 20px auto;
-    border-collapse: collapse;
-  }
+    table {
+      width: 80%;
+      margin: 20px auto;
+      border-collapse: collapse;
+    }
 
-  th,
-  td {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 12px;
-  }
+    th,
+    td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 12px;
+    }
 
-  th {
-    background-color: #f2f2f2;
-  }
-</style>
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
   <div class="page-wrapper">
     <header class="header">
       <div class="header-top">
@@ -159,77 +159,77 @@
         </div><!-- End .container -->
       </div><!-- End .header-middle -->
     </header><!-- End .header -->
-    
-<div id="header">
-  <h1>Order Placed Successfully!</h1>
-  </div>
-  
-  <div id="order-success">
-  <h2>Order Summary</h2>
-  
-  <table>
-    <thead>
-      <tr>
-        <th>Details</th>
-        <th>Info</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Order Id:</td>
-        <td>
-          <%=order.orderId%>
-        </td>
-      </tr>
-      <tr>
-        <td>User Name:</td>
-        <td>
-          <%= order.userId.username %>
-        </td>
-      </tr>
-      <tr>
-        <td>Address</td>
-        <td>
-          <%=order.deliveryAddress%>
-        </td>
-      </tr>
-      <tr>
-        <td>Payment:</td>
-        <td>
-          <%=order.paymentMethod%>
-        </td>
-      </tr>
-      <tr>
-        <td>Total Price:</td>
-        <td>₹ <%=order.totalAmount%>
-        </td>
-      </tr>
-      <tr>
-        <td>Date:</td>
-        <td>
-          <%= moment(order.date).format('DD/MM/YYYY')%>
-        </td>
-      </tr>
-      <!-- Add more rows as needed -->
-    </tbody>
-  </table>
-  
-  <div class="container mb-2" style="text-align: center; background-color: white">
-    <div>
-      <strong>Thank You For Purchasing With Us 
-        <span class="btn btn-outline-light"><a href="/viewOrders"><b>View orders</b></a></span></strong>
-    </div>
-    <br />
-    <div class="order-card-footer">
-      <a href="/shop"><button class="btn btn-outline-primary mt-1" style="width: 150px">
-          Continue Shopping
-        </button></a>
-    </div>
-    <br />
-  </div>
-  </div>
 
-   
+    <div id="header">
+      <h1>Order Placed Successfully!</h1>
+    </div>
+
+    <div id="order-success">
+      <h2>Order Summary</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Details</th>
+            <th>Info</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Order Id:</td>
+            <td>
+              <%=order.orderId%>
+            </td>
+          </tr>
+          <tr>
+            <td>User Name:</td>
+            <td>
+              <%= order.userId.username %>
+            </td>
+          </tr>
+          <tr>
+            <td>Address</td>
+            <td>
+              <%=order.deliveryAddress%>
+            </td>
+          </tr>
+          <tr>
+            <td>Payment:</td>
+            <td>
+              <%=order.paymentMethod%>
+            </td>
+          </tr>
+          <tr>
+            <td>Total Price:</td>
+            <td>₹ <%=order.totalAmount%>
+            </td>
+          </tr>
+          <tr>
+            <td>Date:</td>
+            <td>
+              <%= moment(order.date).format('DD/MM/YYYY')%>
+            </td>
+          </tr>
+          <!-- Add more rows as needed -->
+        </tbody>
+      </table>
+
+      <div class="container mb-2" style="text-align: center; background-color: white">
+        <div>
+          <strong>Thank You For Purchasing With Us
+            <span class="btn btn-outline-light"><a href="/viewOrders"><b>View orders</b></a></span></strong>
+        </div>
+        <br />
+        <div class="order-card-footer">
+          <a href="/shop"><button class="btn btn-outline-primary mt-1" style="width: 150px">
+              Continue Shopping
+            </button></a>
+        </div>
+        <br />
+      </div>
+    </div>
+
+
 
     <footer class="footer">
       <div class="footer-middle">

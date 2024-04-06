@@ -2,23 +2,16 @@
 
 
     <style>
-        /* Hide the default radio button */
         input[type="radio"] {
             display: none;
         }
-
-        /* Style for the custom radio button */
         input[type="radio"]+label {
             position: relative;
             display: inline-block;
             cursor: pointer;
             padding-left: 25px;
-            /* Adjust as needed */
             margin-right: 15px;
-            /* Adjust as needed */
-        }
-
-        /* Style for the radio button dot */
+          }
         input[type="radio"]+label::before {
             content: '';
             position: absolute;
@@ -26,19 +19,13 @@
             left: 0;
             transform: translateY(-50%);
             width: 16px;
-            /* Size of the dot */
             height: 16px;
-            /* Size of the dot */
             border-radius: 50%;
             background-color: #fff;
             border: 2px solid #000;
-            /* Border color */
         }
-
-        /* Style for the radio button dot when selected */
         input[type="radio"]:checked+label::before {
             background-color: #000;
-            /* Background color when selected */
         }
     </style>
 
@@ -131,16 +118,16 @@
                             </form>
                         </div><!-- End .header-search -->
                         <div class="dropdown compare-dropdown">
-                            <a href="/wishlist" class="dropdown-toggle" role="button" aria-haspopup="true"
-                                aria-expanded="false" data-display="static" title="Compare Products"
+                            <a href="/wishlist" class="dropdown-toggle" aria-haspopup="true"
+                                aria-expanded="false" title="Compare Products"
                                 aria-label="Compare Products">
                                 <i class="icon-heart-o"></i>
                             </a>
                         </div><!-- End .compare-dropdown -->
 
                         <div class="dropdown cart-dropdown">
-                            <a href="/cart" class="dropdown-toggle" role="button" aria-haspopup="true"
-                                aria-expanded="false" data-display="static">
+                            <a href="/cart" class="dropdown-toggle" aria-haspopup="true"
+                                aria-expanded="false" >
                                 <i class="icon-shopping-cart"></i>
                                 <span class="cart-count">2</span>
                             </a>
@@ -484,27 +471,19 @@
                 <ul class="mobile-menu">
                     <li class="active">
                         <a href="index.html">Home</a>
-
-
                     </li>
                     <li>
                         <a href="category.html">Shop</a>
-
                     </li>
                     <li>
                         <a href="product.html" class="sf-with-ul">Product</a>
-
                     </li>
                     <li>
                         <a href="#">Pages</a>
-
                     </li>
                     <li>
                         <a href="blog.html">Blog</a>
-
-
                     </li>
-
                 </ul>
             </nav><!-- End .mobile-nav -->
 
@@ -524,7 +503,7 @@
             const cashOnDeliveryCollapse = document.getElementById('collapse-3');
             const razorPayCollapse = document.getElementById('collapse-4');
             const walletCollapse = document.getElementById('collapse-5');
-    
+
             if (!selectedAddress) {
                 Swal.fire({
                     icon: "error",
@@ -533,7 +512,7 @@
                 });
                 return;
             }
-    
+
             let selectedPayment;
             if (cashOnDeliveryCollapse && cashOnDeliveryCollapse.classList.contains('show')) {
                 selectedPayment = "Cash on Delivery";
@@ -549,13 +528,13 @@
                 });
                 return;
             }
-    
+
             const data = {
                 address: selectedAddress.value,
                 subTotal: button.getAttribute('data-subtotal'),
                 payment: selectedPayment,
             };
-    
+
             try {
                 const response = await fetch("/placeOrder", {
                     method: "POST",
@@ -564,13 +543,13 @@
                     },
                     body: JSON.stringify(data),
                 });
-    
+
                 if (!response.ok) {
                     throw new Error("Network response was not ok.");
                 }
-    
+
                 const responseData = await response.json();
-    
+
                 if (responseData.success) {
                     Swal.fire({
                         icon: "success",
@@ -578,7 +557,7 @@
                         text: "Your order has been placed successfully!",
                         timer: 2000,
                     }).then(() => {
-                        window.location.href = `/order/${responseData.orderId}`; // Redirect to order page
+                        window.location.href = `/order/${responseData.orderId}`;
                     });
                 } else if (responseData.quan) {
                     Swal.fire({
@@ -603,10 +582,5 @@
             }
         }
     </script>
-    
-    
-    
-
-
 
     <%-include('../layout/user/footer.ejs') %>

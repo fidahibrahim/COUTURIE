@@ -4,6 +4,7 @@ const adminRoute = express();
 const adminController = require("../controller/adminController");
 const categoryController = require('../controller/categoryController');
 const productController = require('../controller/productController');
+const orderController = require('../controller/orderController');
 const adminAuth=require('../middleware/adminAuth')
 const multer = require('../middleware/multer');
 
@@ -33,5 +34,8 @@ adminRoute.get('/editProduct',adminAuth.isLogin, productController.loadeditProdu
 adminRoute.post('/editProduct', multer.upload.array("images"), productController.editProduct)
 adminRoute.patch("/product/deleteImage",  productController.deleteImg);
 
-adminRoute.get('/logout',adminAuth.isLogin,adminController.logout)
+adminRoute.get('/orders',adminAuth.isLogin,orderController.loadAdminOrders)
+adminRoute.get('/logout',adminAuth.isLogin,adminController.logout);
+
+
 module.exports = adminRoute;
