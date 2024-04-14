@@ -7,12 +7,12 @@ const moment = require('moment');
 
 const loadOrder = async (req, res) => {
     try {
-        const userId = req.session.userId 
+        const userId = req.session.userId
         const id = req.params.id
-        const order = await Order.findOne({_id:id}).populate('userId');
-        const user = await User.findOne({_id:userId})
+        const order = await Order.findOne({ _id: id }).populate('userId');
+        const user = await User.findOne({ _id: userId })
 
-        res.render('order',{order,user,moment})
+        res.render('order', { order, user, moment })
     } catch (error) {
         console.log(error);
     }
@@ -77,34 +77,50 @@ const placeOrder = async (req, res) => {
 
 
 
-const loadViewOrder = async(req,res)=>{
+const loadViewOrder = async (req, res) => {
     try {
+        let page = req.query.id ? parseInt(req.query.id) : 1
+        const limit = 4;
+        let Next = page + 1
+        let Previous = page > 1 ? page - 1 : 1
+        let count = await Order.find().count()
+        console.log("wwwwwwwwwww",count);
+        let totalPages = Math.ceil(count / limit)
+        console.log("rrrrrrrrrrrrrrr",totalPages);
+        if (Next > totalPages) {
+            Next = totalPages
+        }
         const userId = req.session.userId
-        const data = await Order.find({userId:userId}).sort({ date:-1 })
-        res.render('viewOrders',{orders:data,moment});
+        const data = await Order.find({ userId: userId })
+            .sort({ date: -1 })
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .exec()
+        res.render('viewOrders', { orders: data, Next: Next, Previous: Previous, totalPages: totalPages, moment });
     } catch (error) {
         console.log(error);
     }
 
 }
-const loadOrderDetails = async(req,res)=>{
+const loadOrderDetails = async (req, res) => {
     try {
         const userId = req.session.userId;
         const orderId = req.query.orderId;
-        const order = await Order.findOne({_id:orderId,userId:userId})
+        const order = await Order.findOne({ _id: orderId, userId: userId })
             .populate('products.productId')
             .populate({ path: 'userId', populate: { path: 'address' } });
         const user = await User.findById(userId).populate('address');
-        res.render('orderDetails',{order,user,moment});
+        res.render('orderDetails', { order, user, moment });
     } catch (error) {
-        console.log(error); 
+        console.log(error);
     }
 }
 
-const loadAdminOrders = async(req,res)=>{
+const loadAdminOrders = async (req, res) => {
     try {
-        const order = await Order.find({}).populate('products.productId').populate('userId').sort({date:-1})
-        res.render('orders',{order,moment})
+        const order = await Order.find({}).populate('products.productId').populate('userId').sort({ date: -1 })
+        res.render('orders', { order, moment })
+
     } catch (error) {
         console.log(error);
     }

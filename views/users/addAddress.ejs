@@ -171,23 +171,28 @@
                         </aside><!-- End .col-lg-3 -->
 
                         <div class="tab-pane fade show active" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link">
-                            <form method="post">
+                            <form id="addressForm" method="post">
 
                                 <label> Name *</label>
                                 <input type="text" name="name" class="form-control">
-
+                                <span style="color: red;" id="nameError" class="error"></span><br>
+                            
                                 <label> State *</label>
                                 <input type="text" name="state" class="form-control">
-
+                                <span style="color: red;" id="stateError" class="error"></span><br>
+                            
                                 <label> City *</label>
                                 <input type="text" name="city" class="form-control">
-
+                                <span style="color: red;" id="cityError" class="error"></span><br>
+                            
                                 <label> Pincode *</label>
                                 <input type="number" name="pincode" class="form-control mb-2">
-
+                                <span style="color: red;" id="pincodeError" class="error"></span><br>
+                            
                                 <label> Mobile *</label>
                                 <input type="number" name="mobile" class="form-control mb-2">
-
+                                <span style="color: red;" id="mobileError" class="error"></span><br>
+                            
                                 <button type="submit" class="btn btn-outline-primary-2">
                                     <span>SAVE ADDRESS</span>
                                     <i class="icon-long-arrow-right"></i>
@@ -326,6 +331,61 @@
         </div><!-- End .social-icons -->
     </div><!-- End .mobile-menu-wrapper -->
 </div><!-- End .mobile-menu-container -->
+
+<script>
+    document.getElementById("addressForm").addEventListener("submit", function(event) {
+        let state = document.getElementsByName("state")[0].value.trim();
+        let city = document.getElementsByName("city")[0].value.trim();
+        let pincode = document.getElementsByName("pincode")[0].value.trim();
+        let name = document.getElementsByName("name")[0].value.trim();
+        let mobile = document.getElementsByName("mobile")[0].value.trim();
+
+        let nameRegex = /^[A-Za-z\s]+$/;
+        let pincodeRegex = /^\d{6}$/; // Exactly 6 digits
+        let mobileRegex = /^\d{10}$/; // Exactly 10 digits
+
+        let isValid = true;
+
+        if (!name.match(nameRegex)) {
+            document.getElementById("nameError").innerText = "Name should contain only alphabets and spaces.";
+            isValid = false;
+        } else {
+            document.getElementById("nameError").innerText = "";
+        }
+
+        if (!state.match(nameRegex)) {
+            document.getElementById("stateError").innerText = "State should contain only alphabets and spaces.";
+            isValid = false;
+        } else {
+            document.getElementById("stateError").innerText = "";
+        }
+
+        if (!city.match(nameRegex)) {
+            document.getElementById("cityError").innerText = "City should contain only alphabets and spaces.";
+            isValid = false;
+        } else {
+            document.getElementById("cityError").innerText = "";
+        }
+
+        if (!pincode.match(pincodeRegex)) {
+            document.getElementById("pincodeError").innerText = "Pincode should contain exactly 6 digits.";
+            isValid = false;
+        } else {
+            document.getElementById("pincodeError").innerText = "";
+        }
+
+        if (!mobile.match(mobileRegex)) {
+            document.getElementById("mobileError").innerText = "Mobile should contain exactly 10 digits.";
+            isValid = false;
+        } else {
+            document.getElementById("mobileError").innerText = "";
+        }
+
+        if (!isValid) {
+            event.preventDefault();
+        }
+    });
+</script>
 
 <%- include('../layout/user/footer.ejs') %>
 

@@ -65,27 +65,30 @@
 
                     <div class="header-right">
                         <div class="header-search">
-                            <a href="#" class="search-toggle" role="button" title="Search"><i class="icon-search"></i></a>
+                            <a href="#" class="search-toggle" role="button" title="Search"><i
+                                    class="icon-search"></i></a>
                             <form action="#" method="get">
                                 <div class="header-search-wrapper">
                                     <label for="q" class="sr-only">Search</label>
-                                    <input type="search" class="form-control" name="q" id="q" placeholder="Search in..." required>
+                                    <input type="search" class="form-control" name="q" id="q" placeholder="Search in..."
+                                        required>
                                 </div><!-- End .header-search-wrapper -->
                             </form>
                         </div><!-- End .header-search -->
                         <div class="dropdown compare-dropdown">
-							<a href="/wishlist" class="dropdown-toggle" role="button" data-toggle="dropdown"
-								aria-haspopup="true" aria-expanded="false" data-display="static"
-								title="Compare Products" aria-label="Compare Products">
-								<i class="icon-heart-o"></i>
-							</a>
-						</div><!-- End .compare-dropdown -->
+                            <a href="/wishlist" class="dropdown-toggle" role="button" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false" data-display="static"
+                                title="Compare Products" aria-label="Compare Products">
+                                <i class="icon-heart-o"></i>
+                            </a>
+                        </div><!-- End .compare-dropdown -->
                         <div class="dropdown cart-dropdown">
-                            <a href="/cart" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" data-display="static">
+                            <a href="/cart" class="dropdown-toggle" role="button" aria-haspopup="true"
+                                aria-expanded="false" data-display="static">
                                 <i class="icon-shopping-cart"></i>
                                 <span class="cart-count">2</span>
                             </a>
-                            
+
                         </div><!-- End .cart-dropdown -->
                     </div><!-- End .header-right -->
                 </div><!-- End .container -->
@@ -93,11 +96,11 @@
         </header><!-- End .header -->
 
         <main class="main">
-        	<div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
-        		<div class="container">
-        			<h1 class="page-title">My Orders</h1>
-        		</div><!-- End .container -->
-        	</div><!-- End .page-header -->
+            <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+                <div class="container">
+                    <h1 class="page-title">My Orders</h1>
+                </div><!-- End .container -->
+            </div><!-- End .page-header -->
             <nav aria-label="breadcrumb" class="breadcrumb-nav">
                 <div class="container">
                     <ol class="breadcrumb">
@@ -108,123 +111,160 @@
             </nav><!-- End .breadcrumb-nav -->
 
             <div class="page-content">
-            	<div class="container">
-					<table class="table table-wishlist table-mobile">
-						<thead>
-							<tr>
-								<th>Order Id</th>
-								<th>Items</th>
-								<th>Total Amount</th>
-								<th>Order Date</th>
-								<th>Payment Method</th>
+                <div class="container">
+                    <table class="table table-wishlist table-mobile">
+                        <thead>
+                            <tr>
+                                <th>Order Id</th>
+                                <th>Items</th>
+                                <th>Total Amount</th>
+                                <th>Order Date</th>
+                                <th>Payment Method</th>
                                 <th>Expected Delivery</th>
                                 <th></th>
-							</tr>
-						</thead>
+                            </tr>
+                        </thead>
 
                         <%if(orders.length>0){%>
                             <%orders.forEach(order=>{%>
 
-						<tbody>
-							<tr>
-								<td><%=order.orderId%></td>
-                                <td><%=order.products.length%></td>
-                                <td>₹<%=order.totalAmount%></td>
-                                <td> <%= moment(order.date).format('DD/MM/YYYY')%></td>
-                                <td><%=order.paymentMethod%></td>
-                                <td><%=moment(order.expectedDelivery).format('DD/MM/YYYY')%></td>
-                                <td> <a href="/orderDetails?orderId=<%=order._id%>"><button class="btn btn-outline-primary mt-1" style="width: 150px">
-                                    View Details
-                                  </button></a></td>
-							</tr>
-						</tbody>
-                        <%})%>
-                        <%}else{%>
-                            <tr class="text-center">
-                                <td colspan="5" style="color:red;">There are no
-                                    orders in your Account</td>
-                            </tr>
-                            <%}%>
-					</table><!-- End .table table-wishlist -->
-    
-	            	
-            	</div><!-- End .container -->
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <%=order.orderId%>
+                                        </td>
+                                        <td>
+                                            <%=order.products.length%>
+                                        </td>
+                                        <td>₹<%=order.totalAmount%>
+                                        </td>
+                                        <td>
+                                            <%= moment(order.date, 'MMM DD, YYYY' ).format('DD/MM/YYYY') %>
+                                        </td>
+                                        <td>
+                                            <%=order.paymentMethod%>
+                                        </td>
+                                        <td>
+                                            <%=moment(order.expectedDelivery, 'MMM DD, YYYY' ).format('DD/MM/YYYY')%>
+                                        </td>
+                                        <td> <a href="/orderDetails?orderId=<%=order._id%>"><button
+                                                    class="btn btn-outline-primary mt-1" style="width: 150px">
+                                                    View Details
+                                                </button></a></td>
+                                    </tr>
+                                </tbody>
+                                <%})%>
+                                    <%}else if(totalPages === 0 ){%>
+                                        <tr class="text-center">
+                                            <td colspan="5" style="color:red;">There are no
+                                                orders in your Account</td>
+                                        </tr>
+                                        <%}%>
+                    </table>
+                    <nav aria-label="Page navigation example" style="margin-left: 37%;">
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a class="page-link" href="/viewOrders?id=<%= Previous %>" aria-label="Previous">
+                                    <span aria-hidden="true">Previous</span>
+                                </a>
+                            </li>
+                            <% for(let i=1; i<=totalPages ;i++){ %>
+                                <li class="page-item active" aria-current="page">
+                                    <a class="page-link" href="/viewOrders?id=<%= i %>">
+                                        <%= i %>
+                                    </a>
+                                </li>
+                                <%}%>
+                                    <li class="page-item">
+                                        <a class="page-link" href="/viewOrders?id=<%= Next %>" aria-label="Next">
+                                            <span aria-hidden="true">Next</span>
+                                        </a>
+                                    </li>
+                        </ul>
+                    </nav>
+                </div>
             </div><!-- End .page-content -->
         </main><!-- End .main -->
 
         <footer class="footer">
-        	<div class="footer-middle">
-	            <div class="container">
-	            	<div class="row">
-	            		<div class="col-sm-6 col-lg-3">
-	            			<div class="widget widget-about">
-	            				<img src="assets/images/logo.png" class="footer-logo" alt="Footer Logo" width="105" height="25">
-	            				<p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. </p>
+            <div class="footer-middle">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget widget-about">
+                                <img src="assets/images/logo.png" class="footer-logo" alt="Footer Logo" width="105"
+                                    height="25">
+                                <p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu vulputate
+                                    magna eros eu erat. </p>
+                                <div class="social-icons">
+                                    <a href="#" class="social-icon" target="_blank" title="Facebook"><i
+                                            class="icon-facebook-f"></i></a>
+                                    <a href="#" class="social-icon" target="_blank" title="Twitter"><i
+                                            class="icon-twitter"></i></a>
+                                    <a href="#" class="social-icon" target="_blank" title="Instagram"><i
+                                            class="icon-instagram"></i></a>
+                                    <a href="#" class="social-icon" target="_blank" title="Youtube"><i
+                                            class="icon-youtube"></i></a>
+                                    <a href="#" class="social-icon" target="_blank" title="Pinterest"><i
+                                            class="icon-pinterest"></i></a>
+                                </div><!-- End .soial-icons -->
+                            </div><!-- End .widget about-widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
 
-	            				<div class="social-icons">
-	            					<a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
-	            					<a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
-	            					<a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
-	            					<a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
-	            					<a href="#" class="social-icon" target="_blank" title="Pinterest"><i class="icon-pinterest"></i></a>
-	            				</div><!-- End .soial-icons -->
-	            			</div><!-- End .widget about-widget -->
-	            		</div><!-- End .col-sm-6 col-lg-3 -->
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget">
+                                <h4 class="widget-title">Useful Links</h4><!-- End .widget-title -->
 
-	            		<div class="col-sm-6 col-lg-3">
-	            			<div class="widget">
-	            				<h4 class="widget-title">Useful Links</h4><!-- End .widget-title -->
+                                <ul class="widget-list">
+                                    <li><a href="/about">About Molla</a></li>
+                                    <li><a href="/shop">How to shop on Molla</a></li>
+                                    <li><a href="#">FAQ</a></li>
+                                    <li><a href="/contact">Contact us</a></li>
+                                    <li><a href="/login">Log in</a></li>
+                                </ul><!-- End .widget-list -->
+                            </div><!-- End .widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget">
+                                <h4 class="widget-title">Customer Service</h4><!-- End .widget-title -->
 
-	            				<ul class="widget-list">
-	            					<li><a href="/about">About Molla</a></li>
-	            					<li><a href="/shop">How to shop on Molla</a></li>
-	            					<li><a href="#">FAQ</a></li>
-	            					<li><a href="/contact">Contact us</a></li>
-	            					<li><a href="/login">Log in</a></li>
-	            				</ul><!-- End .widget-list -->
-	            			</div><!-- End .widget -->
-	            		</div><!-- End .col-sm-6 col-lg-3 -->
+                                <ul class="widget-list">
+                                    <li><a href="#">Payment Methods</a></li>
+                                    <li><a href="#">Money-back guarantee!</a></li>
+                                    <li><a href="#">Returns</a></li>
+                                    <li><a href="#">Shipping</a></li>
+                                    <li><a href="#">Terms and conditions</a></li>
+                                    <li><a href="#">Privacy Policy</a></li>
+                                </ul><!-- End .widget-list -->
+                            </div><!-- End .widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
 
-	            		<div class="col-sm-6 col-lg-3">
-	            			<div class="widget">
-	            				<h4 class="widget-title">Customer Service</h4><!-- End .widget-title -->
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget">
+                                <h4 class="widget-title">My Account</h4><!-- End .widget-title -->
 
-	            				<ul class="widget-list">
-	            					<li><a href="#">Payment Methods</a></li>
-	            					<li><a href="#">Money-back guarantee!</a></li>
-	            					<li><a href="#">Returns</a></li>
-	            					<li><a href="#">Shipping</a></li>
-	            					<li><a href="#">Terms and conditions</a></li>
-	            					<li><a href="#">Privacy Policy</a></li>
-	            				</ul><!-- End .widget-list -->
-	            			</div><!-- End .widget -->
-	            		</div><!-- End .col-sm-6 col-lg-3 -->
+                                <ul class="widget-list">
+                                    <li><a href="/login">Sign In</a></li>
+                                    <li><a href="/cart">View Cart</a></li>
+                                    <li><a href="/wishlist">My Wishlist</a></li>
+                                    <li><a href="/orders">Track My Order</a></li>
+                                    <li><a href="#">Help</a></li>
+                                </ul><!-- End .widget-list -->
+                            </div><!-- End .widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+                    </div><!-- End .row -->
+                </div><!-- End .container -->
+            </div><!-- End .footer-middle -->
 
-	            		<div class="col-sm-6 col-lg-3">
-	            			<div class="widget">
-	            				<h4 class="widget-title">My Account</h4><!-- End .widget-title -->
-
-	            				<ul class="widget-list">
-	            					<li><a href="/ginlo">Sign In</a></li>
-	            					<li><a href="/cart">View Cart</a></li>
-	            					<li><a href="/wishlist">My Wishlist</a></li>
-	            					<li><a href="#">Track My Order</a></li>
-	            					<li><a href="#">Help</a></li>
-	            				</ul><!-- End .widget-list -->
-	            			</div><!-- End .widget -->
-	            		</div><!-- End .col-sm-6 col-lg-3 -->
-	            	</div><!-- End .row -->
-	            </div><!-- End .container -->
-	        </div><!-- End .footer-middle -->
-
-	        <div class="footer-bottom">
-	        	<div class="container">
-	        		<p class="footer-copyright">Copyright © 2019 Molla Store. All Rights Reserved.</p><!-- End .footer-copyright -->
-	        		<figure class="footer-payments">
-	        			<img src="assets/images/payments.png" alt="Payment methods" width="272" height="20">
-	        		</figure><!-- End .footer-payments -->
-	        	</div><!-- End .container -->
-	        </div><!-- End .footer-bottom -->
+            <div class="footer-bottom">
+                <div class="container">
+                    <p class="footer-copyright">Copyright © 2019 Molla Store. All Rights Reserved.</p>
+                    <!-- End .footer-copyright -->
+                    <figure class="footer-payments">
+                        <img src="assets/images/payments.png" alt="Payment methods" width="272" height="20">
+                    </figure><!-- End .footer-payments -->
+                </div><!-- End .container -->
+            </div><!-- End .footer-bottom -->
         </footer><!-- End .footer -->
     </div><!-- End .page-wrapper -->
     <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
@@ -238,7 +278,8 @@
 
             <form action="#" method="get" class="mobile-search">
                 <label for="mobile-search" class="sr-only">Search</label>
-                <input type="search" class="form-control" name="mobile-search" id="mobile-search" placeholder="Search in..." required>
+                <input type="search" class="form-control" name="mobile-search" id="mobile-search"
+                    placeholder="Search in..." required>
                 <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
             </form>
             <nav class="mobile-nav">
@@ -269,6 +310,6 @@
             </div><!-- End .social-icons -->
         </div><!-- End .mobile-menu-wrapper -->
     </div><!-- End .mobile-menu-container -->
-    
+
 
     <%- include('../layout/user/footer.ejs') %>

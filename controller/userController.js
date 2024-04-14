@@ -35,7 +35,7 @@ const loadLogin = async (req, res) => {
 
 const securePassword = async (password) => {
     try {
-        console.log(password,"pass,,,,,,,,,,");
+        console.log(password, "pass,,,,,,,,,,");
         const securePass = await bcrypt.hash(password, 10);
         return securePass;
 
@@ -251,7 +251,7 @@ const verifyLogin = async (req, res) => {
 }
 
 
-const loadForgotPassword = async(req,res)=>{
+const loadForgotPassword = async (req, res) => {
     try {
         res.render('forgotPassword')
     } catch (error) {
@@ -259,38 +259,38 @@ const loadForgotPassword = async(req,res)=>{
     }
 }
 
-const forgotPasswordVerify = async(req,res)=>{
+const forgotPasswordVerify = async (req, res) => {
     try {
         const email = req.body.email;
-        const userData = await User.findOne({ email:email });
-        if(userData){
-            
-            if(userData.verified === 0){
+        const userData = await User.findOne({ email: email });
+        if (userData) {
+
+            if (userData.verified === 0) {
 
                 req.flash("message", "Verify Your Mail");
                 return res.redirect("/forgotPassword");
 
-            }else{
+            } else {
 
                 const randomString = randomstring.generate();
-                const updatedData = await User.updateOne({email:email},{$set:{token:randomString}});
-                sendResetPasswordMail(userData.name,userData.email,randomString);
+                const updatedData = await User.updateOne({ email: email }, { $set: { token: randomString } });
+                sendResetPasswordMail(userData.name, userData.email, randomString);
                 req.flash("message", "Please Check Your Mail to Reset Your Password");
                 return res.redirect("/forgotPassword");
             }
 
-        }else{
+        } else {
             req.flash("message", "Email Not Found");
             return res.redirect("/forgotPassword");
         }
 
     } catch (error) {
-       console.log(error); 
+        console.log(error);
     }
 }
 
 
-const sendResetPasswordMail = async(name,email,token)=>{
+const sendResetPasswordMail = async (name, email, token) => {
     try {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -319,30 +319,30 @@ const sendResetPasswordMail = async(name,email,token)=>{
 }
 
 
-const loadResetPassword = async(req,res)=>{
+const loadResetPassword = async (req, res) => {
     try {
-      const token = req.query.token; 
-      const tokenData = await User.findOne({ token:token});
-      if(tokenData){
-        res.render('resetPassword',{ user_id:tokenData._id});
+        const token = req.query.token;
+        const tokenData = await User.findOne({ token: token });
+        if (tokenData) {
+            res.render('resetPassword', { user_id: tokenData._id });
 
-      }else{
-        req.flash("message", "Token is Invalid");
-        return res.redirect("/forgotPassword");
-      }
+        } else {
+            req.flash("message", "Token is Invalid");
+            return res.redirect("/forgotPassword");
+        }
     } catch (error) {
-      console.log(error);  
+        console.log(error);
     }
 }
 
-const resetPassword = async(req,res)=>{
+const resetPassword = async (req, res) => {
     try {
-        const {newPassword,confirmPassword,id:user} = req.body;
-        console.log("my user",user);
-        const userData = await User.findOne({ _id:user})
-        const oldPassword = await bcrypt.compare(newPassword,userData.password);
-        if(oldPassword){
-            return res.render('resetPassword',{
+        const { newPassword, confirmPassword, id: user } = req.body;
+        console.log("my user", user);
+        const userData = await User.findOne({ _id: user })
+        const oldPassword = await bcrypt.compare(newPassword, userData.password);
+        if (oldPassword) {
+            return res.render('resetPassword', {
                 message: "New password must be different from old password",
                 user_id: user,
             });
@@ -350,14 +350,14 @@ const resetPassword = async(req,res)=>{
 
         if (newPassword !== confirmPassword) {
             return res.render("resetPassword", {
-              message: "New password and confirm password should match",
-              user_id: user
+                message: "New password and confirm password should match",
+                user_id: user
             });
-          }
+        }
 
 
         const hashedNewPassword = await securePassword(newPassword);
-        const updatedData = await User.findByIdAndUpdate({ _id:user},{ $set:{password:hashedNewPassword,token:''}}) 
+        const updatedData = await User.findByIdAndUpdate({ _id: user }, { $set: { password: hashedNewPassword, token: '' } })
         res.redirect('/login')
 
     } catch (error) {
@@ -369,34 +369,77 @@ const resetPassword = async(req,res)=>{
 
 const loadShop = async (req, res) => {
     try {
+        let page = 1;
+        if (req.query.id) {
+            page = req.query.id
+        }
+        const limit = 8
+        let Next = page + 1
+        let Previous = page > 1 ? page - 1 : 1
+        let count = await product.find().count()
+        let totalPages = Math.ceil(count / limit)
+        if (Next > totalPages) {
+            Next = totalPages
+        }
         const user = await User.findOne({ _id: req.session.userId })
+
+        const products = await product.find({ is_Listed: true })
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .exec();
+
         const Category = await category.find({ isListed: true })
-        const products = await product.find({
-            is_Listed: true,
-            category: { $in: Category.map(cat => cat._id) }
-        }).sort({ createdAt: -1 });
-        res.render('shop', { user: user, products: products, categories: Category });
+        res.render('shop', {
+            user: user,
+            products: products,
+            categories: Category,
+            Next,
+            Previous,
+            totalPages
+        });
     } catch (error) {
         console.log(error);
     }
 }
-
 
 
 const loadFilter = async (req, res) => {
     try {
+        let filter = { is_Listed: true }; 
         const selectedCategories = req.body.categories;
-        const products = await product.find({
-            is_Listed: true,
-            category: { $in: selectedCategories }
-        });
-        res.json(products);
+        const sortBy = req.body.sortBy; // Add sorting parameter
+        console.log("skfjd",sortBy);
 
+        // Apply category filter if categories are selected
+        if (selectedCategories && selectedCategories.length > 0) {
+            filter.category = { $in: selectedCategories };
+        }
+
+        let sortOptions = {}; // Define sort options
+        if (sortBy === "new") {
+            sortOptions = { createdAt: -1 }; // Sort by newest first
+        } else if (sortBy === "low-high") {
+            sortOptions = { price: 1 }; // Sort by price low to high
+        } else if (sortBy === "high-low") {
+            sortOptions = { price: -1 }; // Sort by price high to low
+        } else if (sortBy === "a-z") {
+            sortOptions = { name: 1 }; // Sort alphabetically by name
+        }
+
+        const products = await product.find(filter).sort(sortOptions);
+        res.json(products);
     } catch (error) {
         console.log(error);
-
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
+
+
+
+
+
 
 const loadProductDetails = async (req, res) => {
     try {
@@ -468,7 +511,7 @@ const editProfile = async (req, res) => {
     try {
         const id = req.session.userId
         const { username, mobile } = req.body
-       
+
         await User.findByIdAndUpdate(id, { username: username, mobile: mobile });
         res.redirect('/profile');
     } catch (error) {
@@ -492,10 +535,10 @@ module.exports = {
     loadResetPassword,
     resetPassword,
     loadShop,
+    loadFilter,
     loadProductDetails,
     logout,
     loadBlockedUser,
-    loadFilter,
     googleLogin,
     loadAbout,
     resendOtp,

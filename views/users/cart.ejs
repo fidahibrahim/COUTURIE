@@ -1,5 +1,40 @@
 <%-include('../layout/user/header.ejs') %>
 
+    <style>
+        .cart-product-quantity {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity-buttons {
+            margin-left: 10px;
+            /* Adjust margin as needed */
+        }
+
+        .quantity-btn {
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            outline: none;
+            /* Remove the black outline */
+        }
+
+        .quantity-btn:focus {
+            outline: none;
+            /* Ensure focus doesn't create outline */
+        }
+
+
+        /* Remove default styling for input[type="number"] arrow */
+        .quantity-input::-webkit-inner-spin-button,
+        .quantity-input::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+
+
+
     <header class="header">
         <div class="header-top">
             <div class="container">
@@ -88,9 +123,8 @@
                         </form>
                     </div><!-- End .header-search -->
                     <div class="dropdown compare-dropdown">
-                        <a href="/wishlist" class="dropdown-toggle" aria-haspopup="true"
-                            aria-expanded="false"  title="Compare Products"
-                            aria-label="Compare Products">
+                        <a href="/wishlist" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false"
+                            title="Compare Products" aria-label="Compare Products">
                             <i class="icon-heart-o"></i>
                         </a>
                     </div><!-- End .compare-dropdown -->
@@ -161,12 +195,15 @@
                                                 </td>
                                                 <td class="quantity-col">
                                                     <div class="cart-product-quantity">
+                                                        <button class="quantity-btn decrement-btn">-</button>
                                                         <input type="number" class="form-control quantity-input"
                                                             value="<%= product.quantity %>" min="1"
                                                             max="<%= product.productId.quantity %>" step="1"
-                                                            data-decimals="0" required
-                                                            id="<%= product.productId._id %>">
+                                                            data-decimals="0" required id="<%= product.productId._id %>"
+                                                            style="margin-left: -4%;">
+                                                        <button class="quantity-btn increment-btn">+</button>
                                                     </div>
+
                                                 </td>
                                                 <td class="total-col">
                                                     <%= product.productId.price * product.quantity %>
@@ -252,7 +289,7 @@
 
                                         <tr class="summary-total">
                                             <td>Total:</td>
-                                            <td>₹<%= subTotal%>
+                                            <td id="totalPrice">₹<%= subTotal%>
                                             </td>
                                         </tr><!-- End .summary-total -->
                                     </tbody>
@@ -384,6 +421,7 @@
     </div><!-- End .mobile-menu-container -->
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function deleteCart(proId) {
             const data = { product: proId }
@@ -392,14 +430,13 @@
             Swal.fire({
                 icon: "warning",
                 title: 'Are You Sure!?',
-                showCancelButton: true, // Changed 'true' to true
+                showCancelButton: true, 
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes!',
                 confirmButtonColor: '#3085d6'
             })
                 .then((response) => {
-                    console.log("ssssssssssss", response);
-                    if (response.isConfirmed) { // Corrected confirmation handling
+                    if (response.isConfirmed) {
                         fetch('/deleteCart', {
                             method: 'POST',
                             headers: {
@@ -409,26 +446,40 @@
 
                         }).then((result) => {
                             if (result.ok) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Deleted'
-                                });
-                                $('#Reload').load('/cart  #Reload');
-
+                                return result.json();
                             } else {
                                 throw new Error('Network response was not ok.');
                             }
+                        }).then((data) => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Deleted'
+                            });
+                            $('#Reload').load('/cart #Reload', function () {
+                                $('#totalPrice').text(data.totalPrice);
+                            });
                         }).catch(error => {
                             console.error('There was a problem with the fetch operation:', error);
                         });
                     }
                 });
+
         }
     </script>
 
-
     <script>
         document.querySelectorAll('.quantity-input').forEach(input => {
+            const decrementBtn = input.previousElementSibling;
+            const incrementBtn = input.nextElementSibling;
+
+            decrementBtn.addEventListener('click', () => {
+                decreaseQuantity(input);
+            });
+
+            incrementBtn.addEventListener('click', () => {
+                increaseQuantity(input);
+            });
+
             input.addEventListener('change', async (event) => {
                 const productId = input.id;
                 const quantity = input.value;
@@ -458,6 +509,22 @@
             });
         });
 
+        function decreaseQuantity(input) {
+            if (input.value > 1) {
+                input.value--;
+                input.dispatchEvent(new Event('change'));
+            }
+        }
+
+        function increaseQuantity(input) {
+            const maxValue = parseInt(input.getAttribute('max'));
+            if (input.value < maxValue) {
+                input.value++;
+                input.dispatchEvent(new Event('change'));
+            } else {
+                alert('Product quantity exceeded')
+            }
+        }
 
         async function updateCartQuantity(cartId, productId, quantity) {
             try {
@@ -478,11 +545,8 @@
                 console.error(error);
             }
         }
+
     </script>
-
-
-
-
 
 
     <%-include('../layout/user/footer.ejs') %>

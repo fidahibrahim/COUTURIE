@@ -94,13 +94,14 @@ const loadCart = async (req, res) => {
     }
 };
 
-
 const deleteCart = async (req, res) => {
     try {
       const productId = req.body.product;
       const userId = req.session.userId;
   
       const cartUser = await Cart.findOne({ userId: userId });
+      let totalPrice = 0; // Initialize total price
+      
       if (cartUser.products.length == 1) {
         await Cart.deleteOne({ userId: userId });
       } else {
@@ -109,11 +110,19 @@ const deleteCart = async (req, res) => {
           { $pull: { products: { _id: productId } } }
         );
       }
-      res.json({ success: true });
+      
+      // Calculate the updated total price
+      const updatedCartUser = await Cart.findOne({ userId: userId });
+      if (updatedCartUser) {
+        totalPrice = updatedCartUser.products.reduce((acc, cur) => acc + cur.price, 0);
+      }
+      
+      res.json({ success: true, totalPrice });
     } catch (error) {
       console.log(error);
+      res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
-  };
+};
 
 
 
