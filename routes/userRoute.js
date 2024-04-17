@@ -74,7 +74,9 @@ userRoute.post('/checkoutEditAddress',userAuth.isLogin,checkoutController.editCh
 userRoute.get('/order/:id',userAuth.isLogin,orderController.loadOrder);
 userRoute.post('/placeOrder',userAuth.isLogin,orderController.placeOrder);
 userRoute.get('/viewOrders',userAuth.isLogin,orderController.loadViewOrder);
-userRoute.get('/orderDetails',userAuth.isLogin,orderController.loadOrderDetails)
+userRoute.get('/orderDetails',userAuth.isLogin,orderController.loadOrderDetails);
+userRoute.post('/cancelOrder',userAuth.isLogin,orderController.cancelOrder);
+userRoute.post("/returnRequest",userAuth.isLogin,orderController.returnRequest);
 
 
 

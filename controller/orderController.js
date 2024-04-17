@@ -1,3 +1,4 @@
+const mongoose = require('mongoose')
 const User = require('../models/userModel');
 const Product = require('../models/productModel');
 const Cart = require('../models/cartModel');
@@ -31,10 +32,10 @@ const placeOrder = async (req, res) => {
         const deliveryDate = delivery.toLocaleString("en-US", { year: "numeric", month: "short", day: "2-digit" }).replace(/\//g, "-");
         const randomNum = Math.floor(10000 + Math.random() * 90000);
         const orderRand = "MFTS" + randomNum;
-        const products = cart.products; // Renamed from 'product' to 'products'
+        const products = cart.products; 
 
         let insufficientProducts = [];
-        for (const prod of products) { // Renamed loop variable from 'product' to 'prod'
+        for (const prod of products) { 
             const currentProduct = await Product.findById(prod.productId._id);
             if (currentProduct.quantity < prod.quantity) {
                 insufficientProducts.push(prod.productId.name);
@@ -84,9 +85,9 @@ const loadViewOrder = async (req, res) => {
         let Next = page + 1
         let Previous = page > 1 ? page - 1 : 1
         let count = await Order.find().count()
-        console.log("wwwwwwwwwww",count);
+        console.log("wwwwwwwwwww", count);
         let totalPages = Math.ceil(count / limit)
-        console.log("rrrrrrrrrrrrrrr",totalPages);
+        console.log("rrrrrrrrrrrrrrr", totalPages);
         if (Next > totalPages) {
             Next = totalPages
         }
@@ -126,10 +127,101 @@ const loadAdminOrders = async (req, res) => {
     }
 }
 
+const loadAdminViewDetails = async (req, res) => {
+    try {
+        const { orders } = req.query;
+        const orderDetails = await Order.find({ _id: { $in: orders } }).populate('products.productId').populate('userId');
+
+        res.render('viewDetails', { orders: orderDetails, moment });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
+const changeOrderStatus = async (req, res) => {
+    try {
+        const { orderId, productId, userId, status } = req.body;
+
+        if (!productId) {
+            return res.status(400).json({ error: 'productId is required' });
+        }
+
+        if (typeof productId === 'object' && productId._id) {
+            const productIdString = productId._id.toString();
+
+            const productid = new mongoose.Types.ObjectId(productIdString);
+
+            const orderData = await Order.findOneAndUpdate(
+                { _id: orderId, userId: userId, 'products.productId': productid },
+                { $set: { 'products.$.status': status } }
+            );
+
+            return res.json({ change: true });
+        } else {
+            return res.status(400).json({ error: 'Invalid productId format' });
+        }
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+const cancelOrder = async(req,res)=>{
+    try {
+        const { orderId, productId, reason} = req.body
+        const userId = req.session.userId
+
+        const orderDetails = await Order.findOneAndUpdate(
+            { _id: orderId, 'products.productId':productId },
+            {$set:{'products.$.status':'cancelled'}})
+
+
+            const productDetails = await Order.findOne(
+                {_id:orderId,'products.productId':productId,},
+                { 'products.$': 1 }).populate('products.productId')
+
+            
+
+            const productQty = productDetails.products[0].quantity;
+            console.log("nooooooo",productQty);
+            await Product.updateOne({ _id: productId }, { $inc: { quantity: productQty } })  
+
+        res.json({ cancel:true })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const returnRequest = async(req,res)=>{
+    try {
+        const { orderId, productId, reason} = req.body
+        const userId = req.session.userId
+        if(userId){
+            await Order.findOneAndUpdate({_id:orderId,'products.productId':productId},
+             {'products.$.returnReason':reason,
+            'products.$status':'returnRequested'
+        })
+        res.json({Return:true})
+            
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+
 module.exports = {
     loadOrder,
     placeOrder,
     loadViewOrder,
     loadOrderDetails,
-    loadAdminOrders
+    loadAdminOrders,
+    loadAdminViewDetails,
+    changeOrderStatus,
+    cancelOrder,
+    returnRequest
+
 }

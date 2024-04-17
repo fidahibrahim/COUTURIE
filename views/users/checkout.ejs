@@ -1,7 +1,7 @@
 <%-include('../layout/user/header.ejs') %>
 
 
-    <style>
+    <!-- <style>
         input[type="radio"] {
             display: none;
         }
@@ -27,7 +27,7 @@
         input[type="radio"]:checked+label::before {
             background-color: #000;
         }
-    </style>
+    </style> -->
 
     <div class="page-wrapper">
         <header class="header">
@@ -231,34 +231,34 @@
                         <form>
                             <div class="row">
                                 <div class="col-lg-9">
-                                    <% if(userData.address.length> 0) { %>
-                                        <% userData.address.forEach((address, index)=> { %>
+                                    <% if(userData.address.length > 0) { %>
+                                        <% userData.address.forEach((address, index) => { %>
                                             <div class="card card-dashboard">
                                                 <div class="card-body">
-                                                    <input type="radio" id="address<%= index %>" name="selectedAddress"
-                                                        value="<%= address._id %>" />
-                                                    <label for="address<%= index %>">
-                                                        <h3 class="card-title">Shipping Address</h3>
-                                                        <!-- End .card-title -->
-                                                        <%= address.name %> <br>
-                                                            <%= address.state%> ,
-                                                                <%= address.city%> ,
-                                                                    <%= address.pincode%> <br>
-                                                                        <%= address.mobile%> <br>
-                                                                            <a
-                                                                                href="/checkoutEditAddress?addressId=<%= address._id%>">
-                                                                                <i class="fa-solid fa-pen-to-square"
-                                                                                    style="color: #424141;"></i>
-                                                                            </a>
-                                                    </label>
+                                                    <div class="custom-control custom-radio">
+                                                        <input type="radio" class="custom-control-input" id="address<%= index %>" name="selectedAddress"
+                                                            value="<%= address.name %>,&nbsp;<%= address.state%>,&nbsp;<%= address.city%>,&nbsp;<%= address.pincode%>,&nbsp;<%= address.mobile%>" />
+                                                        <label class="custom-control-label" for="address<%= index %>">
+                                                            <h3 class="card-title">Shipping Address</h3>
+                                                            <!-- End .card-title -->
+                                                            <%= address.name %> <br>
+                                                            <%= address.state %> ,
+                                                            <%= address.city %> ,
+                                                            <%= address.pincode %> <br>
+                                                            <%= address.mobile %> <br>
+                                                            <a href="/checkoutEditAddress?addressId=<%= address._id %>">
+                                                                <i class="fa-solid fa-pen-to-square" style="color: #424141;"></i>
+                                                            </a>
+                                                        </label>
+                                                    </div>
                                                 </div><!-- End .card-body -->
                                             </div><!-- End .card-dashboard -->
-                                            <% }) %>
-                                                <% } else { %>
-                                                    <p>You have not set up this type of address yet</p>
-                                                    <% } %>
-
-                                </div><!-- End .col-lg-9 -->
+                                        <% }) %>
+                                    <% } else { %>
+                                        <p>You have not set up this type of address yet</p>
+                                    <% } %>
+                                </div>
+                                <!-- End .col-lg-9 -->
 
                                 <aside class="col-lg-3">
                                     <div class="summary">

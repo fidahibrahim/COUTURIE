@@ -39,55 +39,48 @@
                                                         <th>Price</th>
                                                         <th>Order Date</th>
                                                         <th>Payment Method</th>
-                                                        <th>Status</th>
                                                         <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <% if(order.length > 0) { %>
+                                                        <% let groupedOrders = {}; %>
                                                         <% order.forEach((orderItem) => { %>
+                                                            <% if (!groupedOrders[orderItem.orderId]) { %>
+                                                                <% groupedOrders[orderItem.orderId] = { products: [], orderItem: orderItem }; %>
+                                                            <% } %>
                                                             <% orderItem.products.forEach((product) => { %>
-                                                                <tr>
-                                                                    <td><span class="badge badge-light-warning">
-                                                                            <%= orderItem.orderId %>
-                                                                        </span></td>
+                                                                <% groupedOrders[orderItem.orderId].products.push(product); %>
+                                                            <% }); %>
+                                                        <% }); %>
+                                                        <% Object.keys(groupedOrders).forEach((orderId) => { %>
+
+                                                            <tr>
+                                                                <td><span class="badge badge-light-warning"><%= groupedOrders[orderId].orderItem.orderId %></span></td>
                                                                     <td style="width: 20%;">
-                                                                        <img style="width: 50%;"
-                                                                            src=" /assets/images/productImg/sharpedImg/<%= product.productId.images[0]%> "
-                                                                            alt="">
-
+                                                                        <% groupedOrders[orderId].products.forEach((product) => { %>
+                                                                            <img style="width: 50%;"
+                                                                                src="/assets/images/productImg/sharpedImg/<%= product.productId.images[0] %>" alt="">
+                                                                        <% }); %>
                                                                     </td>
-                                                                    <td>
-                                                                        <%= orderItem.userId.username %>
-
-                                                                    </td>
-                                                                    <td>
-                                                                        <%= orderItem.totalAmount%>
-
-                                                                    </td>
-                                                                    <td>
-                                                                       <small><%= moment(orderItem.date).format('DD/MM/YYYY')%></small> 
-
-                                                                    </td>
-                                                                    <td>
-                                                                       <%= orderItem.paymentMethod%>
-                                                                    </td>
-                                                                    <td>
-                                                                       <%= orderItem.status%>
-                                                                    </td>
-                                                                    <td>
-                                                                        <button class="btn btn-primary ">View Details</button>
-                                                                     
-                                                                    </td>
-                                                                </tr>
-                                                                <% }) %>
-                                                                    <% }) %>
-                                                                        <% } else { %>
-                                                                            <tr>
-                                                                                <td colspan="5">product not found</td>
-                                                                            </tr>
-                                                                            <% } %>
+                                                                <td><%= groupedOrders[orderId].orderItem.userId.username %></td>
+                                                                <td><%= groupedOrders[orderId].orderItem.totalAmount %></td>
+                                                                <td><small><%= moment(groupedOrders[orderId].orderItem.date).format('DD/MM/YYYY') %></small></td>
+                                                                <td><%= groupedOrders[orderId].orderItem.paymentMethod %></td>
+                                                                <td>
+                                                                    <a href="/admin/viewDetails?orders=<%=groupedOrders[orderId].orderItem._id%>"> <button class="btn btn-primary">View Details</button></a>
+                                                                   
+                                                                </td>
+                                                            </tr>
+                                                   
+                                                        <% }); %>
+                                                    <% } else { %>
+                                                        <tr>
+                                                            <td colspan="5">product not found</td>
+                                                        </tr>
+                                                    <% } %>
                                                 </tbody>
+                                                
                                             </table>
                                         </div>
                                     </div>

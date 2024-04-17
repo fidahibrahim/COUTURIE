@@ -1,0 +1,188 @@
+<%- include('../layout/admin/header.ejs') %>
+<style>
+    
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .table th,
+    .table td {
+        border: 1px solid #dee2e6;
+        vertical-align: middle;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        color: #6c757d;
+    }
+
+    .form-control {
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+    }
+</style>
+<div class="preloader">
+    <div class="lds-ripple">
+        <div class="lds-pos"></div>
+        <div class="lds-pos"></div>
+    </div>
+</div>
+<div id="main-wrapper" data-theme="light" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+    data-sidebar-position="fixed" data-header-position="fixed" data-boxed-layout="full">
+    <%- include('../layout/admin/navbar.ejs') %>
+    <%- include('../layout/admin/nav.ejs') %>
+    <div class="page-wrapper">
+        <div class="container-fluid py-4" id="Reload">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <% orders.forEach(order => { %>
+                                <h5 class="font-weight-bold">Order ID: <span class="text-muted"><%= order.orderId%></span></h5>
+                                <p class="mb-1">Delivery Address:</p>
+                                <textarea class="form-control" rows="3" readonly><%=order.deliveryAddress%></textarea>
+                            </div>
+
+                         
+                            <h4 class="card-title mb-4">Order Items</h4>
+                            <div class="table-responsive" id="Reload" >
+                                <table class="table table-bordered" id="ReloadTable" >
+                                    <thead>
+
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Quantity</th>
+                                            <th>Total</th>
+                                            <th>Status</th>
+                                            <th>Ordered Date</th>
+                                            <th>Expected Delivery</th>
+                                            <th>Action</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                         <% order.products.forEach(product => { %>
+                                        <tr>
+                                            <td style="width: 20%;">
+                                                    <img style="width: 50%;"
+                                                        src="/assets/images/productImg/sharpedImg/<%= product.productId.images[0] %>" alt="">
+                                            </td>
+                                            <td><%= product.quantity%></td>
+                                            <td>₹ <%= product.totalPrice%></td>
+                                            <td> <span class="badge badge-light"><%= product.status %></span></td>
+                                            <td><%= moment(order.date,'MMM DD, YYYY').format('DD/MM/YYYY')%></td>
+                                            <td> <%= moment(order.expectedDelivery,'MMM DD, YYYY').format('DD/MM/YYYY')%></td>
+                                            <td>
+
+                                                <%if(product.status==='delivered'){ %>
+                                                    <select name="orderStatus"class="form-select orderStatus" id="orderStatus" 
+                                                        data-orderId="<%= order._id%>"
+                                                        data-productId="<%= product.productId%>" 
+                                                        data-userId="<%= order.userId%>" disabled>
+                                                        <option value="delivered">Delivered</option>
+                                                    </select>
+                                                    <%}else if(product.status==='returned'){%>
+                                                        <select name="orderStatus" id="orderStatus" class="form-select orderStatus"
+                                                        data-orderId="<%= order._id%>"
+                                                        data-productId="<%= product.productId%>" 
+                                                        data-userId="<%= order.userId%>" disabled>
+                                                            <option value="returned">Returned</option>
+                                                        </select>
+                                                        <%}else if(product.status==='returnRequested'){%>
+                                                            <select name="orderStatus" id="orderStatus" class="form-select orderStatus"
+                                                            data-orderId="<%= order._id%>"
+                                                            data-productId="<%= product.productId%>" 
+                                                            data-userId="<%= order.userId%>" onchange="changeReturnStatus(this)">
+                                                                <option >Change</option>
+                                                                <option value="returnRequested">returnRequested</option>
+                                                                <option value="returned">return</option>
+                                                                <option value="returnDenied">cancel</option>
+                                                            </select>
+                                                            <%}else if(product.status==='returnDenied'){%>
+                                                                <select name="orderStatus" id="orderStatus" class="form-select orderStatus"
+                                                                data-orderId="<%= order._id%>"
+                                                                data-productId="<%= JSON.stringify(product.productId)%>" 
+                                                                data-userId="<%=JSON.stringify(order.userId)%>" onchange="changeStatus(this,'<%= order._id%>')">
+                                                                    <option >Change Status</option>
+                                                                    <option value="shipped">Shipped</option>
+                                                                    <option value="outfordelivery">Outfordelivery</option>
+                                                                    <option value="delivered">Delivered</option>
+                                                                </select> 
+                                                    <%}else{%>
+                                                        <select name="orderStatus" id="orderStatus" class="form-select orderStatus"
+                                                        data-orderId="<%= order._id%>"
+                                                        data-productId="<%= JSON.stringify(product.productId)%>" 
+                                                        data-userId="<%= JSON.stringify(order.userId)%>" onchange="changeStatus(this,'<%= order._id%>')">
+                                                            <option >Change Status</option>
+                                                            <option value="shipped">Shipped</option>
+                                                            <option value="outfordelivery">OutForDelivery </option>
+                                                            <option value="delivered">Delivered</option>
+                                                        </select>
+                                                        <%}%>
+                                            </td>
+                                            <% if(product.status=='delivered' ) {%>
+                                                <td><button class="btn-success">Delivered</button></td>
+                                                <%} else if(product.status == 'returned'||product.status == 'returnDenied') {%>
+                                                    <td> <button disabled>Cancel</button></td>
+                                                 <%}else{%>
+                                                    <td><button class="btn-danger"
+                                                        onclick="cancelOrder('<%= order._id %>','<%= product.productId %>')">Cancel</button>
+                                                </td>
+                                                <%}%>
+                                        </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p>Payment Method: <%= order.paymentMethod%></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function changeStatus(select, orderId){    
+            let productId = JSON.parse(select.dataset.productid);
+            let userId = JSON.parse(select.dataset.userid);
+            let status = select.value
+
+        const data = {
+            orderId, productId, userId, status
+     } 
+     console.log(data);
+        $.ajax({
+           url: '/admin/changeOrderStatus',
+           method: 'POST',
+           data: JSON.stringify(data),
+           contentType: 'application/json',
+           success: function (response) {
+               if (response.change === true) {
+                    // Redirect to the same page
+                    window.location.reload(true);
+                }
+           }
+        })
+    }
+        
+    </script>
+    <script>
+        function cancelOrder(orderId,productId){
+
+        }
+    </script>
+
+    <%- include('../layout/admin/footer.ejs') %>

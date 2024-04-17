@@ -78,17 +78,6 @@
 					</div><!-- End .header-left -->
 
 					<div class="header-right">
-						<div class="header-search">
-							<a href="#" class="search-toggle" role="button" title="Search"><i
-									class="icon-search"></i></a>
-							<form action="#" method="get">
-								<div class="header-search-wrapper">
-									<label for="q" class="sr-only">Search</label>
-									<input type="search" class="form-control" name="q" id="q" placeholder="Search in..."
-										required>
-								</div><!-- End .header-search-wrapper -->
-							</form>
-						</div><!-- End .header-search -->
 						<div class="dropdown compare-dropdown">
 							<a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
 								aria-haspopup="true" aria-expanded="false" data-display="static"
@@ -121,12 +110,24 @@
 					</ol>
 				</div><!-- End .container -->
 			</nav><!-- End .breadcrumb-nav -->
+			<div class="header-left" style="margin-left: 90%; margin-bottom: 3%;">
+				<div class="header-search">
+					<a href="#" class="search-toggle" role="button" title="Search"><i class="icon-search"></i></a>
+					<form action="#" method="get">
+						<div class="header-search-wrapper">
+							<label for="searchInput" class="sr-only">Search</label>
+							<input type="search" class="form-control" name="searchInput" id="searchInput"
+								   placeholder="Search in..." required>
+						</div>
+					</form>
+				</div>
+			</div>
 			<div class="page-content">
 				<div class="container">
 					<div class="row">
 						<div class="col-lg-9">
 							<div class="products mb-3">
-								<div class="row justify-content-center">
+								<div class="row justify-content-center" id="productListing">
 									<% if(products.length>0){%>
 										<% products.forEach(product=>{%>
 											<div class="col-6 col-md-4 col-lg-4 col-xl-3">
@@ -142,11 +143,18 @@
 																class="btn-product-icon btn-wishlist btn-expandable"><span>add
 																	to wishlist</span></a>
 														</div><!-- End .product-action-vertical -->
+														<%if(product.quantity >0){%>
 														<div class="product-action">
 															<a class="btn-product btn-cart"
 																onclick="addToCart()"><span>add to
 																	cart</span></a>
-														</div><!-- End .product-action -->
+														</div>
+														<%}else{%>
+														<div class="product-action">
+															<a class="btn-product "
+																><span>Out of Stock</span></a>
+														</div>
+														<%}%>
 													</figure><!-- End .product-media -->
 													<input type="hidden" id="productId" value="<%=product._id%>">
 													<input type="hidden" id="quantity" value="1">
@@ -177,31 +185,31 @@
 													<% } %>
 								</div>
 							</div><!-- End .products -->
-							<nav aria-label="Page navigation">
-								<ul class="pagination justify-content-center">
-									<li class="page-item ">
-										<a class="page-link page-link-prev" href="/shop?id=<%= Previous%>"
-											aria-label="Previous" tabindex="-1">
-											<span aria-hidden="true"><i class="icon-long-arrow-left"></i></span>Prev
-										</a>
-									</li>
-									<% for(let i=1; i<=totalPages; i++){%>
-										<li class="page-item active" aria-current="page"><a class="page-link"
-												href="/shop?id=<%= i %>">
-												<%=i%>
-											</a></li>
-										<%}%>
-											<li class="page-item-total">of <%= totalPages%>
-											</li>
-											<li class="page-item">
-												<a class="page-link page-link-next" href="/shop?id=<%= Next%>"
-													aria-label="Next">
-													Next <span aria-hidden="true"><i
-															class="icon-long-arrow-right"></i></span>
-												</a>
-											</li>
-								</ul>
-							</nav>
+								<nav aria-label="Page navigation">
+									<ul class="pagination justify-content-center">
+										<li class="page-item ">
+											<a class="page-link page-link-prev" href="/shop?id=<%= Previous%>"
+												aria-label="Previous" tabindex="-1">
+												<span aria-hidden="true"><i class="icon-long-arrow-left"></i></span>Prev
+											</a>
+										</li>
+										<% for(let i=1; i<=totalPages; i++){%>
+											<li class="page-item active" aria-current="page"><a class="page-link"
+													href="/shop?id=<%= i %>">
+													<%=i%>
+												</a></li>
+											<%}%>
+												<li class="page-item-total">of <%= totalPages%>
+												</li>
+												<li class="page-item">
+													<a class="page-link page-link-next" href="/shop?id=<%= Next%>"
+														aria-label="Next">
+														Next <span aria-hidden="true"><i
+																class="icon-long-arrow-right"></i></span>
+													</a>
+												</li>
+									</ul>
+								</nav>
 						</div><!-- End .col-lg-9 -->
 
 
@@ -281,7 +289,7 @@
 													<div class="custom-control custom-radio">
 														<input type="radio" class="custom-control-input" id="sort-4"
 															name="sortBy" value="a-z">
-														<label class="custom-control-label" for="sort-4">A-Z</label>
+														<label class="custom-control-label" for="sort-4">aA-zZ</label>
 													</div>
 												</div>
 											</div>
@@ -478,7 +486,6 @@
 						if (result.isConfirmed) {
 							window.location.href = '/login';
 						} else if (result.dismiss === Swal.DismissReason.cancel) {
-							// Handle cancel action if needed
 						}
 					});
 				}
@@ -487,8 +494,27 @@
 			}
 		} 
 	</script>
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
+<script>
+    $(document).ready(function () {
+        $('.search-toggle').click(function () {
+            $('.header-search-wrapper').toggle();
+        });
 
+        $('#searchInput').on('input', function () {
+            var searchText = $(this).val().toLowerCase();
+            $('#productListing .product').each(function () {
+                var productName = $(this).find('.product-title a').text().toLowerCase();
+                if (productName.includes(searchText)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+    });
+</script>
 
 	<script>
 		document.getElementById('filter-submit').addEventListener('click', async (event) => {
@@ -501,7 +527,6 @@
 
 			if (selectedSortingInput) {
 				selectedSorting = selectedSortingInput.value;
-				// Remove sorting value from selected categories if it exists
 				const indexOfSorting = selectedCategories.indexOf(selectedSorting);
 				if (indexOfSorting !== -1) {
 					selectedCategories.splice(indexOfSorting, 1);

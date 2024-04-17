@@ -34,8 +34,13 @@ adminRoute.get('/editProduct',adminAuth.isLogin, productController.loadeditProdu
 adminRoute.post('/editProduct', multer.upload.array("images"), productController.editProduct)
 adminRoute.patch("/product/deleteImage",  productController.deleteImg);
 
-adminRoute.get('/orders',adminAuth.isLogin,orderController.loadAdminOrders)
+adminRoute.get('/orders',adminAuth.isLogin,orderController.loadAdminOrders);
+adminRoute.get('/viewDetails',adminAuth.isLogin,orderController.loadAdminViewDetails);
+adminRoute.post('/changeOrderStatus',adminAuth.isLogin,orderController.changeOrderStatus)
+
 adminRoute.get('/logout',adminAuth.isLogin,adminController.logout);
+
+
 
 
 module.exports = adminRoute;

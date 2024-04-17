@@ -406,25 +406,23 @@ const loadShop = async (req, res) => {
 
 const loadFilter = async (req, res) => {
     try {
-        let filter = { is_Listed: true }; 
+        let filter = { is_Listed: true };
         const selectedCategories = req.body.categories;
-        const sortBy = req.body.sortBy; // Add sorting parameter
-        console.log("skfjd",sortBy);
+        const sortBy = req.body.sortBy;
 
-        // Apply category filter if categories are selected
         if (selectedCategories && selectedCategories.length > 0) {
             filter.category = { $in: selectedCategories };
         }
 
-        let sortOptions = {}; // Define sort options
+        let sortOptions = {};
         if (sortBy === "new") {
-            sortOptions = { createdAt: -1 }; // Sort by newest first
+            sortOptions = { createdAt: -1 };
         } else if (sortBy === "low-high") {
-            sortOptions = { price: 1 }; // Sort by price low to high
+            sortOptions = { price: 1 };
         } else if (sortBy === "high-low") {
-            sortOptions = { price: -1 }; // Sort by price high to low
+            sortOptions = { price: -1 };
         } else if (sortBy === "a-z") {
-            sortOptions = { name: 1 }; // Sort alphabetically by name
+            sortOptions = { name: 1 };
         }
 
         const products = await product.find(filter).sort(sortOptions);
@@ -491,6 +489,7 @@ const loadProfile = async (req, res) => {
     try {
         id = req.session.userId;
         const userData = await User.findOne({ _id: id })
+        
         res.render('profile', { user: userData });
     } catch (error) {
         console.log(error);

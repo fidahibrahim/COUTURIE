@@ -112,80 +112,234 @@
 
 
 
+        <main class="main">
 
-
-        <div class="accordion accordion-plus product-details-accordion" id="product-accordion">
-            <div class="card card-box card-sm">
-                <div class="card-header" id="product-desc-heading">
-                    <h2  class="card-title">
-                        <a  class="collapsed" role="button" data-toggle="collapse" href="#product-accordion-desc" aria-expanded="false" aria-controls="product-accordion-desc">
-                           <span style="margin-left: 12%;" >ORDERID: <%=order.orderId%>   </span>
-                        </a>
-                    </h2>
-                </div><!-- End .card-header -->
-            </div><!-- End .card -->
-            <!-- <div class="card card-box card-sm">
-                <div class="card-header" id="product-info-heading">
-                    <h2 class="card-title">
-                        <a class="collapsed" role="button" data-toggle="collapse" href="#product-accordion-info" aria-expanded="false" aria-controls="product-accordion-info">
-                            <span style="margin-left: 12%;" >Delivery Address:</span>
-                        </a>
-                    </h2>
-                </div>End .card-header -->
-            <!-- </div>End .card -->
-        </div><!-- End .accordion -->
-        <main class="main" >
-            <div class="page-content">
+            <div class="page-content" id="reloadreload">
+                <div class="card card-box card-sm">
+                    <div class="card-header" id="product-desc-heading">
+                        <h2 class="card-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" href="#product-accordion-desc"
+                                aria-expanded="false" aria-controls="product-accordion-desc">
+                                <span style="margin-left: 12%;">ORDERID: <%=order.orderId%> </span>
+                            </a>
+                        </h2>
+                    </div><!-- End .card-header -->
+                </div>
                 <div class="container">
 
                     <%order.products.forEach(product=>{%>
-                    <div class="product-details-top" style="border: 1px solid #ccc; padding: 20px;">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="product-gallery product-gallery-vertical">
-                                    <div class="row">
-                                        <figure class="product-main-image">
-                                            <img src="/assets/images/productImg/sharpedImg/<%=product.productId.images[0]%>" alt="product image">
-                                        </figure><!-- End .product-main-image -->
-                                    </div><!-- End .row -->
-                                </div><!-- End .product-gallery -->
-                            </div><!-- End .col-md-6 -->
-                            <div class="col-md-6">
-                                <div class="product-details">
-                                    <h1 class="product-title"><%=product.productId.name%></h1><!-- End .product-title -->
-        
-                                    <div class="details-filter-row details-row-size">
-                                        <label>Quantity:</label>
-                                    <span><%=product.quantity%></span>
-                                    </div><!-- End .details-filter-row -->
-        
-                                    <div class="details-filter-row details-row-size">
-                                        <label for="size">Status:</label>  
-                                       <span><%=product.status%></span>
-                                    </div><!-- End .details-filter-row -->
-        
-                                    <div class="details-filter-row details-row-size">
-                                        <label for="qty">Price:</label>
-                                        <span>₹<%=product.totalPrice%></span>
-                                    </div><!-- End .details-filter-row -->
-        
-                                    <div class="product-details-action">
-                                        <a href="#" class="btn-product btn-cart"><span>Cancel Order</span></a>
-                                    </div><!-- End .product-details-action -->
-                                </div><!-- End .product-details -->
-                            </div><!-- End .col-md-6 -->
-                        </div><!-- End .row -->
-                    </div>
-                    
-                    <%})%>
-                    
-                    <!-- End .product-details-top -->
+                        <div class="product-details-top" style="border: 1px solid #ccc; padding: 20px;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="product-gallery product-gallery-vertical">
+                                        <div class="row">
+                                            <figure class="product-main-image">
+                                                <img src="/assets/images/productImg/sharpedImg/<%=product.productId.images[0]%>"
+                                                    alt="product image">
+                                            </figure><!-- End .product-main-image -->
+                                        </div><!-- End .row -->
+                                    </div><!-- End .product-gallery -->
+                                </div><!-- End .col-md-6 -->
+                                <div class="col-md-6">
+                                    <div class="product-details">
+                                        <h1 class="product-title">
+                                            <%=product.productId.name%>
+                                        </h1><!-- End .product-title -->
+
+                                        <div class="details-filter-row details-row-size">
+                                            <label>Quantity:</label>
+                                            <span>
+                                                <%=product.quantity%>
+                                            </span>
+                                        </div><!-- End .details-filter-row -->
+
+                                        <div class="details-filter-row details-row-size">
+                                            <label for="size">Status:</label>
+                                            <span>
+                                                <%=product.status%>
+                                            </span>
+                                        </div><!-- End .details-filter-row -->
+
+                                        <div class="details-filter-row details-row-size">
+                                            <label for="qty">Price:</label>
+                                            <span>₹<%=product.totalPrice%></span>
+                                        </div><!-- End .details-filter-row -->
+
+                                        <div class="product-details-action">
+                                            <% if( product.status=='placed' ){%>
+                                                <a class="btn-product btn-cart"
+                                                    onclick="cancelOrder('<%=order._id%>','<%=product.productId._id%>')"><span>Cancel
+                                                        Order</span></a>
+                                                <%}else if( product.status=='delivered' ){%>
+                                                    <a class="btn-product btn-cart"
+                                                        onclick="Return('<%=order._id%>','<%=product.productId._id%>')"><span>Return</span></a>
+                                                    <%}else if(product.status=='shipped' ){%>
+                                                        <a class="btn-product btn-cart"
+                                                            onclick="cancelOrder('<%=order._id%>','<%=product.productId._id%>')"><span>Cancel
+                                                                Order</span></a>
+                                                        <%}else if(product.status=='outfordelivery' ){%>
+                                                            <a class="btn-product btn-cart"
+                                                                onclick="cancelOrder('<%=order._id%>','<%=product.productId._id%>')"><span>Cancel
+                                                                    Order</span></a>
+                                                            <%}else{%>
+                                                                <input type="hidden">
+                                                                <%}%>
+                                        </div><!-- End .product-details-action -->
+                                    </div><!-- End .product-details -->
+                                </div><!-- End .col-md-6 -->
+                            </div><!-- End .row -->
+                        </div>
+
+                        <%})%>
+
+                            <!-- End .product-details-top -->
                 </div><!-- End .container -->
             </div><!-- End .page-content -->
         </main><!-- End .main -->
- 
-       
-    
+
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+        <script>
+            // function cancelOrder(orderId, productId) {
+            //     const data = { orderId, productId };
+            //     Swal.fire({
+            //         title: 'Cancel reason',
+            //         input: 'text',
+            //         inputAttributes: {
+            //             required: true
+            //         },
+            //         showCancelButton: true,
+            //         confirmButtonText: 'OK',
+            //         cancelButtonText: 'Close',
+            //         showLoaderOnConfirm: true,
+            //         preConfirm: (reason) => {
+            //             return new Promise((resolve) => {
+            //                 resolve(reason);
+            //             });
+            //         },
+            //         position: 'center',
+            //     }).then((result) => {
+            //         if (result.isConfirmed) {
+            //             const reason = result.value;
+            //             console.log(reason);
+            //             $.ajax({
+            //                 url: "/cancelOrder",
+            //                 method: 'POST',
+            //                 data: JSON.stringify({ orderId, productId, reason }),
+            //                 contentType: "application/json",
+            //                 success: function (response) {
+            //                     if (response.cancel == true) {
+            //                         Swal.fire({
+            //                             icon: 'success',
+            //                             title: 'your order has been cancelled',
+            //                             showConfirmButton: false,
+            //                             timer: 2000
+            //                         }).then((result) => {
+            //                             if (result.isConfirmed) {
+            //                                 $('#reloadreload').load('/orderDetails #reloadreload');
+            //                             }
+            //                         });
+            //                     }
+            //                 }
+            //             });
+            //             console.log(data);
+            //         }
+            //     });
+            // }
+
+            function cancelOrder(orderId, productId) {
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "Please provide a reason for the cancellation:",
+                    input: "text",
+                    showCancelButton: true,
+                    confirmButtonText: "Cancel Order",
+                    cancelButtonText: "Close",
+                    preConfirm: (reason) => {
+                        if (!reason) {
+                            Swal.showValidationMessage(
+                                "Please type a reason for cancellation"
+                            );
+                            return false; // Prevents the modal from closing
+                        }
+
+                        const data = { orderId: orderId, productId: productId, reason: reason };
+                        return fetch("/cancelOrder", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(data),
+                        })
+                            .then((response) => {
+                                if (!response.ok) {
+                                    throw new Error("Failed to cancel order");
+                                }
+                                return response.json();
+                            })
+                            .catch((error) => {
+                                Swal.showValidationMessage(`Request failed: ${ error }`);
+                            });
+                    },
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: "Your order is cancelled!",
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 2000
+                        }).then(() => {
+                            // Redirect to order details page after successful cancellation
+                            window.location.href = "/orderDetails?orderId=" + orderId;
+                        });
+                    }
+                });
+            }
+
+
+        </script>
+
+        <script>
+            function Return(orderId, productId) {
+                Swal.fire({
+                    title: 'Return reason',
+                    input: 'text',
+                    inputAttributes: {
+                        required: 'true'
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'ok',
+                    cancelButtonText: 'Close',
+                    showLoaderOnConfirm: true,
+                    position: 'top',
+                }).then((response) => {
+                    if (response.isConfirmed) {
+                        const data = { orderId: orderId, productId: productId, reason: response.value }
+                        $.ajax({
+                            method: 'POST',
+                            url: '/returnRequest',
+                            data: JSON.stringify(data),
+                            contentType: 'application/json',
+                            success: function (response) {
+                                if (response.Return == true) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'return requested',
+                                        showConfirmButton: false,
+                                        timer: 2000
+                                    })
+                                    $('#reloadreload').load('/orderDetails  #reloadreload')
+                                }
+                            }
+
+                        })
+                    }
+                })
+            }
+        </script>
+
+
+
 
 
 
@@ -248,7 +402,6 @@
                         <div class="col-sm-6 col-lg-3">
                             <div class="widget">
                                 <h4 class="widget-title">My Account</h4><!-- End .widget-title -->
-
                                 <ul class="widget-list">
                                     <li><a href="/login">Sign In</a></li>
                                     <li><a href="cart.html">View Cart</a></li>
@@ -261,7 +414,6 @@
                     </div><!-- End .row -->
                 </div><!-- End .container -->
             </div><!-- End .footer-middle -->
-
             <div class="footer-bottom">
                 <div class="container">
                     <p class="footer-copyright">Copyright © 2019 Molla Store. All Rights Reserved.</p>
@@ -274,41 +426,26 @@
         </footer><!-- End .footer -->
     </div><!-- End .page-wrapper -->
     <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
-
     <!-- Mobile Menu -->
     <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
-
     <div class="mobile-menu-container">
         <div class="mobile-menu-wrapper">
             <span class="mobile-menu-close"><i class="icon-close"></i></span>
-
             <form action="#" method="get" class="mobile-search">
                 <label for="mobile-search" class="sr-only">Search</label>
                 <input type="search" class="form-control" name="mobile-search" id="mobile-search"
                     placeholder="Search in..." required>
                 <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
             </form>
-
             <nav class="mobile-nav">
                 <ul class="mobile-menu">
-                    <li>
-                        <a href="/">Home</a>
-                    </li>
-                    <li>
-                        <a href="/shop">Shop</a>
-                    </li>
-                    <li>
-                        <a href="/about" class="sf-with-ul">about</a>
-                    </li>
-                    <li>
-                        <a href="/contact">contact</a>
-                    </li>
-                    <li class="active">
-                        <a href="/profile">profile</a>
-                    </li>
+                    <li> <a href="/">Home</a></li>
+                    <li><a href="/shop">Shop</a></li>
+                    <li><a href="/about" class="sf-with-ul">about</a></li>
+                    <li><a href="/contact">contact</a></li>
+                    <li class="active"><a href="/profile">profile</a></li>
                 </ul>
             </nav><!-- End .mobile-nav -->
-
             <div class="social-icons">
                 <a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
                 <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
