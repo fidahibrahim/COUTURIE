@@ -38,9 +38,6 @@ const userSchema = mongoose.Schema({
             }
         }
     ],
-
-
-
     verified: {
         type: Boolean,
         default: false
@@ -56,7 +53,23 @@ const userSchema = mongoose.Schema({
     token:{
         type:String,
         default:''
-    }
+    },
+    wallet:{
+        type:Number,
+        default:0
+    },
+    walletHistory:[{
+        date:{
+            type:Date
+        },
+        amount:{
+            type:Number
+        },
+        reason:{
+            type:String
+        }
+    }]
+
 
 }, { timestamps: true });
 

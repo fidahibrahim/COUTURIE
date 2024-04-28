@@ -200,52 +200,7 @@
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
         <script>
-            // function cancelOrder(orderId, productId) {
-            //     const data = { orderId, productId };
-            //     Swal.fire({
-            //         title: 'Cancel reason',
-            //         input: 'text',
-            //         inputAttributes: {
-            //             required: true
-            //         },
-            //         showCancelButton: true,
-            //         confirmButtonText: 'OK',
-            //         cancelButtonText: 'Close',
-            //         showLoaderOnConfirm: true,
-            //         preConfirm: (reason) => {
-            //             return new Promise((resolve) => {
-            //                 resolve(reason);
-            //             });
-            //         },
-            //         position: 'center',
-            //     }).then((result) => {
-            //         if (result.isConfirmed) {
-            //             const reason = result.value;
-            //             console.log(reason);
-            //             $.ajax({
-            //                 url: "/cancelOrder",
-            //                 method: 'POST',
-            //                 data: JSON.stringify({ orderId, productId, reason }),
-            //                 contentType: "application/json",
-            //                 success: function (response) {
-            //                     if (response.cancel == true) {
-            //                         Swal.fire({
-            //                             icon: 'success',
-            //                             title: 'your order has been cancelled',
-            //                             showConfirmButton: false,
-            //                             timer: 2000
-            //                         }).then((result) => {
-            //                             if (result.isConfirmed) {
-            //                                 $('#reloadreload').load('/orderDetails #reloadreload');
-            //                             }
-            //                         });
-            //                     }
-            //                 }
-            //             });
-            //             console.log(data);
-            //         }
-            //     });
-            // }
+        
 
             function cancelOrder(orderId, productId) {
                 Swal.fire({
@@ -260,7 +215,7 @@
                             Swal.showValidationMessage(
                                 "Please type a reason for cancellation"
                             );
-                            return false; // Prevents the modal from closing
+                            return false; 
                         }
 
                         const data = { orderId: orderId, productId: productId, reason: reason };
@@ -289,7 +244,6 @@
                             showConfirmButton: false,
                             timer: 2000
                         }).then(() => {
-                            // Redirect to order details page after successful cancellation
                             window.location.href = "/orderDetails?orderId=" + orderId;
                         });
                     }
@@ -302,39 +256,51 @@
         <script>
             function Return(orderId, productId) {
                 Swal.fire({
-                    title: 'Return reason',
-                    input: 'text',
-                    inputAttributes: {
-                        required: 'true'
-                    },
+                    title: "Are you sure?",
+                    text: "Please provide a reason for the Return",
+                    input: "text",
                     showCancelButton: true,
-                    confirmButtonText: 'ok',
-                    cancelButtonText: 'Close',
-                    showLoaderOnConfirm: true,
-                    position: 'top',
-                }).then((response) => {
-                    if (response.isConfirmed) {
-                        const data = { orderId: orderId, productId: productId, reason: response.value }
-                        $.ajax({
-                            method: 'POST',
-                            url: '/returnRequest',
-                            data: JSON.stringify(data),
-                            contentType: 'application/json',
-                            success: function (response) {
-                                if (response.Return == true) {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'return requested',
-                                        showConfirmButton: false,
-                                        timer: 2000
-                                    })
-                                    $('#reloadreload').load('/orderDetails  #reloadreload')
-                                }
-                            }
+                    confirmButtonText: "Return Order",
+                    cancelButtonText: "Close",
+                    position:'center',
+                    preConfirm: (reason) => {
+                        if (!reason) {
+                            Swal.showValidationMessage(
+                                "Please type a reason for return!"
+                            );
+                            return false; 
+                        }
 
+                        const data = { orderId: orderId, productId: productId, reason: reason };
+                        return fetch("/returnRequest", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(data),
                         })
+                            .then((response) => {
+                                if (!response.ok) {
+                                    throw new Error("Failed to return order");
+                                }
+                                return response.json();
+                            })
+                            .catch((error) => {
+                                Swal.showValidationMessage(`Request failed: ${ error }`);
+                            });
+                    },
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: "Return Requested!",
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 2000
+                        }).then(() => {
+                            window.location.href = "/orderDetails?orderId=" + orderId;
+                        });
                     }
-                })
+                });
             }
         </script>
 

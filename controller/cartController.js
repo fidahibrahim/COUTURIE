@@ -7,6 +7,8 @@ const addToCart = async (req, res) => {
     try {
         const userId = req.session.userId
         const { productId, quantity } = req.body
+        
+
         if (!userId) {
             return res.json({ loginRequired: true })
         } else {

@@ -1,0 +1,219 @@
+
+<%-include('../layout/user/header.ejs') %>
+
+<header class="header">
+    <div class="header-top">
+        <div class="container">
+            <div class="header-left">
+                <div class="header-dropdown">
+                    <a href="#">Usd</a>
+                    <div class="header-menu">
+                        <ul>
+                            <li><a href="#">Eur</a></li>
+                            <li><a href="#">Usd</a></li>
+                        </ul>
+                    </div><!-- End .header-menu -->
+                </div><!-- End .header-dropdown -->
+
+                <div class="header-dropdown">
+                    <a href="#">Eng</a>
+                    <div class="header-menu">
+                        <ul>
+                            <li><a href="#">English</a></li>
+                            <li><a href="#">French</a></li>
+                            <li><a href="#">Spanish</a></li>
+                        </ul>
+                    </div><!-- End .header-menu -->
+                </div><!-- End .header-dropdown -->
+            </div><!-- End .header-left -->
+
+            <div class="header-right">
+                <ul class="top-menu">
+                    <li>
+                        <a href="#">Links</a>
+                        <ul>
+                            <li><a href="tel:#"><i class="icon-phone"></i>Call: +0123 456 789</a></li>
+
+                            <li><a href="/login"><i class="icon-user"></i>Login</a></li>
+                        </ul>
+                    </li>
+                </ul><!-- End .top-menu -->
+            </div><!-- End .header-right -->
+        </div><!-- End .container -->
+    </div><!-- End .header-top -->
+
+    <div class="header-middle sticky-header">
+        <div class="container">
+            <div class="header-left">
+                <button class="mobile-menu-toggler">
+                    <span class="sr-only">Toggle mobile menu</span>
+                    <i class="icon-bars"></i>
+                </button>
+
+                <a href="index.html" class="logo">
+                    <img src="assets/images/logo.png" alt="Molla Logo" width="105" height="25">
+                </a>
+
+                <nav class="main-nav">
+                    <ul class="menu sf-arrows">
+                        <li ><a href="/" class="sf-ul">Home</a></li>
+                        <li class="megamenu-container active"><a href="/shop" class="sf-ul">Shop</a></li>
+                        <li><a href="/about" class="sf-ul">About</a></li>
+                        <li><a href="/contact" class="sf-ul">Contact</a></li>
+                        <li><a href="/profile" class="sf-ul">
+                                <%= locals.user ? user.username :"Profile" %></a></li>
+                    </ul><!-- End .menu -->
+                </nav><!-- End .main-nav -->
+            </div><!-- End .header-left -->
+
+            <div class="header-right">
+                <div class="dropdown compare-dropdown">
+                    <a href="/wishlist" class="dropdown-toggle" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false" data-display="static"
+                        title="Compare Products" aria-label="Compare Products">
+                        <i class="icon-heart-o"></i>
+                    </a>
+                </div><!-- End .compare-dropdown -->
+                <div class="dropdown cart-dropdown">
+                    <a href="/cart" class="dropdown-toggle" role="button" aria-haspopup="true"
+                        aria-expanded="false" data-display="static">
+                        <i class="icon-shopping-cart"></i>
+                        <span class="cart-count">2</span>
+                    </a>
+                </div><!-- End .cart-dropdown -->
+            </div><!-- End .header-right -->
+        </div><!-- End .container -->
+    </div><!-- End .header-middle -->
+</header><!-- End .header -->
+
+<main class="main">
+    <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+        <div class="container">
+            <h1 class="page-title">Payment Policy</h1>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
+
+    <div class="page-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <br>
+                    <p>At COUTURIE, we want to ensure a smooth and secure shopping experience for our customers. Please read the following payment policy carefully before making a purchase:</p>
+                    <br>
+                    <!-- Include your payment policy content here -->
+                    <h5>Accepted Payment Methods:</h5>
+                    <p>We accept the following payment methods:</p>
+                    <ol>
+                        <li> * Credit Card (Visa, MasterCard, American Express, Discover)</li>
+                        <li> * Debit Card</li>
+                        <li> * Razor Pay</li>
+                        <li> * Google Pay</li>
+                        <li> * Bank Transfer (Wire Transfer)</li>
+                    </ol>
+                    
+                    <h5>Payment Security</h5>
+                    <ol>
+                        <li>* All online payments are processed securely using industry-standard encryption technologies to protect your personal and financial information.</li>
+                        <li>* We do not store your credit card information on our servers after the transaction is completed.</li>
+                    </ol>
+                    <h5>Currency</h5>
+                    <ol>
+                        <li>* All transactions on our website are processed in India Rupee (₹). Prices displayed on our website are in Indian Rupee unless otherwise specified.</li>
+                    </ol>
+                    <!-- <h5>Refunds and Returns</h5>
+                    <h5>Payment Policy Updates</h5> -->
+                    <br>
+                    <p>By making a purchase on our website, you agree to comply with our payment policy and terms of service.</p>
+                    <p>If you have any questions or concerns regarding our payment policy, please contact our customer support team for assistance.</p><br>
+                    <p>Thank you for shopping at COUTURIE!</p>
+                </div><!-- End .col-md-8 offset-md-2 -->
+            </div><!-- End .row -->
+        </div><!-- End .container -->
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="footer-middle">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-lg-3">
+                    <div class="widget widget-about">
+                        <img src="assets/images/logo.png" class="footer-logo" alt="Footer Logo" width="105"
+                            height="25">
+                        <p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu vulputate
+                            magna eros eu erat. </p>
+
+                        <div class="social-icons">
+                            <a href="#" class="social-icon" target="_blank" title="Facebook"><i
+                                    class="icon-facebook-f"></i></a>
+                            <a href="#" class="social-icon" target="_blank" title="Twitter"><i
+                                    class="icon-twitter"></i></a>
+                            <a href="#" class="social-icon" target="_blank" title="Instagram"><i
+                                    class="icon-instagram"></i></a>
+                            <a href="#" class="social-icon" target="_blank" title="Youtube"><i
+                                    class="icon-youtube"></i></a>
+                            <a href="#" class="social-icon" target="_blank" title="Pinterest"><i
+                                    class="icon-pinterest"></i></a>
+                        </div><!-- End .soial-icons -->
+                    </div><!-- End .widget about-widget -->
+                </div><!-- End .col-sm-6 col-lg-3 -->
+
+                <div class="col-sm-6 col-lg-3">
+                    <div class="widget">
+                        <h4 class="widget-title">Useful Links</h4>
+
+                        <ul class="widget-list">
+                            <li><a href="/aboutl">About Molla</a></li>
+                            <li><a href="/shop">How to shop on Molla</a></li>
+                            <li><a href="#">FAQ</a></li>
+                            <li><a href="/contact">Contact us</a></li>
+                            <li><a href="/login">Log in</a></li>
+                        </ul><!-- End .widget-list -->
+                    </div><!-- End .widget -->
+                </div><!-- End .col-sm-6 col-lg-3 -->
+
+                <div class="col-sm-6 col-lg-3">
+                    <div class="widget">
+                        <h4 class="widget-title">Customer Service</h4>
+
+                        <ul class="widget-list">
+                            <li><a href="#">Payment Methods</a></li>
+                            <li><a href="#">Money-back guarantee!</a></li>
+                            <li><a href="#">Returns</a></li>
+                            <li><a href="#">Shipping</a></li>
+                            <li><a href="#">Terms and conditions</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                        </ul><!-- End .widget-list -->
+                    </div><!-- End .widget -->
+                </div><!-- End .col-sm-6 col-lg-3 -->
+
+                <div class="col-sm-6 col-lg-3">
+                    <div class="widget">
+                        <h4 class="widget-title">My Account</h4>
+
+                        <ul class="widget-list">
+                            <li><a href="#">Sign In</a></li>
+                            <li><a href="cart.html">View Cart</a></li>
+                            <li><a href="#">My Wishlist</a></li>
+                            <li><a href="#">Track My Order</a></li>
+                            <li><a href="#">Help</a></li>
+                        </ul><!-- End .widget-list -->
+                    </div><!-- End .widget -->
+                </div><!-- End .col-sm-6 col-lg-3 -->
+            </div><!-- End .row -->
+        </div><!-- End .container -->
+    </div><!-- End .footer-middle -->
+
+    <div class="footer-bottom">
+        <div class="container">
+            <p class="footer-copyright">Copyright © 2019 Molla Store. All Rights Reserved.</p>
+            <!-- End .footer-copyright -->
+            <figure class="footer-payments">
+                <img src="assets/images/payments.png" alt="Payment methods" width="272" height="20">
+            </figure><!-- End .footer-payments -->
+        </div><!-- End .container -->
+    </div><!-- End .footer-bottom -->
+</footer><!-- End .footer -->
+
+<%- include('../layout/user/footer.ejs') %>
+

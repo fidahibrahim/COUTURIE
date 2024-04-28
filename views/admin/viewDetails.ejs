@@ -84,21 +84,28 @@
                                                 <%if(product.status==='delivered'){ %>
                                                     <select name="orderStatus"class="form-select orderStatus" id="orderStatus" 
                                                         data-orderId="<%= order._id%>"
-                                                        data-productId="<%= product.productId%>" 
+                                                        data-productId="<%= product.productId._id%>" 
                                                         data-userId="<%= order.userId%>" disabled>
                                                         <option value="delivered">Delivered</option>
                                                     </select>
+                                                    <% }else if(product.status === 'cancelled'){%>
+                                                        <select name="orderStatus" id="orderStatus" class="form-select orderStatus"
+                                                        data-orderId="<%= order._id%>"
+                                                        data-productId="<%= product.productId._id%>" 
+                                                        data-userId="<%= order.userId%>" disabled>
+                                                            <option value="returned">cancelled</option>
+                                                        </select>
                                                     <%}else if(product.status==='returned'){%>
                                                         <select name="orderStatus" id="orderStatus" class="form-select orderStatus"
                                                         data-orderId="<%= order._id%>"
-                                                        data-productId="<%= product.productId%>" 
+                                                        data-productId="<%= product.productId._id%>" 
                                                         data-userId="<%= order.userId%>" disabled>
                                                             <option value="returned">Returned</option>
                                                         </select>
                                                         <%}else if(product.status==='returnRequested'){%>
                                                             <select name="orderStatus" id="orderStatus" class="form-select orderStatus"
                                                             data-orderId="<%= order._id%>"
-                                                            data-productId="<%= product.productId%>" 
+                                                            data-productId="<%= product.productId._id%>" 
                                                             data-userId="<%= order.userId%>" onchange="changeReturnStatus(this)">
                                                                 <option >Change</option>
                                                                 <option value="returnRequested">returnRequested</option>
@@ -108,7 +115,7 @@
                                                             <%}else if(product.status==='returnDenied'){%>
                                                                 <select name="orderStatus" id="orderStatus" class="form-select orderStatus"
                                                                 data-orderId="<%= order._id%>"
-                                                                data-productId="<%= JSON.stringify(product.productId)%>" 
+                                                                data-productId="<%= JSON.stringify(product.productId._id)%>" 
                                                                 data-userId="<%=JSON.stringify(order.userId)%>" onchange="changeStatus(this,'<%= order._id%>')">
                                                                     <option >Change Status</option>
                                                                     <option value="shipped">Shipped</option>
@@ -118,7 +125,7 @@
                                                     <%}else{%>
                                                         <select name="orderStatus" id="orderStatus" class="form-select orderStatus"
                                                         data-orderId="<%= order._id%>"
-                                                        data-productId="<%= JSON.stringify(product.productId)%>" 
+                                                        data-productId="<%= JSON.stringify(product.productId._id)%>" 
                                                         data-userId="<%= JSON.stringify(order.userId)%>" onchange="changeStatus(this,'<%= order._id%>')">
                                                             <option >Change Status</option>
                                                             <option value="shipped">Shipped</option>
@@ -133,7 +140,7 @@
                                                     <td> <button disabled>Cancel</button></td>
                                                  <%}else{%>
                                                     <td><button class="btn-danger"
-                                                        onclick="cancelOrder('<%= order._id %>','<%= product.productId %>')">Cancel</button>
+                                                        onclick="cancelOrder('<%= order._id %>','<%= product.productId._id%>')">Cancel</button>
                                                 </td>
                                                 <%}%>
                                         </tr>
@@ -154,8 +161,13 @@
         </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ 
+    
+    
     <script>
-        function changeStatus(select, orderId){    
+        function changeStatus(select, orderId){  
+            console.log("OrderId:", select.dataset.orderid);  
             let productId = JSON.parse(select.dataset.productid);
             let userId = JSON.parse(select.dataset.userid);
             let status = select.value
@@ -171,7 +183,6 @@
            contentType: 'application/json',
            success: function (response) {
                if (response.change === true) {
-                    // Redirect to the same page
                     window.location.reload(true);
                 }
            }
@@ -181,8 +192,74 @@
     </script>
     <script>
         function cancelOrder(orderId,productId){
+            const data = {orderId,productId}
+            Swal.fire({
+                icon: 'warning',
+                text: 'Are you sure',
+                showCancelButton: true,
+                confirmButtonText: 'yes',
+                cancelButtonText: 'no',
+                cancelButtonColor: '#d33',
+                confirmButtonColor: "#3085d6"
+            }).then((response)=>{
+                if(response.isConfirmed){
+                    $.ajax({
+                        url:'/admin/cancelOrder',
+                        method:'POST',
+                        data:JSON.stringify(data),
+                        contentType: "application/json",
+                        success: function(response){
+                            if(response.cancel == true){
+                                Swal.fire({
+                                    icon: 'success',
+                                    text: 'Cancelled'
+                                })
+                                window.location.reload(true);
+                            }
+                        }
+                    })
+                }
+            })
 
         }
     </script>
+
+<script>
+    function changeReturnStatus(select) {
+        let orderId = select.dataset.orderid;
+        let productId = select.dataset.productid;
+        let status = select.value;
+        let userId = select.dataset.userid;
+
+        const data = {
+            orderId,
+            productId,
+            userId,
+            status
+        };
+
+        console.log("sfsdf",data);
+
+        $.ajax({
+            url: '/admin/changeReturnStatus',
+            method: 'POST',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+           
+            success: function (response) {
+                console.log('dhj');
+                console.log("fdf",response);
+                if (response.changed === true) {
+                    window.location.reload(true);
+                } else {
+                    console.error('Change not successful:', response); // Log response for debugging
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('AJAX Error:', error); // Log AJAX error for debugging
+            }
+        });
+    }
+</script>
 
     <%- include('../layout/admin/footer.ejs') %>

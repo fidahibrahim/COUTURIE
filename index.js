@@ -1,6 +1,4 @@
-const mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost:27017/couturie");
-
+const connectDB = require("./database/connection")
 require("dotenv").config();
 const express = require("express");
 const app = express();
@@ -11,6 +9,7 @@ const session = require('express-session');
 const nocache = require('nocache')
 require('./passport-setup');
 const userController = require('./controller/userController')
+connectDB()
 
 
 app.use(express.json())

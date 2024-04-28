@@ -1,0 +1,339 @@
+<%-include('../layout/admin/header.ejs') %>
+    <!-- ============================================================== -->
+    <!-- Preloader - style you can find in spinners.css -->
+    <!-- ============================================================== -->
+    <div class="preloader">
+        <div class="lds-ripple">
+            <div class="lds-pos"></div>
+            <div class="lds-pos"></div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- Main wrapper - style you can find in pages.scss -->
+    <!-- ============================================================== -->
+    <div id="main-wrapper" data-theme="light" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+        data-sidebar-position="fixed" data-header-position="fixed" data-boxed-layout="full">
+        <!-- ============================================================== -->
+        <!-- Topbar header - style you can find in pages.scss -->
+        <!-- ============================================================== -->
+        <%-include('../layout/admin/navbar.ejs') %>
+            <%-include('../layout/admin/nav.ejs') %>
+                <div class="page-wrapper">
+                    <!-- ============================================================== -->
+                    <!-- Bread crumb and right sidebar toggle -->
+                    <!-- ============================================================== -->
+                    <!-- ============================================================== -->
+                    <!-- End Bread crumb and right sidebar toggle -->
+                    <!-- ============================================================== -->
+                    <!-- ============================================================== -->
+                    <!-- Container fluid  -->
+                    <!-- ============================================================== -->
+                    <div class="container-fluid">
+                        <!-- ============================================================== -->
+                        <!-- Start Page Content -->
+                        <!-- ============================================================== -->
+                        <!-- basic table -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <!-- Column -->
+
+                                            <!-- Column -->
+                                        </div>
+                                        <div class="table-responsive">
+                                            <div style="margin-top: 2%;">
+                                                <a href="/admin/salesDaily"> <button
+                                                        class="btn btn-light">Daily</button></a>
+                                                <a href="/admin/salesWeekly"><button
+                                                        class="btn btn-light">Weekly</button></a>
+                                                <a href="/admin/salesMonthly"><button
+                                                        class="btn btn-light">Monthly</button></a>
+                                                <a href="/admin/salesYearly"><button
+                                                        class="btn btn-light">Yearly</button> </a>
+                                            </div>
+                                            <div style="margin-top: 2%;">
+                                                <button class="btn btn-outline-secondary">Total Revenue : <%=
+                                                        totalAmount %> </button>
+                                                <button class="btn btn-outline-secondary">Total Sales : <%=
+                                                        totalSalesCount %> </button>
+                                                <button class="btn btn-outline-secondary">Total Discount : <%=
+                                                        totalCouponAmount%> </button>
+
+                                            </div>
+
+                                            <div style="margin-top: 2%;margin-left: -2%; ">
+                                                <form method="post" action="/admin/customDate">
+                                                    <div class="col-lg-9 d-flex ">
+                                                        <div class="input-group reportDate me-2" style="width: 300px;">
+                                                            <span class="input-group-text ">From Date</span>
+                                                            <input type="date" id="fromDate" value="<%= fromDate%>"
+                                                                name="fromDate" class="form-control">
+                                                        </div>
+                                                        <div class="input-group reportDate me-2" style="width: 280px;">
+                                                            <span class="input-group-text">To Date</span>
+                                                            <input type="date" id="toDate" value="<%= toDate%>"
+                                                                name="toDate" class="form-control">
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary "
+                                                            id="saleDateFilterBtn">Filter</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+
+                                            <div style="margin-top: 2%;">
+                                                <table id="example" class="table table-striped table-bordered no-wrap">
+
+                                                    <% if(page=='daily' ){ %>
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Si.No</th>
+                                                                <th>Date
+                                                                <th>Orders</th>
+                                                                <th>Coupon</th>
+                                                                <th>Product Count</th>
+                                                                <th>Total Revenue</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <% data.forEach((data,index)=>{ %>
+
+                                                                <tr>
+                                                                    <td><span class="badge badge-light-warning">
+                                                                            <%= index + 1%>
+                                                                        </span></td>
+                                                                    <td><a href="javascript:void(0)"
+                                                                            class="font-weight-medium link"></a>
+                                                                        <%= data.dateFormatted%>
+
+                                                                    </td>
+                                                                    <td><a href="javascript:void(0)"
+                                                                            class="font-bold link"></a>
+                                                                        <%= data.totalOrderCount %>
+
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= data.couponUsed%>
+
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= data.totalProducts%>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= data.totalSales%>
+
+                                                                    </td>
+                                                                </tr>
+                                                                <% }) %>
+                                                        </tbody>
+                                                        <%}%>
+
+
+
+                                                            <% if(page=='weekly' ){ %>
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Si.No</th>
+                                                                        <th>Start Date</th>
+                                                                        <th>End Date</th>
+                                                                        <th>Orders</th>
+                                                                        <th>Coupon</th>
+                                                                        <th>Product Count</th>
+                                                                        <th>Total Revenue</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+
+                                                                    <% data.forEach((data,index)=>{ %>
+                                                                        <tr>
+                                                                            <td><span class="badge badge-light-warning">
+                                                                                    <%= index + 1%>
+                                                                                </span></td>
+                                                                            <td>
+                                                                                <%= data.startOfWeek%>
+
+                                                                            </td>
+                                                                            <td>
+                                                                                <%= data.endOfWeek%>
+
+                                                                            </td>
+                                                                            <td>
+                                                                                <%= data.totalOrderCount %>
+
+                                                                            </td>
+                                                                            <td>
+                                                                                <%= data.couponUsed%>
+
+                                                                            </td>
+                                                                            <td>
+                                                                                <%= data.totalProducts%>
+                                                                            </td>
+                                                                            <td>
+                                                                                <%= data.totalSales%>
+
+                                                                            </td>
+                                                                        </tr>
+                                                                        <% }) %>
+                                                                </tbody>
+                                                                <%}%>
+
+                                                                    <% if(page=='monthly' ){ %>
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>Si.No</th>
+                                                                                <th>Month-Year</th>
+                                                                                <th>Orders</th>
+                                                                                <th>Coupon</th>
+                                                                                <th>Product Count</th>
+                                                                                <th>Total Revenue</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+
+                                                                            <% data.forEach((data,index)=>{ %>
+                                                                                <tr>
+                                                                                    <td><span
+                                                                                            class="badge badge-light-warning">
+                                                                                            <%= index + 1%>
+                                                                                        </span></td>
+                                                                                    <td>
+                                                                                        <%= data.monthYear%>
+
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <%= data.totalOrderCount %>
+
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <%= data.couponsUsed%>
+
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <%= data.totalProducts%>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <%= data.totalSales%>
+
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <% }) %>
+                                                                        </tbody>
+                                                                        <%}%>
+
+
+                                                                            <% if(page=='yearly' ){ %>
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th>Si.No</th>
+                                                                                        <th>Year</th>
+                                                                                        <th>Orders</th>
+                                                                                        <th>Coupon</th>
+                                                                                        <th>Product Count</th>
+                                                                                        <th>Total Revenue</th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+
+                                                                                    <% data.forEach((data,index)=>{ %>
+                                                                                        <tr>
+                                                                                            <td>
+                                                                                                <span
+                                                                                                    class="badge badge-light-warning">
+                                                                                                    <%= index + 1%>
+                                                                                                </span>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <%= data.year%>
+
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <%= data.totalOrderCount %>
+
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <%= data.couponsUsed%>
+
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <%= data.totalProducts%>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <%= data.totalSales%>
+
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <% }) %>
+                                                                                </tbody>
+                                                                                <%}%>
+
+
+
+
+                                                                                    <% if(page=='customDate' ){ %>
+                                                                                        <thead>
+                                                                                            <tr>
+                                                                                                <th>Si.No</th>
+                                                                                                <th>Date
+                                                                                                <th>Orders</th>
+                                                                                                <th>Coupon</th>
+                                                                                                <th>Product Count</th>
+                                                                                                <th>Total Revenue</th>
+                                                                                            </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                            <% data.forEach((data,index)=>{ %>
+                                                                                                <tr>
+                                                                                                    <td><span
+                                                                                                            class="badge badge-light-warning">
+                                                                                                            <%= index +
+                                                                                                                1%>
+                                                                                                        </span></td>
+                                                                                                    <td>
+                                                                                                        <%=
+                                                                                                            data.dateFormatted%>
+
+                                                                                                    </td>
+                                                                                                    <td>
+                                                                                                        <%= data.totalOrderCount
+                                                                                                            %>
+
+                                                                                                    </td>
+                                                                                                    <td>
+                                                                                                        <%=
+                                                                                                            data.couponUsed%>
+
+                                                                                                    </td>
+                                                                                                    <td>
+                                                                                                        <%=
+                                                                                                            data.totalProducts%>
+                                                                                                    </td>
+                                                                                                    <td>
+                                                                                                        <%=
+                                                                                                            data.totalSales%>
+
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                                <% }) %>
+                                                                                        </tbody>
+                                                                                        <%}%>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
+
+
+                </div>
+
+    </div>
+
+
+    <%-include('../layout/admin/footer.ejs') %>

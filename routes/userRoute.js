@@ -8,19 +8,20 @@ const profileController = require("../controller/profileController");
 const cartController = require("../controller/cartController");
 const checkoutController = require('../controller/checkoutController');
 const orderController = require('../controller/orderController');
-
+const wishlistController = require('../controller/wishlistController');
+const couponController = require('../controller/couponController')
 
 userRoute.set('view engine', 'ejs');
 userRoute.set('views', './views/users')
 
 
-userRoute.get('/', userAuth.isLogout, userController.loadHome);
+userRoute.get('/', userController.loadHome);
 userRoute.get('/home', userAuth.isBlocked, userAuth.isLogin, userController.loadHome)
 
 userRoute.get('/register', userAuth.isLogout, userController.loadRegister);
-userRoute.post('/register', userController.verifyRegister);
+userRoute.post('/register',userAuth.isLogout, userController.verifyRegister);
 
-userRoute.get('/login',userAuth.isLogout , userController.loadLogin);
+userRoute.get('/login', userController.loadLogin);
 userRoute.post('/login', userController.verifyLogin);
 userRoute.get('/success',userController.googleLogin);
 
@@ -31,19 +32,19 @@ userRoute.post('/otp', userAuth.isLogout, userController.verifyOtp);
 userRoute.post('/resend-otp',userAuth.isLogout,userController.resendOtp);
 
 userRoute.get('/forgotPassword',userAuth.isLogout,userController.loadForgotPassword);
-userRoute.post('/forgotPassword',userController.forgotPasswordVerify);
-userRoute.get('/resetPassword',userController.loadResetPassword);
-userRoute.post('/resetPassword',userController.resetPassword);
+userRoute.post('/forgotPassword',userAuth.isLogin,userController.forgotPasswordVerify);
+userRoute.get('/resetPassword',userAuth.isLogin,userController.loadResetPassword);
+userRoute.post('/resetPassword',userAuth.isLogin,userController.resetPassword);
 
 
 userRoute.get('/shop', userAuth.isBlocked, userController.loadShop);
 userRoute.post('/shop', userAuth.isBlocked, userController.loadFilter);
-userRoute.get('/productDetails', userController.loadProductDetails);
+userRoute.get('/productDetails',userAuth.isLogin, userController.loadProductDetails);
 
 userRoute.get('/blocked-user', userAuth.isLogin, userController.loadBlockedUser);
 
-userRoute.get('/about',userController.loadAbout);
-userRoute.get('/contact',userController.loadContact);
+userRoute.get('/about',userAuth.isLogin,userController.loadAbout);
+userRoute.get('/contact',userAuth.isLogin,userController.loadContact);
 
 userRoute.get('/profile',userAuth.isLogin,profileController.loadProfile);
 userRoute.get('/editProfile',userAuth.isLogin,userController.loadEditProfile);
@@ -53,13 +54,13 @@ userRoute.post('/changePass',userAuth.isLogin,profileController.changePass);
 userRoute.get('/address',userAuth.isLogin,profileController.loadAddress);
 userRoute.get('/addAddress',userAuth.isLogin,profileController.loadAddAddress);
 userRoute.post('/addAddress',userAuth.isLogin,profileController.addAddress);
-userRoute.get('/editAddress',profileController.loadEditAddress);
+userRoute.get('/editAddress',userAuth.isLogin,profileController.loadEditAddress);
 userRoute.post('/editAddress',userAuth.isLogin,profileController.editAddress);
 userRoute.post('/deleteAddress',userAuth.isLogin,profileController.deleteAddress);
 
 
 userRoute.get('/cart',userAuth.isLogin,cartController.loadCart);
-userRoute.post('/addToCart',cartController.addToCart);
+userRoute.post('/addToCart',userAuth.isLogin,cartController.addToCart);
 userRoute.post('/deleteCart',userAuth.isLogin,cartController.deleteCart);
 userRoute.post('/updateQuantity',userAuth.isLogin,cartController.updateQuantity);
 
@@ -69,6 +70,7 @@ userRoute.get('/checkoutAddAddress',userAuth.isLogin,checkoutController.loadAddC
 userRoute.post('/checkoutAddAddress',userAuth.isLogin,checkoutController.addCheckoutAddress)
 userRoute.get('/checkoutEditAddress',userAuth.isLogin,checkoutController.loadEditCheckoutAddress);
 userRoute.post('/checkoutEditAddress',userAuth.isLogin,checkoutController.editCheckoutAddress);
+userRoute.post('/applyCoupon',userAuth.isLogin,couponController.applyCoupon)
 
 
 userRoute.get('/order/:id',userAuth.isLogin,orderController.loadOrder);
@@ -77,6 +79,19 @@ userRoute.get('/viewOrders',userAuth.isLogin,orderController.loadViewOrder);
 userRoute.get('/orderDetails',userAuth.isLogin,orderController.loadOrderDetails);
 userRoute.post('/cancelOrder',userAuth.isLogin,orderController.cancelOrder);
 userRoute.post("/returnRequest",userAuth.isLogin,orderController.returnRequest);
+userRoute.post('/verifyPayment',userAuth.isLogin,orderController.verifyPayment)
+
+userRoute.get('/wishlist',userAuth.isLogin,wishlistController.loadWishlist);
+userRoute.post('/addToWishlist',userAuth.isLogin,wishlistController.addToWishlist);
+userRoute.post('/removeFromWishlist',userAuth.isLogin,wishlistController.removeFromWishlist);
+userRoute.post('/addCart',userAuth.isLogin,wishlistController.addToCart);
+
+userRoute.get('/paymentPolicy',userAuth.isLogin,userController.loadPaymentPolicy);
+
+userRoute.get('/wallet',userAuth.isLogin,userController.loadWallet);
+userRoute.get('/transaction',userAuth.isLogin,userController.loadTransaction)
+
+
 
 
 

@@ -121,8 +121,8 @@ const sendOtpVerification = async ({ email }, res) => {
             port: 465,
             secure: true,
             auth: {
-                user: "fidahibrahim2@gmail.com",
-                pass: "hzul wvdm qijl dweg"
+                user:process.env.USER_EMAIL ,
+                pass:process.env.USER_PASS 
             }
         })
 
@@ -433,12 +433,6 @@ const loadFilter = async (req, res) => {
     }
 }
 
-
-
-
-
-
-
 const loadProductDetails = async (req, res) => {
     try {
         const productId = req.query.productId
@@ -518,6 +512,31 @@ const editProfile = async (req, res) => {
     }
 }
 
+const loadPaymentPolicy = async(req,res)=>{
+    try {
+        res.render('paymentPolicy')
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const loadWallet = async (req,res)=>{
+    try {
+        res.render('wallet')
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+const loadTransaction = async (req,res)=>{
+    try {
+        res.render('transaction')
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 
 module.exports = {
     loadHome,
@@ -544,5 +563,8 @@ module.exports = {
     loadContact,
     loadProfile,
     loadEditProfile,
-    editProfile
+    editProfile,
+    loadPaymentPolicy,
+    loadWallet,
+    loadTransaction
 }

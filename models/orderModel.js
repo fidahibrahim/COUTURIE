@@ -3,71 +3,78 @@ const Product = require('./productModel');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const orderSchema = mongoose.Schema({
-    userId:{
-        type:ObjectId,
-        ref:'User',
-        requiured:true
+    userId: {
+        type: ObjectId,
+        ref: 'User',
+        requiured: true
     },
-    orderId:{
-        type:String
+    orderId: {
+        type: String
     },
-    totalAmount:{
-        type:Number,
-        required:true
+    totalAmount: {
+        type: Number,
+        required: true
     },
-    date:{
-        type:Date,
-        required:true
+    date: {
+        type: Date,
+        required: true
     },
-    expectedDelivery:{
-        type:String,
-        required:true
+    expectedDelivery: {
+        type: String,
+        required: true
     },
-    status:{
-        type:String,
-        required:true
+    status: {
+        type: String,
+        required: true
     },
-    paymentMethod:{
-        type:String,
-        required:true
+    paymentMethod: {
+        type: String,
+        required: true
     },
-    deliveryAddress:{
-        type:Object,
-        required:true
+    deliveryAddress: {
+        type: Object,
+        required: true
     },
-    paymentId:{
-        type:String
+    paymentId: {
+        type: String
     },
-    products:[
+    discount: {
+        type: Number
+    },
+    products: [
         {
-            productId:{
-                type:ObjectId,
-                ref:'Product',
-                required:true
+            productId: {
+                type: ObjectId,
+                ref: 'Product',
+                required: true
             },
-            name:{
-                type:String
+            name: {
+                type: String
             },
-            price:{
-                type:Number
+            price: {
+                type: Number
             },
-            totalPrice:{
-                type:Number,
-                required:true
+            totalPrice: {
+                type: Number,
+                required: true
             },
-            status:{    
-                type:String,
-                enum:['placed','outForDelivery','returnRequested','returned','returnDenied','shipped','delivered','cancelled'],
-                default:'placed'
+            status: {
+                type: String,
+                enum: ['placed', 'outForDelivery', 'returnRequested', 'returned', 'returnDenied', 'shipped', 'delivered', 'cancelled'],
+                default: 'placed'
             },
-            quantity:{
-                type:Number
+            quantity: {
+                type: Number
             },
-            returnReason:{
-                type:String
+            returnReason: {
+                type: String
+            },
+            discountPerItem: {
+                type: Number,
+                default: 0
             }
         }
     ],
-},{timestamps:true});
+}, { timestamps: true });
 
-module.exports = mongoose.model('order',orderSchema)
+module.exports = mongoose.model('order', orderSchema)

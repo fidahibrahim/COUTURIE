@@ -1,0 +1,113 @@
+<%-include('../layout/admin/header.ejs') %>
+    <!-- ============================================================== -->
+    <!-- Preloader - style you can find in spinners.css -->
+    <!-- ============================================================== -->
+    <div class="preloader">
+        <div class="lds-ripple">
+            <div class="lds-pos"></div>
+            <div class="lds-pos"></div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- Main wrapper - style you can find in pages.scss -->
+    <!-- ============================================================== -->
+    <div id="main-wrapper" data-theme="light" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+        data-sidebar-position="fixed" data-header-position="fixed" data-boxed-layout="full">
+        <!-- ============================================================== -->
+        <!-- Topbar header - style you can find in pages.scss -->
+        <!-- ============================================================== -->
+        <%-include('../layout/admin/navbar.ejs') %>
+        <!-- ============================================================== -->
+        <!-- End Topbar header -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Left Sidebar - style you can find in sidebar.scss  -->
+        <!-- ============================================================== -->
+        <%-include('../layout/admin/nav.ejs') %>
+        <!-- ============================================================== -->
+        <!-- End Left Sidebar - style you can find in sidebar.scss  -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Page wrapper  -->
+        <!-- ============================================================== -->
+        <div class="page-wrapper">
+
+            <div class="container-fluid">
+                
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-lg-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Edit Coupon</h4>
+                                
+                                <form class="mt-2" method="post" onsubmit="return validateForm()">
+                                    <div class="form-group">
+                                        <input type="hidden" value="<%= coupon._id %>" name="id" id="">
+                                        <input type="text" name="name" class="form-control" value="<%= coupon.name %>" placeholder="Enter Coupon Name">
+                                        <span id="nameError" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="date" name="adate" class="form-control" value="<%= coupon.activationDate.toISOString().split('T')[0] %>" placeholder="Enter Date">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="date" name="edate" class="form-control" value="<%= coupon.expiryDate.toISOString().split('T')[0] %>" placeholder="Enter Expiry Date">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" name="limit" class="form-control" value="<%= coupon.limitOfUse %>" placeholder="Enter limit of use">
+                                        <span id="limitError" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" name="damount" class="form-control" value="<%= coupon.discountAmount %>" placeholder="Enter Discount">
+                                        <span id="damountError" class="text-danger"></span>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </form>
+                                  
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+
+        <script>
+            function validateForm() {
+                var name = document.forms[0]["name"].value;
+                var limit = document.forms[0]["limit"].value;
+                var damount = document.forms[0]["damount"].value;
+        
+                var nameRegex = /^[a-zA-Z0-9]+$/;
+                var limitRegex = /^[0-9]+$/;
+                var damountRegex = /^[0-9%]+$/;
+        
+                var isValid = true;
+        
+                if (!name.match(nameRegex) || name.trim().length === 0) {
+                    document.getElementById("nameError").innerText = "Name field only allows alphabets, numbers, and no whitespaces.";
+                    isValid = false;
+                } else {
+                    document.getElementById("nameError").innerText = "";
+                }
+        
+                if (!limit.match(limitRegex)) {
+                    document.getElementById("limitError").innerText = "Limit of use field only allows numbers.";
+                    isValid = false;
+                } else {
+                    document.getElementById("limitError").innerText = "";
+                }
+        
+                if (!damount.match(damountRegex)) {
+                    document.getElementById("damountError").innerText = "Discount amount field only allows numbers and %.";
+                    isValid = false;
+                } else {
+                    document.getElementById("damountError").innerText = "";
+                }
+        
+                return isValid;
+            }
+        </script>
+   
+
+    <%-include('../layout/admin/footer.ejs') %>

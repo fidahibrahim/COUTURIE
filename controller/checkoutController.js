@@ -1,6 +1,8 @@
 const User = require('../models/userModel');
 const Product = require('../models/productModel');
 const Cart = require('../models/cartModel');
+const Coupon = require('../models/couponModel');
+
 
 const loadCheckout = async(req,res)=>{
     try {
@@ -11,6 +13,7 @@ const loadCheckout = async(req,res)=>{
             model:"Product"
         });
         const user = await User.findOne({_id:userData});
+        const couponData = await Coupon.find({status:true})
 
         let subTotal = 0;
         let cartId = null;
@@ -22,9 +25,9 @@ const loadCheckout = async(req,res)=>{
             });
             cartId = cartDetails._id;
         }else{
-            return res.render('cart', { cartDetails,user, subTotal: 0, discountAmnt: 0, cartId });
+            return res.render('cart', { cartDetails,user, subTotal: 0, discountAmnt: 0, cartId , coupon: couponData});
         }
-        res.render('checkout',{userData,cartDetails,user,subTotal,cartId})
+        res.render('checkout',{userData,cartDetails,user,subTotal,cartId,coupon: couponData})
     } catch (error) {
         console.log(error);
     }

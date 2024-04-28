@@ -1,4 +1,87 @@
-<%- include('../layout/user/header.ejs') %>
+<%-include('../layout/user/header.ejs') %>
+
+
+    <style>
+        .wallet-container {
+            width: 96%;
+            background-color: #ffffff;
+            padding: 60px;
+            border-radius: 8px;
+            box-shadow: 10px 10px 10px rgba(39, 37, 37, 0.1);
+        }
+
+        .wallet-section {
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .wallet-content {
+            display: flex;
+            align-items: center;
+        }
+
+        .wallet-balance {
+            flex: 1;
+        }
+
+        .wallet-balance h2 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .wallet-balance p {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .wallet-buttons {
+            display: flex;
+            flex-direction: column;
+            margin-left: 20px;
+        }
+
+        .wallet-buttons button {
+            background-color: #404540;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .wallet-buttons button:hover {
+            background-color: #373937;
+        }
+
+        .transaction-history {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-transaction-history {
+            background-color: #d1d8df;
+            color: rgb(88, 75, 75);
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-transaction-history:hover {
+            background-color: #6995c5;
+        }
+    </style>
+
+
     <div class="page-wrapper">
         <header class="header">
             <div class="header-top">
@@ -58,16 +141,17 @@
                                 <li>
                                     <a href="/" class="sf-ul">Home</a>
                                 </li>
-                                <li>
+                                <li class="megamenu-container active">
                                     <a href="/shop" class="sf-ul">Shop</a>
                                 </li>
                                 <li>
                                     <a href="/about" class="sf-ul">About</a>
                                 </li>
+
                                 <li>
                                     <a href="/contact" class="sf-ul">Contact</a>
                                 </li>
-                                <li class="active">
+                                <li>
                                     <a href="/profile" class="sf-ul">
                                         <%= locals.user ? user.username :"Profile" %>
                                     </a>
@@ -77,35 +161,19 @@
                     </div><!-- End .header-left -->
 
                     <div class="header-right">
-                        <div class="header-search">
-                            <a href="#" class="search-toggle" role="button" title="Search"><i
-                                    class="icon-search"></i></a>
-                            <form action="#" method="get">
-                                <div class="header-search-wrapper">
-                                    <label for="q" class="sr-only">Search</label>
-                                    <input type="search" class="form-control" name="q" id="q" placeholder="Search in..."
-                                        required>
-                                </div><!-- End .header-search-wrapper -->
-                            </form>
-                        </div><!-- End .header-search -->
                         <div class="dropdown compare-dropdown">
-                            <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
+                            <a href="/wishlist" class="dropdown-toggle" role="button" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false" data-display="static"
                                 title="Compare Products" aria-label="Compare Products">
                                 <i class="icon-heart-o"></i>
                             </a>
-
-
                         </div><!-- End .compare-dropdown -->
-
                         <div class="dropdown cart-dropdown">
-                            <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false" data-display="static">
+                            <a href="/cart" class="dropdown-toggle" role="button" aria-haspopup="true"
+                                aria-expanded="false" data-display="static">
                                 <i class="icon-shopping-cart"></i>
                                 <span class="cart-count">2</span>
                             </a>
-
-
                         </div><!-- End .cart-dropdown -->
                     </div><!-- End .header-right -->
                 </div><!-- End .container -->
@@ -134,29 +202,28 @@
                             <aside class="col-md-4 col-lg-3">
                                 <ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
                                     <li class="nav-item">
-                                        <a class="nav-link active" id="tab-dashboard-link" 
-                                            href="/profile" role="tab" aria-controls="tab-dashboard"
-                                            aria-selected="true">Account Details</a>
+                                        <a class="nav-link " id="tab-dashboard-link" href="/profile" role="tab"
+                                            aria-controls="tab-dashboard" aria-selected="true">Account Details</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="tab-orders-link"  href="/editProfile" role="tab"
+                                        <a class="nav-link" id="tab-orders-link" href="/editProfile" role="tab"
                                             aria-controls="tab-orders" aria-selected="false">Edit Profile</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="tab-downloads-link"  href="/changePass"
-                                            role="tab" aria-controls="tab-downloads" aria-selected="false">Change
+                                        <a class="nav-link" id="tab-downloads-link" href="/changePass" role="tab"
+                                            aria-controls="tab-downloads" aria-selected="false">Change
                                             Password</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="tab-address-link"  href="/address" role="tab"
+                                        <a class="nav-link" id="tab-address-link" href="/address" role="tab"
                                             aria-controls="tab-address" aria-selected="false">Adresses</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="tab-account-link"  href="/viewOrders" role="tab"
+                                        <a class="nav-link" id="tab-account-link" href="/viewOrders" role="tab"
                                             aria-controls="tab-account" aria-selected="false">Orders</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="tab-account-link" href="/wallet" role="tab"
+                                        <a class="nav-link active" id="tab-account-link" href="/wallet" role="tab"
                                             aria-controls="tab-account" aria-selected="false">Wallet</a>
                                     </li>
                                     <li class="nav-item">
@@ -169,36 +236,40 @@
                                 </ul>
                             </aside><!-- End .col-lg-3 -->
 
-                            <div class="col-md-8 col-lg-9">
-                                <div class="tab-content">
 
-                                    <div class="tab-pane fade show active" id="tab-account" role="tabpanel"
-                                        aria-labelledby="tab-account-link">
-                                        <form action="#">
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <label>User Name *</label>
-                                                    <input value="<%= user.username %>" type="text" class="form-control" readonly>
-                                                </div><!-- End .col-sm-6 -->
-                                            </div><!-- End .row -->
-
-                                            <label>Email address *</label>
-                                            <input value="<%= user.email %>" type="email" class="form-control" readonly>
-
-                                            <label>Mobile Number *</label>
-                                            <input value="<%= user.mobile %>" type="string" class="form-control" readonly>
-
-                                           
-                                                <button class="btn btn-outline-primary-2"><a href="/editProfile">Edit</a></button>
-                                        </form>
-                                    </div><!-- .End .tab-pane -->
-                                </div>
-                            </div><!-- End .col-lg-9 -->
+                                    <div class="col-md-8 col-lg-9">
+                                        <div class="tab-content">
+                                            <div id="wallet-tab" class="tab-pane fade show active">
+                                                <!-- Wallet Section -->
+                                                <div class="wallet-section">
+                                                    <div class="wallet-container">
+                                                        <div class="wallet-content">
+                                                            <div class="wallet-balance">
+                                                                <h2>Your Wallet Balance</h2>
+                                                                <p>$500.00</p>
+                                                                <!-- Example balance, replace with actual balance -->
+                                                            </div>
+                                                            <div class="wallet-buttons">
+                                                                <button class="btn-deposit">Deposit</button>
+                                                                <button class="btn-withdraw">Withdraw</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="transaction-history" >
+                                                        <a href="/transaction"><button class="btn-transaction-history">Transaction
+                                                            History</button></a>
+                                                    </div>
+                                                </div>
+                                                <!-- End Wallet Section -->
+                                            </div>
+                                        </div>
+                                    </div>
                         </div><!-- End .row -->
                     </div><!-- End .container -->
                 </div><!-- End .dashboard -->
             </div><!-- End .page-content -->
         </main><!-- End .main -->
+
 
         <footer class="footer">
             <div class="footer-middle">
@@ -228,21 +299,21 @@
 
                         <div class="col-sm-6 col-lg-3">
                             <div class="widget">
-                                <h4 class="widget-title">Useful Links</h4><!-- End .widget-title -->
+                                <h4 class="widget-title">Useful Links</h4>
 
                                 <ul class="widget-list">
-                                    <li><a href="about.html">About Molla</a></li>
+                                    <li><a href="/aboutl">About Molla</a></li>
                                     <li><a href="#">How to shop on Molla</a></li>
                                     <li><a href="#">FAQ</a></li>
-                                    <li><a href="contact.html">Contact us</a></li>
-                                    <li><a href="login.html">Log in</a></li>
+                                    <li><a href="/contact">Contact us</a></li>
+                                    <li><a href="/login">Log in</a></li>
                                 </ul><!-- End .widget-list -->
                             </div><!-- End .widget -->
                         </div><!-- End .col-sm-6 col-lg-3 -->
 
                         <div class="col-sm-6 col-lg-3">
                             <div class="widget">
-                                <h4 class="widget-title">Customer Service</h4><!-- End .widget-title -->
+                                <h4 class="widget-title">Customer Service</h4>
 
                                 <ul class="widget-list">
                                     <li><a href="#">Payment Methods</a></li>
@@ -257,12 +328,12 @@
 
                         <div class="col-sm-6 col-lg-3">
                             <div class="widget">
-                                <h4 class="widget-title">My Account</h4><!-- End .widget-title -->
+                                <h4 class="widget-title">My Account</h4>
 
                                 <ul class="widget-list">
-                                    <li><a href="/login">Sign In</a></li>
+                                    <li><a href="#">Sign In</a></li>
                                     <li><a href="cart.html">View Cart</a></li>
-                                    <li><a href="/wishlist">My Wishlist</a></li>
+                                    <li><a href="#">My Wishlist</a></li>
                                     <li><a href="#">Track My Order</a></li>
                                     <li><a href="#">Help</a></li>
                                 </ul><!-- End .widget-list -->
@@ -282,51 +353,12 @@
                 </div><!-- End .container -->
             </div><!-- End .footer-bottom -->
         </footer><!-- End .footer -->
-    </div><!-- End .page-wrapper -->
-    <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+    </div>
 
-    <!-- Mobile Menu -->
-    <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
 
-    <div class="mobile-menu-container">
-        <div class="mobile-menu-wrapper">
-            <span class="mobile-menu-close"><i class="icon-close"></i></span>
 
-            <form action="#" method="get" class="mobile-search">
-                <label for="mobile-search" class="sr-only">Search</label>
-                <input type="search" class="form-control" name="mobile-search" id="mobile-search"
-                    placeholder="Search in..." required>
-                <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
-            </form>
 
-            <nav class="mobile-nav">
-                <ul class="mobile-menu">
-                    <li>
-                        <a href="/">Home</a>
-                    </li>
-                    <li>
-                        <a href="/shop">Shop</a>
-                    </li>
-                    <li>
-                        <a href="/about" class="sf-with-ul">about</a>
-                    </li>
-                    <li>
-                        <a href="/contact">contact</a>
-                    </li>
-                    <li class="active">
-                        <a href="/profile">profile</a>
-                    </li>
-                </ul>
-            </nav><!-- End .mobile-nav -->
 
-            <div class="social-icons">
-                <a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
-                <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
-                <a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
-                <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
-            </div><!-- End .social-icons -->
-        </div><!-- End .mobile-menu-wrapper -->
-    </div><!-- End .mobile-menu-container -->
 
 
     <%- include('../layout/user/footer.ejs') %>
