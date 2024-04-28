@@ -3,42 +3,42 @@ const category = require('../models/category');
 const loadCategory = async (req, res) => {
     try {
         let page = 1;
-        if(req.query.id){
+        if (req.query.id) {
             page = req.query.id
         }
 
         const limit = 5;
         let Next = page + 1;
-        let Previous = page > 1 ? page-1:1
+        let Previous = page > 1 ? page - 1 : 1
 
         const count = await category.find().count()
 
-        const totalPages = Math.ceil(count/limit)
+        const totalPages = Math.ceil(count / limit)
 
-        if(Next > totalPages){
+        if (Next > totalPages) {
             Next = totalPages
         }
 
-        
-        const categoryData = await category.find({})
-        .limit(limit)
-        .skip((page-1)*limit)
-        .sort({ createdAt : -1})
-        .exec()
-        
 
-        res.render('category', { 
+        const categoryData = await category.find({})
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .sort({ createdAt: -1 })
+            .exec()
+
+
+        res.render('category', {
             category: categoryData,
             page: page,
             Previous: Previous,
             Next: Next,
-            totalPages: totalPages ,
-            currentPage: page, 
+            totalPages: totalPages,
+            currentPage: page,
             pageSize: limit
         });
 
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
 
     }
 }
@@ -49,7 +49,7 @@ const loadAddCatogery = async (req, res) => {
         res.render('addCategory');
 
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -74,7 +74,7 @@ const addCategory = async (req, res) => {
             res.redirect('/admin/category');
         }
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 };
 
@@ -96,7 +96,7 @@ const categoryStatus = async (req, res) => {
         res.send({ status: "success", category: updatedCategory });
 
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
@@ -113,7 +113,7 @@ const loadEditCategory = async (req, res) => {
         res.render('editCategory', { categories: data });
 
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -141,7 +141,7 @@ const editCategory = async (req, res) => {
         res.redirect("/admin/category");
 
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 
 }

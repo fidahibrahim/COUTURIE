@@ -188,6 +188,10 @@
                                             <label>Mobile Number *</label>
                                             <input value="<%= user.mobile %>" type="string" class="form-control" readonly>
 
+                                            <label>Referral Code *</label>
+                                            <input value="http://localhost:3000/register?referralCode=<%= user.referralCode %>" type="string" class="form-control" id="referralLink" readonly>
+                                            <button onclick="copyLink()" >Copy</button>
+
                                            
                                                 <button class="btn btn-outline-primary-2"><a href="/editProfile">Edit</a></button>
                                         </form>
@@ -327,6 +331,16 @@
             </div><!-- End .social-icons -->
         </div><!-- End .mobile-menu-wrapper -->
     </div><!-- End .mobile-menu-container -->
+
+    <script>
+        function copyLink() {
+          var referralLink = document.getElementById("referralLink");
+          referralLink.select();
+          document.execCommand("copy");
+
+          toastr.success("Referral link copied to clipboard!");
+        }
+      </script>
 
 
     <%- include('../layout/user/footer.ejs') %>

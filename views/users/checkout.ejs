@@ -359,7 +359,7 @@
                                                 <div class="card-header" id="heading-5">
                                                     <h2 class="card-title">
                                                         <input type="radio" name="paymentOpt" value="WALLET">
-                                                        Wallet
+                                                        Wallet ( ₹ <%= user.wallet%>)
                                                     </h2>
                                                 </div><!-- End .card-header -->
                                             </div><!-- End .card -->
@@ -577,6 +577,12 @@
                         title: 'Cannot Add Product!',
                         text: `Product ${responseData.insufficientProducts} is Out of Stock`,
                     });
+                } else if (responseData.insufficientBalance){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Cannot place order',
+                        text: 'insufficient wallet Amount',
+                    });
                 } else {
                     razorpayPayment(responseData.order);
                     console.log("Frontend Data:", responseData.order);
@@ -657,30 +663,30 @@
     </script>
 
     <script>
-        function applyCoupon(event){
+        function applyCoupon(event) {
             event.preventDefault()
             let couponCode = document.getElementById('c_code').value
-            let subTotalElement = document.querySelector('.summary-subtotal td:nth-child(2)' )
+            let subTotalElement = document.querySelector('.summary-subtotal td:nth-child(2)')
             let total = parseFloat(subTotalElement.textContent.replace(/\D/g, ''));
-            console.log(couponCode,total);
+            console.log(couponCode, total);
 
             $.ajax({
-                url:'/applyCoupon',
-                data:{
-                    couponCode:couponCode,
-                    total:total
+                url: '/applyCoupon',
+                data: {
+                    couponCode: couponCode,
+                    total: total
                 },
-                method:'POST',
-                success:(response)=>{
-                    if(response.notAvailable){
+                method: 'POST',
+                success: (response) => {
+                    if (response.notAvailable) {
                         fireSwal(response.message)
-                    }else if(response.alreadyUsed){
+                    } else if (response.alreadyUsed) {
                         fireSwal(response.message)
-                    }else if(response.expire){
+                    } else if (response.expire) {
                         fireSwal(response.message)
-                    }else if(response.min){
+                    } else if (response.min) {
                         fireSwal(response.message)
-                    }else if(response.amountOkey){
+                    } else if (response.amountOkey) {
                         document.getElementById('discount').innerHTML = '₹' + response.discountAmount
                         document.getElementById('totalAmount').innerHTML = '₹' + response.discountedTotal
                         Swal.fire({

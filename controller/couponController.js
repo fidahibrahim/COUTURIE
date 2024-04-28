@@ -7,7 +7,7 @@ const loadCoupon = async (req, res) => {
         const allCoupon = await Coupon.find()
         res.render('coupon', { allCoupon: allCoupon, moment })
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -15,7 +15,7 @@ const loadAddCoupon = async (req, res) => {
     try {
         res.render('addCoupon')
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -45,7 +45,7 @@ const addCoupon = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -73,7 +73,7 @@ const loadEditCoupon = async (req, res) => {
         console.log("id", req.query.id);
         res.render('editCoupon', { coupon: couponData, moment });
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -102,7 +102,7 @@ const editCoupon = async (req, res) => {
             res.redirect('/admin/coupon');
         }
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -147,76 +147,10 @@ const applyCoupon = async (req, res) => {
 
         }
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // try {
-    //     const cCode = req.body.couponCode
-    //     const userId = req.session.userId
-    //     const couponCode = await Coupon.findOne({ couponCode: cCode })
-    //     const cartData = await Cart.findOne({ userId: userId })
-    //     if (couponCode) {
-    //         const alreadyUsed = couponCode.userUsed.find((user) => user.userId === userId)
-    //         if (!alreadyUsed) {
-    //             let currentDate = new Date()
-    //             if (couponCode.expiryDate > currentDate) {
-    //                 const total = cartData.products.reduce((acc, value) => acc + value.totalPrice, 0)
-    //                 if (total >= couponCode.limitOfUse) {
-    //                     let discount = 0
-    //                     let cartAmount = 0
-    //                     if (couponCode.discountAmount) {
-    //                         let discAmt = total * (couponCode.discountAmount / 100);
-    //                         let dics = discAmt / cartData.products.length
-    //                         discount = Math.round(dics)
-    //                         cartAmount = cartData.products.reduce((acc, value) => {
-    //                             if (value.totalPrice >= discount) {
-    //                                 return acc += (value.totalPrice - discount)
-    //                             } else {
-    //                                 return acc += value.totalPrice
-    //                             }
-    //                         }, 0)
-    //                     }
-    //                     res.json({ success: true, subTotal: cartAmount })
-    //                 } else {
-    //                     res.json({ min: true, message: 'minimum amount needed' })
-    //                 }
-    //             } else {
-    //                 res.json({ expired: true, message: 'this coupon is expired' })
-    //             }
-    //         } else {
-    //             res.json({ alreadyUsed: true, message: 'this coupon already used' })
-    //         }
-    //     } else {
-    //         res.json({ notAvailable: true, message: 'coupon is not available ' })
-    //     }
-    // } catch (error) {
-    //     console.log(error);
-    // }
 }
 
 

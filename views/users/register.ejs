@@ -137,6 +137,10 @@
                                     aria-labelledby="register-tab-2">
                                     <form method="post" onsubmit="return validateForm()">
                                         <div class="form-group">
+                                            <% if(locals.referralCode){%>
+                                                <input type="hidden" name="referralCode" id="referralCode" value="<%= referralCode%>">
+                                                <%} else {%>
+                                                    <%}%>
                                             <label for="register-username-2">User Name *</label>
                                             <input type="text" class="form-control" id="register-username-2"
                                                 name="userName" value="<%= locals.username %>">

@@ -231,18 +231,20 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <!-- Populate with transaction data -->
+                                                <% if(user.walletHistory.length > 0){%>
+                                                <% user.walletHistory.forEach(history=>{%>
                                                 <tr>
-                                                    <td>Deposit</td>
-                                                    <td>$100.00</td>
-                                                    <td>2024-04-26</td>
+                                                    <td><%= history.reason%></td>
+                                                    <td>₹<%= history.amount%></td>
+                                                    <td><%= moment(history.date).format('DD/MM/YYYY')%></td>
                                                 </tr>
-                                                <tr>
-                                                    <td>Withdrawal</td>
-                                                    <td>$50.00</td>
-                                                    <td>2024-04-25</td>
-                                                </tr>
-                                                <!-- Add more rows as needed -->
+                                                <%})%>
+                                                <%}else{%>
+                                                    <tr>
+                                                        <td> No Transaction</td>
+                                                    </tr>
+                                                    <%}%>
+
                                             </tbody>
                                         </table>
                                     </div>

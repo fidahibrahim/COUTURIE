@@ -26,6 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public/assets')));
 
 app.set("view engine", "ejs");
+app.set('views',"./views/users")
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -42,6 +43,7 @@ app.get('/google/callback', passport.authenticate('google', { failureRedirect: '
 app.get('/success', userController.googleLogin);
 
 
+
 const userRoute = require("./routes/userRoute");
 app.use('/', userRoute);
 
@@ -49,8 +51,14 @@ const adminRoute = require("./routes/adminRoute");
 const exp = require("constants");
 app.use('/admin', adminRoute)
 
+app.get('/500',(req,res)=>{
+    res.status(500).render('500')
+})
 
 
+app.get('*',(req,res)=>{
+    res.status(404).render('404')
+})
 
 
 

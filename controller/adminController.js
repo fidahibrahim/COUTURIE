@@ -5,7 +5,7 @@ const adminLogin = async (req, res) => {
     try {
         res.render('login');
     } catch (error) {
-        console.log(error);
+       res.redirect('/500')
     }
 }
 
@@ -36,7 +36,7 @@ const verifyLogin = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error);
+       res.redirect('/500');
     }
 }
 
@@ -46,7 +46,7 @@ const loadDashboard = async (req, res) => {
         res.render('adminDashboard', { user: user });
 
     } catch (error) {
-        console.log(error);
+       res.redirect('/500');
     }
 }
 
@@ -88,7 +88,7 @@ const loadUsers = async (req, res) => {
                 pageSize: limit
             })
     } catch (error) {
-        console.log("error");
+       res.redirect('/500')
 
     }
 }
@@ -109,7 +109,7 @@ const userStatus = async (req, res) => {
         res.send({ status: "success", user: updatedUser });
 
     } catch (error) {
-        console.log(error);
+       res.redirect('/500');
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
@@ -122,7 +122,7 @@ const logout = async (req, res) => {
         req.session.admin = null
         res.redirect('/admin/')
     } catch (error) {
-        console.log(error);
+       res.redirect('/500');
 
     }
 }

@@ -4,7 +4,7 @@ const loadSalesReport = async (req, res) => {
     try {
         res.render('salesReport')
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -100,7 +100,7 @@ const customDateSort = async (req, res) => {
 
 
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -186,7 +186,7 @@ const dailySalesReport = async (req, res) => {
        
 
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -254,7 +254,7 @@ const weeklySalesReport = async(req,res)=>{
             fromDate:'', toDate:''
         })
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -330,7 +330,7 @@ const monthlySalesReport = async (req,res)=>{
             fromDate:'', toDate:''
         })
     } catch (error) {
-       console.log(error); 
+       res.redirect('/500') 
     }
 }
 
@@ -389,7 +389,7 @@ const YearlySalesReport = async (req,res)=>{
             fromDate:'', toDate:''
         });
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 

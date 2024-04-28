@@ -10,7 +10,7 @@ const loadWishlist = async (req, res) => {
         res.render('wishlist', { wishlist });
 
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -65,6 +65,7 @@ const removeFromWishlist = async (req, res) => {
         }
         res.json({ ok: true })
     } catch (error) {
+        res.redirect('/500')
 
     }
 }
@@ -112,7 +113,7 @@ const addToCart = async (req, res) => {
             res.json({ ok: true })
         }
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 

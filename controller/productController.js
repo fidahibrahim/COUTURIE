@@ -38,7 +38,7 @@ const loadProduct = async (req, res) => {
                 pageSize: limit
             })
     } catch (error) {
-        console.log(error);
+        res.redirect('/500');
     }
 }
 
@@ -47,7 +47,7 @@ const loadAddProduct = async (req, res) => {
         const categories = await category.find({})
         res.render('addProduct', { category: categories });
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 const addProduct = async (req, res) => {
@@ -107,7 +107,7 @@ const productStatus = async (req, res) => {
         res.send({ status: "success", product: updatedProduct });
 
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
@@ -120,7 +120,7 @@ const loadeditProduct = async (req, res) => {
         res.render('editProduct', { category: Category, products: productData })
 
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
 
     }
 }
@@ -170,7 +170,7 @@ const editProduct = async (req, res) => {
         res.redirect("/admin/product");
 
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
 
     }
 }
@@ -183,7 +183,7 @@ const deleteImg = async (req, res) => {
         res.send({ success: true });
 
     } catch (error) {
-    console.log(error);
+    res.redirect('/500')
     }
 };
 

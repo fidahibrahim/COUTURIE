@@ -85,28 +85,28 @@
                                                     <select name="orderStatus"class="form-select orderStatus" id="orderStatus" 
                                                         data-orderId="<%= order._id%>"
                                                         data-productId="<%= product.productId._id%>" 
-                                                        data-userId="<%= order.userId%>" disabled>
+                                                        data-userId="<%= order.userId._id%>" disabled>
                                                         <option value="delivered">Delivered</option>
                                                     </select>
                                                     <% }else if(product.status === 'cancelled'){%>
                                                         <select name="orderStatus" id="orderStatus" class="form-select orderStatus"
                                                         data-orderId="<%= order._id%>"
                                                         data-productId="<%= product.productId._id%>" 
-                                                        data-userId="<%= order.userId%>" disabled>
+                                                        data-userId="<%= order.userId._id%>" disabled>
                                                             <option value="returned">cancelled</option>
                                                         </select>
                                                     <%}else if(product.status==='returned'){%>
                                                         <select name="orderStatus" id="orderStatus" class="form-select orderStatus"
                                                         data-orderId="<%= order._id%>"
                                                         data-productId="<%= product.productId._id%>" 
-                                                        data-userId="<%= order.userId%>" disabled>
+                                                        data-userId="<%= order.userId._id%>" disabled>
                                                             <option value="returned">Returned</option>
                                                         </select>
                                                         <%}else if(product.status==='returnRequested'){%>
                                                             <select name="orderStatus" id="orderStatus" class="form-select orderStatus"
                                                             data-orderId="<%= order._id%>"
                                                             data-productId="<%= product.productId._id%>" 
-                                                            data-userId="<%= order.userId%>" onchange="changeReturnStatus(this)">
+                                                            data-userId="<%= order.userId._id%>" onchange="changeReturnStatus(this)">
                                                                 <option >Change</option>
                                                                 <option value="returnRequested">returnRequested</option>
                                                                 <option value="returned">return</option>
@@ -116,7 +116,7 @@
                                                                 <select name="orderStatus" id="orderStatus" class="form-select orderStatus"
                                                                 data-orderId="<%= order._id%>"
                                                                 data-productId="<%= JSON.stringify(product.productId._id)%>" 
-                                                                data-userId="<%=JSON.stringify(order.userId)%>" onchange="changeStatus(this,'<%= order._id%>')">
+                                                                data-userId="<%=JSON.stringify(order.userId._id)%>" onchange="changeStatus(this,'<%= order._id%>')">
                                                                     <option >Change Status</option>
                                                                     <option value="shipped">Shipped</option>
                                                                     <option value="outfordelivery">Outfordelivery</option>
@@ -126,7 +126,7 @@
                                                         <select name="orderStatus" id="orderStatus" class="form-select orderStatus"
                                                         data-orderId="<%= order._id%>"
                                                         data-productId="<%= JSON.stringify(product.productId._id)%>" 
-                                                        data-userId="<%= JSON.stringify(order.userId)%>" onchange="changeStatus(this,'<%= order._id%>')">
+                                                        data-userId="<%= JSON.stringify(order.userId._id)%>" onchange="changeStatus(this,'<%= order._id%>')">
                                                             <option >Change Status</option>
                                                             <option value="shipped">Shipped</option>
                                                             <option value="outfordelivery">OutForDelivery </option>

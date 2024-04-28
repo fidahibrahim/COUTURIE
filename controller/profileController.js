@@ -1,13 +1,13 @@
 const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
-const { ObjectId } = require('mongoose').Types;
+
 const loadProfile = async (req, res) => {
     try {
         id = req.session.userId;
         const userData = await User.findOne({ _id: id })
         res.render('profile', { user: userData });
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -17,7 +17,7 @@ const loadEditProfile = async (req, res) => {
         const userData = await User.findOne({ _id: id })
         res.render('editProfile', { user: userData });
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -29,7 +29,7 @@ const editProfile = async (req, res) => {
         await User.findByIdAndUpdate(id, { username: username, mobile: mobile });
         res.redirect('/profile');
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -37,7 +37,7 @@ const loadChangePass = async (req, res) => {
     try {
         res.render('changePass')
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -73,7 +73,7 @@ const changePass = async (req, res) => {
         res.redirect('/profile');
 
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -83,7 +83,7 @@ const loadAddress = async (req, res) => {
         const userData = await User.findOne({ _id: id })
         res.render('address', { userData })
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -91,7 +91,7 @@ const loadAddAddress = async (req, res) => {
     try {
         res.render('addAddress')
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -113,7 +113,7 @@ const addAddress = async (req, res) => {
         })
         res.redirect('/address');
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -125,7 +125,7 @@ const loadEditAddress = async (req, res) => {
         const foundAddress = addressData.address.find(address => address._id == addressId);
         res.render('editAddress', { addressData: foundAddress })
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -148,7 +148,7 @@ const editAddress = async (req, res) => {
         res.redirect('/address')
 
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -161,7 +161,7 @@ const deleteAddress = async(req,res)=>{
         console.log("dthg",deletedAddress);
         res.json( {deleted:true} )
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 
 }

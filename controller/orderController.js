@@ -23,14 +23,15 @@ const loadOrder = async (req, res) => {
 
         res.render('order', { order, user, moment })
     } catch (error) {
-        console.log(error);
+       res.redirect('/500')
     }
 }
 
 const placeOrder = async (req, res) => {
     try {
-        const { address, subTotal, payment, couponCode} = req.body;
+        const { address, subTotal, payment, couponCode } = req.body;
         const userId = req.session.userId;
+        const userData = await User.findOne({ _id: userId })
         const cart = await Cart.findOne({ userId: userId }).populate({
             path: "products.productId",
             model: "Product"
@@ -42,24 +43,24 @@ const placeOrder = async (req, res) => {
         const randomNum = Math.floor(10000 + Math.random() * 90000);
         const orderRand = "MFTS" + randomNum;
         const status = payment == 'COD' ? 'placed' : 'pending';
-        const coupon = await couponModel.findOne({ couponCode:couponCode })
-        const discountedAmt=subTotal*(parseFloat(coupon.discountAmount)/100)
+        const coupon = await couponModel.findOne({ couponCode: couponCode })
+        const discountedAmt = coupon ? subTotal * (parseFloat(coupon.discountAmount) / 100) : 0
 
         let finalAmount = subTotal
         let discountPerItem = 0;
-        
 
-        if(coupon){
-            coupon.userUsed.push({ userId:userId })
+
+        if (coupon) {
+            coupon.userUsed.push({ userId: userId })
             await coupon.save()
-            let discounted = subTotal*(parseFloat(coupon.discountAmount)/100)
+            let discounted = subTotal * (parseFloat(coupon.discountAmount) / 100)
             finalAmount -= discounted
             const numberOfproduct = cart.products.length
-            discountPerItem = discounted/numberOfproduct
+            discountPerItem = discounted / numberOfproduct
         }
 
         const updatedProducts = products.map(product => {
-            const updatedProduct = {...product,status:status,discountPerItem:discountPerItem}
+            const updatedProduct = { ...product, status: status, discountPerItem: discountPerItem }
             return updatedProduct
         })
 
@@ -75,7 +76,7 @@ const placeOrder = async (req, res) => {
             res.json({ quan: true, insufficientProducts });
         } else {
             const user = await User.findOne({ id: userId });
-            
+
             const date = Date.now();
             const order = new Order({
                 userId: userId,
@@ -87,7 +88,7 @@ const placeOrder = async (req, res) => {
                 paymentMethod: payment,
                 deliveryAddress: address,
                 products: updatedProducts,
-                discount:coupon ? discountedAmt:0
+                discount: coupon ? discountedAmt : 0
             });
             let orderDetails = await order.save();
             const orderId = orderDetails._id;
@@ -101,6 +102,28 @@ const placeOrder = async (req, res) => {
                 }
 
                 res.json({ success: true, orderId });
+            } else if (orderDetails.paymentMethod == 'WALLET') {
+                if (userData.wallet < finalAmount) {
+                    return res.json({ insufficientBalance: true })
+                } else {
+                    userData.wallet -= finalAmount
+                    userData.walletHistory.push({
+                        date: new Date(),
+                        reason: 'Placed Order From Wallet',
+                        amount: finalAmount
+                    })
+                    await userData.save()
+
+                    await Order.findOneAndUpdate({ userId: userId }, { $set: { "products.$[].status": "placed" } })
+                    await Cart.deleteOne({ userId: userId });
+                    for (let i = 0; i < products.length; i++) {
+                        const productId = products[i].productId;
+                        const productQuantity = products[i].quantity;
+                        await Product.updateOne({ _id: productId }, { $inc: { quantity: -productQuantity } });
+                    }
+                   return res.json({ success: true, orderId });
+
+                }
             } else if (orderDetails.paymentMethod == 'RAZORPAY') {
                 var options = {
                     amount: subTotal * 100,
@@ -108,7 +131,6 @@ const placeOrder = async (req, res) => {
                     receipt: "" + orderId,
                 }
                 instance.orders.create(options, function (err, order) {
-                    console.log(order);
                     return res.json({ success: false, order: order })
                 })
             }
@@ -116,7 +138,7 @@ const placeOrder = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error);
+       res.redirect('/500')
         res.status(500).json({ error: 'Internal server error' });
     }
 };
@@ -126,7 +148,6 @@ const verifyPayment = async (req, res) => {
         const cartData = await Cart.findOne({ userId: req.session.userId });
         const cartProducts = cartData.products
         const details = req.body
-        console.log("my verify payment body", req.body);
         secretKey = process.env.RAZORPAY_KEY_SECRET
         const hmac = crypto.createHmac("sha256", secretKey);
 
@@ -145,13 +166,12 @@ const verifyPayment = async (req, res) => {
                 {
                     $set: {
                         "paymentId": details.payment.razorpay_payment_id,
+                        "status": "placed",
                         "products.$[].status": "placed",
-                    },
-                    $set: {
-                        "status": "placed"
                     }
                 }
             )
+
             for (let i = 0; i < cartProducts.length; i++) {
                 let count = cartProducts[i].quantity;
                 await Product.updateOne(
@@ -193,7 +213,7 @@ const loadViewOrder = async (req, res) => {
             .exec()
         res.render('viewOrders', { orders: data, Next: Next, Previous: Previous, totalPages: totalPages, moment });
     } catch (error) {
-        console.log(error);
+       res.redirect('/500')
     }
 
 }
@@ -207,7 +227,7 @@ const loadOrderDetails = async (req, res) => {
         const user = await User.findById(userId).populate('address');
         res.render('orderDetails', { order, user, moment });
     } catch (error) {
-        console.log(error);
+       res.redirect('/500')
     }
 }
 
@@ -217,7 +237,7 @@ const loadAdminOrders = async (req, res) => {
         res.render('orders', { order, moment })
 
     } catch (error) {
-        console.log(error);
+       res.redirect('/500')
     }
 }
 
@@ -227,7 +247,7 @@ const loadAdminViewDetails = async (req, res) => {
         const orderDetails = await Order.find({ _id: { $in: orders } }).populate('products.productId').populate('userId');
         res.render('viewDetails', { orders: orderDetails, moment });
     } catch (error) {
-        console.log(error);
+       res.redirect('/500')
         res.status(500).send("Internal Server Error");
     }
 };
@@ -235,16 +255,13 @@ const loadAdminViewDetails = async (req, res) => {
 const changeOrderStatus = async (req, res) => {
     try {
         const { orderId, productId, userId, status } = req.body;
-        console.log("status", req.body);
         const orderData = await Order.findOneAndUpdate(
             { _id: orderId, userId: userId, 'products.productId': productId },
             { $set: { 'products.$.status': status } }
         );
-
-        console.log("update", orderData)
         return res.json({ change: true });
     } catch (error) {
-        console.log(error);
+       res.redirect('/500')
         return res.status(500).json({ error: 'Internal server error' });
     }
 }
@@ -265,12 +282,11 @@ const cancelOrder = async (req, res) => {
 
 
         const productQty = productDetails.products[0].quantity;
-        console.log("nooooooo", productQty);
         await Product.updateOne({ _id: productId }, { $inc: { quantity: productQty } })
 
         res.json({ cancel: true })
     } catch (error) {
-        console.log(error);
+       res.redirect('/500')
     }
 }
 
@@ -288,31 +304,28 @@ const returnRequest = async (req, res) => {
 
         }
     } catch (error) {
-        console.log(error);
+       res.redirect('/500')
     }
 }
 
 const AdminCancelOrder = async (req, res) => {
     try {
         const { orderId, productId } = req.body
-        console.log("body", req.body);
         const orderData = await Order.findOneAndUpdate(
             { _id: orderId, 'products.productId': productId },
             { $set: { 'products.$.status': 'cancelled' } }
         )
-        console.log("orderdata", orderData);
         const productDetails = await Order.findOne(
             { _id: orderId, 'products.productId': productId },
             { 'products.$': 1 }
         )
-        console.log("productdeatails", productDetails);
         const productQty = productDetails.products[0].quantity
 
         await Product.updateOne({ _id: productId }, { $inc: { quantity: productQty } })
         res.json({ cancel: true })
 
     } catch (error) {
-        console.log(error);
+       res.redirect('/500')
     }
 }
 
@@ -321,11 +334,8 @@ const changeReturnStatus = async (req, res) => {
 
     try {
         const { orderId, productId, status, userId } = req.body;
-        console.log(status);
-        console.log(userId);
         if (status === 'returned') {
             const user = await User.findOne({ _id: userId })
-            console.log(user);
             if (user) {
                 const order = await Order.findOne({ _id: orderId })
                 const productDetails = await Order.findOne(
@@ -335,16 +345,16 @@ const changeReturnStatus = async (req, res) => {
 
                 const amount = productDetails.products[0].productId.price * productDetails.products[0].quantity;
                 user.wallet += amount
-    
+
                 user.walletHistory.push({
                     date: new Date(),
-                    amount: refundAmount,
+                    amount: amount,
                     reason: `Refund for returned order`
                 });
-    
-    
+
+
                 await user.save();
-    
+
                 await Order.findOneAndUpdate(
                     { _id: orderId, 'products.productId': productId },
                     { 'products.$.status': status }
@@ -361,7 +371,7 @@ const changeReturnStatus = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error);
+       res.redirect('/500')
         res.status(500).json({ error: 'An error occurred' });
 
     }

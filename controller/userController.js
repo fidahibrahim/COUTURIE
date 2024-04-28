@@ -6,6 +6,7 @@ const randomstring = require('randomstring')
 const userOtpVerification = require('../models/userOtpVerification');
 const category = require('../models/category');
 const product = require('../models/productModel');
+const moment = require('moment')
 
 const loadHome = async (req, res) => {
     try {
@@ -13,15 +14,16 @@ const loadHome = async (req, res) => {
         res.render("home", { user: userData });
 
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
 const loadRegister = async (req, res) => {
     try {
-        res.render("register");
+        const referralCode = req.query.referralCode
+        res.render("register", { referralCode });
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -29,7 +31,7 @@ const loadLogin = async (req, res) => {
     try {
         res.render("login");
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -40,7 +42,7 @@ const securePassword = async (password) => {
         return securePass;
 
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -48,8 +50,15 @@ const verifyRegister = async (req, res) => {
     try {
 
 
-        const { userName, email, password, mobile } = req.body
+        const { userName, email, password, mobile, referralCode } = req.body
         console.log(req.body);
+
+        if (referralCode) {
+            req.session.referralCode = referralCode
+        }
+
+
+
         const findUser = await User.findOne({ email: email });
         const findUserByMobile = await User.findOne({ mobile: mobile });
         const findUserByName = await User.findOne({ username: userName });
@@ -71,20 +80,29 @@ const verifyRegister = async (req, res) => {
         }
         else {
             const securePass = await securePassword(req.body.password);
+            const referralCode = generateReferralCode()
+
+
+
             const userData = new User({
                 username: userName,
                 email: email,
                 password: securePass,
                 mobile: mobile,
-                verified: false
+                verified: false,
+                referralCode: referralCode
             });
             sendOtpVerification(userData, res)
             await userData.save();
 
         }
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
+}
+
+function generateReferralCode() {
+    return Math.random().toString(36).substring(2, 8).toUpperCase()
 }
 
 
@@ -108,7 +126,7 @@ const googleLogin = async (req, res, next) => {
             res.redirect('/home');
         }
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -121,8 +139,8 @@ const sendOtpVerification = async ({ email }, res) => {
             port: 465,
             secure: true,
             auth: {
-                user:process.env.USER_EMAIL ,
-                pass:process.env.USER_PASS 
+                user: process.env.USER_EMAIL,
+                pass: process.env.USER_PASS
             }
         })
 
@@ -143,7 +161,7 @@ const sendOtpVerification = async ({ email }, res) => {
         await transporter.sendMail(emailOptions);
         res.redirect(`/otp?email=${email}`)
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 const loadOtp = async (req, res) => {
@@ -151,13 +169,14 @@ const loadOtp = async (req, res) => {
         const email = req.query.email
         res.render('otp', { email: email })
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
 const verifyOtp = async (req, res) => {
+    let email
     try {
-        const email = req.body.email;
+        email = req.body.email;
         const otp = req.body.digit1 + req.body.digit2 + req.body.digit3 + req.body.digit4;
         const userVerification = await userOtpVerification.findOne({ email });
 
@@ -179,15 +198,32 @@ const verifyOtp = async (req, res) => {
             const userData = await User.findOne({ email });
             if (userData) {
                 await User.findByIdAndUpdate(userData._id, { $set: { verified: true } });
+                await userOtpVerification.deleteOne({ email });
+                req.flash('message', 'OTP verified successfully.');
+
+                if (req.session.referralCode) {
+                    await User.findOneAndUpdate(
+                        { referralCode: req.session.referralCode },
+                        {
+                            $inc: { wallet: 240 }, $push: {
+                                walletHistory: {
+                                    date: new Date(),
+                                    amount: 240,
+                                    reason: `Referal Bonus for refering ${userData.username}`
+                                }
+                            }
+                        }
+                    )
+
+                }
+
+                return res.redirect('/login');
             }
         } else {
             req.flash('message', 'Invalid OTP. Please try again.');
             return res.redirect(`/otp?email=${email}`);
         }
 
-        await userOtpVerification.deleteOne({ email });
-        req.flash('message', 'OTP verified successfully.');
-        return res.redirect('/login');
     } catch (error) {
         console.error(error);
         req.flash('message', 'An error occurred while verifying OTP. Please try again.');
@@ -246,7 +282,7 @@ const verifyLogin = async (req, res) => {
         res.redirect('/home')
 
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -255,7 +291,7 @@ const loadForgotPassword = async (req, res) => {
     try {
         res.render('forgotPassword')
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -285,7 +321,7 @@ const forgotPasswordVerify = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -314,7 +350,7 @@ const sendResetPasswordMail = async (name, email, token) => {
 
         await transporter.sendMail(emailOptions);
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -331,7 +367,7 @@ const loadResetPassword = async (req, res) => {
             return res.redirect("/forgotPassword");
         }
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -361,7 +397,7 @@ const resetPassword = async (req, res) => {
         res.redirect('/login')
 
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -399,7 +435,7 @@ const loadShop = async (req, res) => {
             totalPages
         });
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -428,7 +464,7 @@ const loadFilter = async (req, res) => {
         const products = await product.find(filter).sort(sortOptions);
         res.json(products);
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
@@ -439,7 +475,7 @@ const loadProductDetails = async (req, res) => {
         const productData = await product.findOne({ _id: productId }).populate('category')
         res.render('productDetails', { product: productData })
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -448,7 +484,7 @@ const logout = async (req, res) => {
         req.session.userId = null
         res.redirect('/')
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
 
     }
 }
@@ -457,7 +493,7 @@ const loadBlockedUser = async (req, res) => {
     try {
         res.render('blocked-user')
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
 
     }
 }
@@ -466,7 +502,7 @@ const loadAbout = async (req, res) => {
     try {
         res.render('about');
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -474,7 +510,7 @@ const loadContact = async (req, res) => {
     try {
         res.render('contact');
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -483,10 +519,10 @@ const loadProfile = async (req, res) => {
     try {
         id = req.session.userId;
         const userData = await User.findOne({ _id: id })
-        
+
         res.render('profile', { user: userData });
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -496,7 +532,7 @@ const loadEditProfile = async (req, res) => {
         const userData = await User.findOne({ _id: id })
         res.render('editProfile', { user: userData });
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -508,32 +544,39 @@ const editProfile = async (req, res) => {
         await User.findByIdAndUpdate(id, { username: username, mobile: mobile });
         res.redirect('/profile');
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
-const loadPaymentPolicy = async(req,res)=>{
+const loadPaymentPolicy = async (req, res) => {
     try {
         res.render('paymentPolicy')
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
-const loadWallet = async (req,res)=>{
+const loadWallet = async (req, res) => {
     try {
-        res.render('wallet')
+        const userId = req.session.userId;
+        const user = await User.findOne({ _id: userId });
+
+
+        res.render('wallet', { user, moment })
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
 
-const loadTransaction = async (req,res)=>{
+const loadTransaction = async (req, res) => {
     try {
-        res.render('transaction')
+        const userId = req.session.userId;
+        const user = await User.findOne({ _id: userId });
+        console.log(user);
+        res.render('transaction', { user, moment })
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 

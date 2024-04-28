@@ -60,7 +60,7 @@ const orderSchema = mongoose.Schema({
             },
             status: {
                 type: String,
-                enum: ['placed', 'outForDelivery', 'returnRequested', 'returned', 'returnDenied', 'shipped', 'delivered', 'cancelled'],
+                enum: ['placed', 'outForDelivery', 'returnRequested', 'returned', 'returnDenied', 'shipped', 'delivered', 'cancelled','pending'],
                 default: 'placed'
             },
             quantity: {

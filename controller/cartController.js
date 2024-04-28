@@ -7,12 +7,12 @@ const addToCart = async (req, res) => {
     try {
         const userId = req.session.userId
         const { productId, quantity } = req.body
-        
+
 
         if (!userId) {
             return res.json({ loginRequired: true })
         } else {
-            const productData = await Product.findOne({ _id: productId }); 
+            const productData = await Product.findOne({ _id: productId });
             const cartData = await Cart.findOne({ userId: userId })
             if (cartData) {
                 const existProduct = cartData.products.find(
@@ -61,18 +61,18 @@ const addToCart = async (req, res) => {
             res.json({ success: true })
         }
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
 }
 
 const loadCart = async (req, res) => {
     try {
         const userData = req.session.userId;
-        const cartDetails = await Cart.findOne({userId: userData}).populate({
+        const cartDetails = await Cart.findOne({ userId: userData }).populate({
             path: "products.productId",
             model: "Product"
         });
-        const user = await User.findOne({_id: userData});
+        const user = await User.findOne({ _id: userData });
 
         let subTotal = 0;
         let cartId = null;
@@ -84,66 +84,66 @@ const loadCart = async (req, res) => {
             });
             cartId = cartDetails._id;
         } else {
-          
-            return res.render('cart', { cartDetails,user, subTotal: 0, cartId });
+
+            return res.render('cart', { cartDetails, user, subTotal: 0, cartId });
         }
 
         res.render('cart', { cartDetails, user, subTotal, cartId });
     } catch (error) {
-        console.log(error);
-      
+        res.redirect('/500')
+
         res.status(500).send('Internal Server Error');
     }
 };
 
 const deleteCart = async (req, res) => {
     try {
-      const productId = req.body.product;
-      const userId = req.session.userId;
-  
-      const cartUser = await Cart.findOne({ userId: userId });
-      let totalPrice = 0; // Initialize total price
-      
-      if (cartUser.products.length == 1) {
-        await Cart.deleteOne({ userId: userId });
-      } else {
-        await Cart.findOneAndUpdate(
-          { userId: userId },
-          { $pull: { products: { _id: productId } } }
-        );
-      }
-      
-      // Calculate the updated total price
-      const updatedCartUser = await Cart.findOne({ userId: userId });
-      if (updatedCartUser) {
-        totalPrice = updatedCartUser.products.reduce((acc, cur) => acc + cur.price, 0);
-      }
-      
-      res.json({ success: true, totalPrice });
+        const productId = req.body.product;
+        const userId = req.session.userId;
+
+        const cartUser = await Cart.findOne({ userId: userId });
+        let totalPrice = 0; // Initialize total price
+
+        if (cartUser.products.length == 1) {
+            await Cart.deleteOne({ userId: userId });
+        } else {
+            await Cart.findOneAndUpdate(
+                { userId: userId },
+                { $pull: { products: { _id: productId } } }
+            );
+        }
+
+        // Calculate the updated total price
+        const updatedCartUser = await Cart.findOne({ userId: userId });
+        if (updatedCartUser) {
+            totalPrice = updatedCartUser.products.reduce((acc, cur) => acc + cur.price, 0);
+        }
+
+        res.json({ success: true, totalPrice });
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ success: false, error: 'Internal Server Error' });
+        res.redirect('/500')
+        res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
 };
 
 
 
-  const updateQuantity = async (req,res)=>{
+const updateQuantity = async (req, res) => {
     try {
         const userId = req.session.userId;
-        const {cartId,productId,quantity} = req.body;
-        console.log("asdfghj",req.body);
+        const { cartId, productId, quantity } = req.body;
+        console.log("asdfghj", req.body);
         const product = await Product.findById(productId);
         const productPrice = product.price;
         const existingCart = await Cart.findById(cartId).populate({
             path: "products.productId",
             model: "Product"
         })
-        console.log("iuytrew",product);
-        console.log("kjhgfdsa",existingCart);
+        console.log("iuytrew", product);
+        console.log("kjhgfdsa", existingCart);
 
-        if(!existingCart){
-            req.flash('message','Cart Not Found');
+        if (!existingCart) {
+            req.flash('message', 'Cart Not Found');
         }
 
         if (!existingCart.products || existingCart.products.length === 0) {
@@ -151,31 +151,31 @@ const deleteCart = async (req, res) => {
             return res.json({ success: false, message: 'No products in the cart' });
         }
 
-        const productToUpdate = existingCart.products.find(p=>p.productId.equals(productId));
-       
-        if(!productToUpdate){
-            req.flash('message','Product Not Found In The Cart');
+        const productToUpdate = existingCart.products.find(p => p.productId.equals(productId));
+
+        if (!productToUpdate) {
+            req.flash('message', 'Product Not Found In The Cart');
         }
 
         productToUpdate.quantity = quantity
-        productToUpdate.totalPrice  = quantity*productPrice
+        productToUpdate.totalPrice = quantity * productPrice
 
-        existingCart.subTotal = existingCart.products.reduce((total,product)=>{
+        existingCart.subTotal = existingCart.products.reduce((total, product) => {
             return total + product.totalPrice
-        },0)
+        }, 0)
         existingCart.grandTotal = existingCart.subTotal
         const updatedCart = await existingCart.save();
 
         res.json({
-            success:true,
-            message:"Quantity Updated Successfully",
-            updatedTotalPrice:productToUpdate.totalPrice,
-            totalPriceTotal:existingCart.subTotal
+            success: true,
+            message: "Quantity Updated Successfully",
+            updatedTotalPrice: productToUpdate.totalPrice,
+            totalPriceTotal: existingCart.subTotal
         });
     } catch (error) {
-        console.log(error);
+        res.redirect('/500')
     }
-  }
+}
 
 
 
