@@ -1,164 +1,149 @@
 $(function () {
     "use strict";
-	// Bar chart
-	new Chart(document.getElementById("bar-chart"), {
-		type: 'bar',
-		data: {
-		  labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
-		  datasets: [
-			{
-			  label: "Population (millions)",
-			  backgroundColor: ["#6174d5", "#5f76e8", "#768bf4", "#7385df", "#b1bdfa"],
-			  data: [8478,6267,5734,4784,1833]
-			}
-		  ]
-		},
-		options: {
-		  legend: { display: false },
-		  title: {
-			display: true, 
-			text: 'Predicted world population (millions) in 2050'
-		  }
-		}
-	});
 
-	// New chart
-	new Chart(document.getElementById("pie-chart"), {
-		type: 'pie',
-		data: {
-		  labels: ["Africa", "Asia", "Europe", "Latin America"],
-		  datasets: [{
-			label: "Population (millions)",
-			backgroundColor: ["#5e73da", "#b1bdfa","#5f76e8","#8fa0f3"],
-			data: [2478,5267,3734,2784]
-		  }]
-		},
-		options: {
-		  title: {
-			display: true,
-			text: 'Predicted world population (millions) in 2050'
-		  }
-		}
-	});
+	
+// ===============================MY MONTHLY============================
 
-	// Horizental Bar Chart
-	new Chart(document.getElementById("bar-chart-horizontal"), {
-		type: 'horizontalBar',
-		data: {
-		  labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
-		  datasets: [
-			{
-			  label: "Population (millions)",
-			  backgroundColor: ["#6174d5", "#5f76e8", "#768bf4", "#7385df", "#b1bdfa"],
-			  data: [8478,6267,5534,4784,3433]
-			}
-		  ]
-		},
-		options: {
-		  legend: { display: false },
-		  title: {
-			display: true,
-			text: 'Predicted world population (millions) in 2050'
-		  }
-		}
-	});
+// SALES
+let jan = document.getElementById("Jan").value
+let feb = document.getElementById("Feb").value
+let mar = document.getElementById("March").value
+let apr = document.getElementById("April").value
+let may = document.getElementById("May").value
+let jun = document.getElementById("June").value
+let jul = document.getElementById("July").value
+let aug = document.getElementById("Aug").value
+let sep = document.getElementById("Sep").value
+let oct = document.getElementById("Oct").value
+let nov = document.getElementById("Nov").value
+let dec = document.getElementById("Dec").value
 
-	//Polar Chart
-	new Chart(document.getElementById("polar-chart"), {
-		type: 'polarArea',
-		data: {
-		  labels: ["Africa", "Asia", "Europe", "Latin America"],
-		  datasets: [
-			{
-			  label: "Population (millions)",
-			  backgroundColor: ["#5e73da", "#b1bdfa","#5f76e8","#8fa0f3"],
-			  data: [2478,5267,5734,3784]
-			}
-		  ]
-		},
-		options: {
-		  title: {
-			display: true,
-			text: 'Predicted world population (millions) in 2050'
-		  }
-		}
-	});
 
-	//Radar chart
-	new Chart(document.getElementById("radar-chart"), {
-		type: 'radar',
-		data: {
-		  labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
-		  datasets: [
-			{
-			  label: "250",
-			  fill: true,
-			  backgroundColor: "rgba(1, 202, 241,0.2)",
-			  borderColor: "rgba(1, 202, 241,1)",
-			  pointBorderColor: "#fff",
-			  pointBackgroundColor: "rgba(1, 202, 241,1)",
-			  data: [8.77,55.61,21.69,6.62,6.82]
-			}, {
-			  label: "4050",
-			  fill: true,
-			  backgroundColor: "rgba(95, 118, 232,0.2)",
-			  borderColor: "rgba(95, 118, 232,1)",
-			  pointBorderColor: "#fff",
-			  pointBackgroundColor: "rgba(95, 118, 232,1)",
-			  pointBorderColor: "#fff",
-			  data: [25.48,54.16,7.61,8.06,4.45]
-			}
-		  ]
-		},
-		options: {
-		  title: {
-			display: true,
-			text: 'Distribution in % of world population'
-		  }
-		}
-	});
+// orders
 
-	//Line Chart
+let JanOrders = document.getElementById('jan').value
+let FebOrders = document.getElementById('feb').value
+let MarOrders = document.getElementById('march').value
+let AprOrders = document.getElementById('april').value
+let MayOrders = document.getElementById('may').value
+let JunOrders = document.getElementById('june').value
+let JulOrders = document.getElementById('july').value
+let AugOrders = document.getElementById('aug').value
+let SepOrders = document.getElementById('sep').value
+let OctOrders = document.getElementById('oct').value
+let NovOrders = document.getElementById('nov').value
+let DecOrders = document.getElementById('dec').value
+
+
+
+// users
+
+let JAN = document.getElementById('JAN').value
+let FEB = document.getElementById('FEB').value
+let MAR = document.getElementById('MAR').value
+let APR = document.getElementById('APR').value
+let MAY = document.getElementById('MAY').value
+let JUN = document.getElementById('JUN').value
+let JUL = document.getElementById('JUL').value
+let AUG = document.getElementById('AUG').value
+let SEP = document.getElementById('SEP').value
+let OCT = document.getElementById('OCT').value
+let NOV = document.getElementById('NOV').value
+let DEC = document.getElementById('DEC').value
+
+console.log("month",AprOrders,MarOrders);
 
 	new Chart(document.getElementById("line-chart"), {
-	  type: 'line',
-	  data: {
-		labels: [4500,3500,3200,3050,2700,2450,2200,1750,1499,2050],
-		datasets: [{ 
-			data: [86,114,106,106,107,111,133,221,783,2478],
-			label: "Africa",
-			borderColor: "#5f76e8",
+		type: 'bar',
+		data: {
+		  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct','Nov','Dec'],
+		  datasets: [{ 
+			data: [jan,feb,mar,apr,may,jun,jul,aug,sep,oct,nov,dec],
+			label: "sales",
+			backgroundColor: "#5f76e8", 
 			fill: false
 		  }, { 
-			data: [282,350,411,502,635,809,947,1402,3700,5267],
-			label: "Asia",
-			borderColor: "#768bf4",
+			data: [JanOrders,FebOrders,MarOrders,AprOrders,MayOrders,JunOrders,JulOrders,AugOrders,SepOrders,OctOrders,NovOrders,DecOrders],
+			label: "orders",
+			backgroundColor: "#02cccd", 
 			fill: false
 		  }, { 
-			data: [168,170,178,190,203,276,408,547,675,734],
-			label: "Europe",
-			borderColor: "#7385df",
+			data: [JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC],
+			label: "users",
+			backgroundColor: "#7057d2", 
 			fill: false
-		  }, { 
-			data: [40,20,10,16,24,38,74,167,508,784],
-			label: "Latin America",
-			borderColor: "#b1bdfa",
-			fill: false
-		  }, { 
-			data: [6,3,2,2,7,26,82,172,312,433],
-			label: "North America",
-			borderColor: "#8fa0f3", 
-			fill: false
-		  }
+		  }, 
 		]
-	  },
-	  options: {
-		title: {
-		  display: true,
-		  text: 'World population per region (in millions)'
+		},
+		options: {
+		  title: {
+			display: true,
+			text: 'Monthly sale,order,client statistics'
 		}
-	  }
+		}
 	});
 
-	// line second
+
+	// ========================= YEARLY====================================
+
+	//sales
+
+	let sales19 = document.getElementById('2019').value
+	let sales20 = document.getElementById('2020').value
+	let sales21 = document.getElementById('2021').value
+	let sales22 = document.getElementById('2022').value
+	let sales23 = document.getElementById('2023').value
+	let sales24 = document.getElementById('2024').value
+
+	//orders
+
+	let orders19 = document.getElementById('order2019').value
+	let orders20 = document.getElementById('order2020').value
+	let orders21 = document.getElementById('order2021').value
+	let orders22 = document.getElementById('order2022').value
+	let orders23 = document.getElementById('order2023').value
+	let orders24 = document.getElementById('order2024').value
+
+	//users
+
+	let users19 = document.getElementById('users2019').value
+	let users20 = document.getElementById('users2020').value
+	let users21 = document.getElementById('users2021').value
+	let users22 = document.getElementById('users2022').value
+	let users23 = document.getElementById('users2023').value
+	let users24 = document.getElementById('users2024').value
+	
+
+console.log('data',users24,orders24);
+	new Chart(document.getElementById("line-chart1"), {
+		type: 'bar',
+		data: {
+		  labels: ['2019', '2020', '2021', '2022', '2023', '2024','2025','2026','2027' ],
+		  datasets: [{ 
+			data: [ sales19,sales20,sales21,sales22,sales23,sales24 ],
+			label: "sales",
+			backgroundColor: "#5f76e8", 
+			fill: false
+		  }, { 
+			data: [ orders19,orders20,orders21,orders22,orders23,orders24 ],
+			label: "orders",
+			backgroundColor: "#02cccd", 
+			fill: false
+		  }, { 
+			data: [ users19,users20,users21,users22,users23,users24 ],
+			label: "users",
+			backgroundColor: "#7057d2", 
+			fill: false
+		  }, 
+		]
+		},
+		options: {
+		  title: {
+			display: true,
+			text: 'Yearly sale,order,client statistics'
+		}
+		}
+	});
+
+	
 }); 

@@ -54,7 +54,9 @@ adminRoute.get('/salesDaily',adminAuth.isLogin,salesReportController.dailySalesR
 adminRoute.post('/customDate',adminAuth.isLogin,salesReportController.customDateSort);
 adminRoute.get('/salesWeekly',adminAuth.isLogin,salesReportController.weeklySalesReport);
 adminRoute.get('/salesMonthly',adminAuth.isLogin,salesReportController.monthlySalesReport);
-adminRoute.get('/salesyearly',adminAuth.isLogin,salesReportController.YearlySalesReport)
+adminRoute.get('/salesyearly',adminAuth.isLogin,salesReportController.YearlySalesReport);
+adminRoute.get('/checkDataExist',adminAuth.isLogin,salesReportController.checkDataExist);
+
 
 adminRoute.get('/logout',adminAuth.isLogin,adminController.logout);
 

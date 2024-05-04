@@ -577,6 +577,14 @@
                         title: 'Cannot Add Product!',
                         text: `Product ${responseData.insufficientProducts} is Out of Stock`,
                     });
+                }else if(responseData.min){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Cannot place Order!',
+                        text: 'COD is only applicable upto ₹1000',
+                    });
+
+                
                 } else if (responseData.insufficientBalance){
                     Swal.fire({
                         icon: 'error',

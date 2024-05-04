@@ -66,6 +66,9 @@ const orderSchema = mongoose.Schema({
             quantity: {
                 type: Number
             },
+            cancelReason: {
+                type : Number
+            },
             returnReason: {
                 type: String
             },
@@ -75,6 +78,9 @@ const orderSchema = mongoose.Schema({
             }
         }
     ],
+    couponApplied: {
+        type:Number
+    }
 }, { timestamps: true });
 
-module.exports = mongoose.model('order', orderSchema)
+module.exports = mongoose.model('order', orderSchema);

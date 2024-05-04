@@ -7,6 +7,8 @@ const moment = require('moment');
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
 const couponModel = require('../models/couponModel');
+const orderModel = require('../models/orderModel');
+
 
 var instance = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
@@ -23,7 +25,7 @@ const loadOrder = async (req, res) => {
 
         res.render('order', { order, user, moment })
     } catch (error) {
-       res.redirect('/500')
+        res.redirect('/500')
     }
 }
 
@@ -53,10 +55,10 @@ const placeOrder = async (req, res) => {
         if (coupon) {
             coupon.userUsed.push({ userId: userId })
             await coupon.save()
-            let discounted = subTotal * (parseFloat(coupon.discountAmount) / 100)
+            let discounted = Math.round(subTotal * (parseFloat(coupon.discountAmount) / 100))
             finalAmount -= discounted
             const numberOfproduct = cart.products.length
-            discountPerItem = discounted / numberOfproduct
+            discountPerItem = Math.round(discounted / numberOfproduct)
         }
 
         const updatedProducts = products.map(product => {
@@ -93,15 +95,26 @@ const placeOrder = async (req, res) => {
             let orderDetails = await order.save();
             const orderId = orderDetails._id;
 
-            if (orderDetails.paymentMethod == 'COD') {
-                await Cart.deleteOne({ userId: userId });
-                for (let i = 0; i < products.length; i++) {
-                    const productId = products[i].productId;
-                    const productQuantity = products[i].quantity;
-                    await Product.updateOne({ _id: productId }, { $inc: { quantity: -productQuantity } });
-                }
+            if (coupon) {
+                let discounted = Math.round(subTotal * (parseFloat(coupon.discountAmount) / 100))
+                await orderModel.findOneAndUpdate({ _id: orderId }, { $set: { couponApplied: discounted } })
 
-                res.json({ success: true, orderId });
+            }
+
+
+            if (orderDetails.paymentMethod == 'COD') {
+                if (finalAmount > 1000) {
+                    return res.json({ min: true })
+                } else {
+                    await Cart.deleteOne({ userId: userId });
+                    for (let i = 0; i < products.length; i++) {
+                        const productId = products[i].productId;
+                        const productQuantity = products[i].quantity;
+                        await Product.updateOne({ _id: productId }, { $inc: { quantity: -productQuantity } });
+                    }
+
+                    res.json({ success: true, orderId });
+                }
             } else if (orderDetails.paymentMethod == 'WALLET') {
                 if (userData.wallet < finalAmount) {
                     return res.json({ insufficientBalance: true })
@@ -114,14 +127,15 @@ const placeOrder = async (req, res) => {
                     })
                     await userData.save()
 
-                    await Order.findOneAndUpdate({ userId: userId }, { $set: { "products.$[].status": "placed" } })
+                    await Order.findOneAndUpdate({ _id: orderId, userId: userId }, { $set: { "products.$[].status": "placed" } })
+
                     await Cart.deleteOne({ userId: userId });
                     for (let i = 0; i < products.length; i++) {
                         const productId = products[i].productId;
                         const productQuantity = products[i].quantity;
                         await Product.updateOne({ _id: productId }, { $inc: { quantity: -productQuantity } });
                     }
-                   return res.json({ success: true, orderId });
+                    return res.json({ success: true, orderId });
 
                 }
             } else if (orderDetails.paymentMethod == 'RAZORPAY') {
@@ -138,7 +152,7 @@ const placeOrder = async (req, res) => {
         }
 
     } catch (error) {
-       res.redirect('/500')
+        res.redirect('/500')
         res.status(500).json({ error: 'Internal server error' });
     }
 };
@@ -213,7 +227,7 @@ const loadViewOrder = async (req, res) => {
             .exec()
         res.render('viewOrders', { orders: data, Next: Next, Previous: Previous, totalPages: totalPages, moment });
     } catch (error) {
-       res.redirect('/500')
+        res.redirect('/500')
     }
 
 }
@@ -227,7 +241,7 @@ const loadOrderDetails = async (req, res) => {
         const user = await User.findById(userId).populate('address');
         res.render('orderDetails', { order, user, moment });
     } catch (error) {
-       res.redirect('/500')
+        res.redirect('/500')
     }
 }
 
@@ -237,7 +251,7 @@ const loadAdminOrders = async (req, res) => {
         res.render('orders', { order, moment })
 
     } catch (error) {
-       res.redirect('/500')
+        res.redirect('/500')
     }
 }
 
@@ -247,7 +261,7 @@ const loadAdminViewDetails = async (req, res) => {
         const orderDetails = await Order.find({ _id: { $in: orders } }).populate('products.productId').populate('userId');
         res.render('viewDetails', { orders: orderDetails, moment });
     } catch (error) {
-       res.redirect('/500')
+        res.redirect('/500')
         res.status(500).send("Internal Server Error");
     }
 };
@@ -261,7 +275,7 @@ const changeOrderStatus = async (req, res) => {
         );
         return res.json({ change: true });
     } catch (error) {
-       res.redirect('/500')
+        res.redirect('/500')
         return res.status(500).json({ error: 'Internal server error' });
     }
 }
@@ -280,13 +294,28 @@ const cancelOrder = async (req, res) => {
             { _id: orderId, 'products.productId': productId, },
             { 'products.$': 1 }).populate('products.productId')
 
+        const total = orderDetails.couponApplied ? productDetails.products[0].productId.price * productDetails.products[0].quantity - orderDetails.couponApplied : productDetails.products[0].quantity
+        console.log(total);
+
+        if (orderDetails.paymentMethod == 'RAZORPAY' || orderDetails.paymentMethod == 'WALLET') {
+            const user = await User.findOne({ _id: userId })
+            user.wallet += total
+            const data = {
+                amount: total,
+                reason: 'Debited',
+                date: new Date()
+            }
+            user.walletHistory.push(data)
+            user.save()
+        }
 
         const productQty = productDetails.products[0].quantity;
         await Product.updateOne({ _id: productId }, { $inc: { quantity: productQty } })
 
         res.json({ cancel: true })
     } catch (error) {
-       res.redirect('/500')
+        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -304,13 +333,15 @@ const returnRequest = async (req, res) => {
 
         }
     } catch (error) {
-       res.redirect('/500')
+        res.redirect('/500')
     }
 }
 
 const AdminCancelOrder = async (req, res) => {
     try {
         const { orderId, productId } = req.body
+        console.log(req.body);
+        const userId = req.session.userId
         const orderData = await Order.findOneAndUpdate(
             { _id: orderId, 'products.productId': productId },
             { $set: { 'products.$.status': 'cancelled' } }
@@ -319,13 +350,38 @@ const AdminCancelOrder = async (req, res) => {
             { _id: orderId, 'products.productId': productId },
             { 'products.$': 1 }
         )
-        const productQty = productDetails.products[0].quantity
 
+        console.log("kuhu", productDetails);
+
+
+        const total = orderData.couponApplied ?
+            productDetails.products[0].totalPrice - orderData.couponApplied :
+            productDetails.products[0].totalPrice;
+
+        console.log(total);
+
+
+        if (orderData.paymentMethod == 'RAZORPAY' || orderData.paymentMethod == 'WALLET') {
+            const user = await User.findOne({ _id: userId })
+            user.wallet += total
+            const data = {
+                amount: total,
+                reason: 'Debited',
+                date: new Date()
+            }
+            user.walletHistory.push(data)
+            user.save()
+        }
+
+
+
+        const productQty = productDetails.products[0].quantity
         await Product.updateOne({ _id: productId }, { $inc: { quantity: productQty } })
         res.json({ cancel: true })
 
     } catch (error) {
-       res.redirect('/500')
+        console.log(error);
+        res.redirect('/500')
     }
 }
 
@@ -343,17 +399,35 @@ const changeReturnStatus = async (req, res) => {
                     { 'products.$': 1 }
                 ).populate('products.productId')
 
-                const amount = productDetails.products[0].productId.price * productDetails.products[0].quantity;
-                user.wallet += amount
+                if (order.couponApplied) {
+                    let amount = productDetails.products[0].productId.price * productDetails.products[0].quantity - order.couponApplied
+                    user.wallet += amount
 
-                user.walletHistory.push({
-                    date: new Date(),
-                    amount: amount,
-                    reason: `Refund for returned order`
-                });
+                    user.walletHistory.push({
+                        date: new Date(),
+                        amount: amount,
+                        reason: `Refund for returned order`
+                    });
 
 
-                await user.save();
+                    await user.save();
+
+                } else {
+                    let amount = productDetails.products[0].productId.price * productDetails.products[0].quantity;
+                    user.wallet += amount
+
+                    user.walletHistory.push({
+                        date: new Date(),
+                        amount: amount,
+                        reason: `Refund for returned order`
+                    });
+
+
+                    await user.save();
+
+
+                }
+
 
                 await Order.findOneAndUpdate(
                     { _id: orderId, 'products.productId': productId },
@@ -371,11 +445,81 @@ const changeReturnStatus = async (req, res) => {
         }
 
     } catch (error) {
-       res.redirect('/500')
+        res.redirect('/500')
         res.status(500).json({ error: 'An error occurred' });
 
     }
 };
+
+const continuePayment = async (req, res) => {
+    try {
+        const { orderId, amount } = req.body
+        console.log("yggy", req.body);
+
+        var options = {
+            amount: amount * 100,
+            currency: 'INR',
+            receipt: "" + orderId,
+        }
+        instance.orders.create(options, function (err, order) {
+            res.json({ success: true, order })
+        })
+
+    } catch (error) {
+        res.redirect('/500')
+        res.status(500).json({ error: 'An error occurred' });
+    }
+}
+
+const continueVrifyPayment = async (req, res) => {
+    try {
+        const cartData = await Cart.findOne({ userId: req.session.userId });
+        const cartProducts = cartData.products
+        const { payment, order } = req.body
+        console.log("gug",req.body);
+        const userId = req.session.userId
+
+        secretKey = process.env.RAZORPAY_KEY_SECRET
+        const hmac = crypto.createHmac("sha256", secretKey);
+
+        // Updating the HMAC with the data
+        hmac.update(payment.razorpay_order_id + "|" + payment.razorpay_payment_id)
+        console.log("my razorpay orderid", payment.razorpay_order_id)
+        console.log("my razorpay paymentid", payment.razorpay_payment_id)
+
+        const hmacFormat = hmac.digest("hex");
+        console.log("my hmac", hmacFormat);
+        console.log('my details is here', payment.razorpay_signature)
+
+        if (hmacFormat == payment.razorpay_signature) {
+            await Order.updateOne(
+                { "_id": order.receipt },
+                {
+                    $set: {
+                        "paymentId": payment.razorpay_payment_id,
+                        "status": "placed",
+                        "products.$[].status": "placed",
+                    }
+                }
+            )
+            for (let i = 0; i < cartProducts.length; i++) {
+                let count = cartProducts[i].quantity;
+                await Product.updateOne(
+                    { "_id": cartProducts[i].productId },
+                    { $inc: { "quantity": -count } }
+                );
+            }
+            await Cart.deleteOne({ userId: userId });
+            const orderId = order.receipt
+            res.json({ paymentSuccess: true, orderId });
+        }
+
+    } catch (error) {
+        console.log(error);
+        res.redirect('/500')
+
+    }
+}
 
 
 
@@ -391,6 +535,8 @@ module.exports = {
     returnRequest,
     AdminCancelOrder,
     changeReturnStatus,
-    verifyPayment
+    verifyPayment,
+    continuePayment,
+    continueVrifyPayment
 
 }

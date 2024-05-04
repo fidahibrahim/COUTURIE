@@ -127,72 +127,93 @@
                 </div>
                 <div class="container">
 
-                    <%order.products.forEach(product=>{%>
-                        <div class="product-details-top" style="border: 1px solid #ccc; padding: 20px;">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="product-gallery product-gallery-vertical">
-                                        <div class="row">
-                                            <figure class="product-main-image">
-                                                <img src="/assets/images/productImg/sharpedImg/<%=product.productId.images[0]%>"
-                                                    alt="product image">
-                                            </figure><!-- End .product-main-image -->
-                                        </div><!-- End .row -->
-                                    </div><!-- End .product-gallery -->
-                                </div><!-- End .col-md-6 -->
-                                <div class="col-md-6">
-                                    <div class="product-details">
-                                        <h1 class="product-title">
-                                            <%=product.productId.name%>
-                                        </h1><!-- End .product-title -->
+                    <% if(order.status=='pending' && order.paymentMethod=='RAZORPAY' ){ %>
+                        <p>The payment for this order has been failed, please <button class="btn-link" type="button"
+                                onclick="continuePayment('<%= order.totalAmount %>','<%= order._id %>')"
+                                id="continuePayment">click here</button> to pay now.</p>
+                        <% } %>
+                            <%order.products.forEach(product=>{%>
+                                <div class="product-details-top" style="border: 1px solid #ccc; padding: 20px;">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="product-gallery product-gallery-vertical">
+                                                <div class="row">
+                                                    <figure class="product-main-image">
+                                                        <img src="/assets/images/productImg/sharpedImg/<%=product.productId.images[0]%>"
+                                                            alt="product image">
+                                                    </figure><!-- End .product-main-image -->
+                                                </div><!-- End .row -->
+                                            </div><!-- End .product-gallery -->
+                                        </div><!-- End .col-md-6 -->
+                                        <div class="col-md-6">
+                                            <div class="product-details">
+                                                <h1 class="product-title">
+                                                    <%=product.productId.name%>
+                                                </h1><!-- End .product-title -->
 
-                                        <div class="details-filter-row details-row-size">
-                                            <label>Quantity:</label>
-                                            <span>
-                                                <%=product.quantity%>
-                                            </span>
-                                        </div><!-- End .details-filter-row -->
+                                                <div class="details-filter-row details-row-size">
+                                                    <label>Quantity:</label>
+                                                    <span>
+                                                        <%=product.quantity%>
+                                                    </span>
+                                                </div><!-- End .details-filter-row -->
 
-                                        <div class="details-filter-row details-row-size">
-                                            <label for="size">Status:</label>
-                                            <span>
-                                                <%=product.status%>
-                                            </span>
-                                        </div><!-- End .details-filter-row -->
+                                                <div class="details-filter-row details-row-size">
+                                                    <label for="size">Status:</label>
+                                                    <span>
+                                                        <%=product.status%>
+                                                    </span>
+                                                </div><!-- End .details-filter-row -->
 
-                                        <div class="details-filter-row details-row-size">
-                                            <label for="qty">Price:</label>
-                                            <span>₹<%=product.totalPrice%></span>
-                                        </div><!-- End .details-filter-row -->
+                                                <div class="details-filter-row details-row-size">
+                                                    <label for="qty">Price:</label>
+                                                    <span>₹<%=product.totalPrice%></span>
+                                                </div><!-- End .details-filter-row -->
 
-                                        <div class="product-details-action">
-                                            <% if( product.status=='placed' ){%>
-                                                <a class="btn-product btn-cart"
-                                                    onclick="cancelOrder('<%=order._id%>','<%=product.productId._id%>')"><span>Cancel
-                                                        Order</span></a>
-                                                <%}else if( product.status=='delivered' ){%>
-                                                    <a class="btn-product btn-cart"
-                                                        onclick="Return('<%=order._id%>','<%=product.productId._id%>')"><span>Return</span></a>
-                                                    <%}else if(product.status=='shipped' ){%>
+                                                <div class="details-filter-row details-row-size">
+                                                    <label for="qty">Payment Method: </label>
+                                                    <span>
+                                                        <%=order.paymentMethod%>
+                                                    </span>
+                                                </div><!-- End .details-filter-row -->
+
+
+                                                <div class="details-filter-row details-row-size">
+                                                    <label for="qty">Address: </label>
+                                                    <span>
+                                                        <%=order.deliveryAddress%>
+                                                    </span>
+                                                </div><!-- End .details-filter-row -->
+
+
+                                                <div class="product-details-action">
+                                                    <% if( product.status=='placed' ){%>
                                                         <a class="btn-product btn-cart"
                                                             onclick="cancelOrder('<%=order._id%>','<%=product.productId._id%>')"><span>Cancel
                                                                 Order</span></a>
-                                                        <%}else if(product.status=='outfordelivery' ){%>
+                                                        <%}else if( product.status=='delivered' ){%>
                                                             <a class="btn-product btn-cart"
-                                                                onclick="cancelOrder('<%=order._id%>','<%=product.productId._id%>')"><span>Cancel
-                                                                    Order</span></a>
-                                                            <%}else{%>
-                                                                <input type="hidden">
-                                                                <%}%>
-                                        </div><!-- End .product-details-action -->
-                                    </div><!-- End .product-details -->
-                                </div><!-- End .col-md-6 -->
-                            </div><!-- End .row -->
-                        </div>
+                                                                onclick="Return('<%=order._id%>','<%=product.productId._id%>')"><span>Return</span></a>
+                                                            <%}else if(product.status=='shipped' ){%>
+                                                                <a class="btn-product btn-cart"
+                                                                    onclick="cancelOrder('<%=order._id%>','<%=product.productId._id%>')"><span>Cancel
+                                                                        Order</span></a>
+                                                                <%}else if(product.status=='outfordelivery' ){%>
+                                                                    <a class="btn-product btn-cart"
+                                                                        onclick="cancelOrder('<%=order._id%>','<%=product.productId._id%>')"><span>Cancel
+                                                                            Order</span></a>
+                                                                    <%}else{%>
+                                                                        <input type="hidden">
+                                                                        <%}%>
+                                                </div><!-- End .product-details-action -->
+                                            </div><!-- End .product-details -->
+                                        </div><!-- End .col-md-6 -->
+                                    </div><!-- End .row -->
+                                </div>
 
-                        <%})%>
+                                <%})%>
 
-                            <!-- End .product-details-top -->
+                                    <!-- End .product-details-top -->
                 </div><!-- End .container -->
             </div><!-- End .page-content -->
         </main><!-- End .main -->
@@ -200,7 +221,7 @@
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
         <script>
-        
+
 
             function cancelOrder(orderId, productId) {
                 Swal.fire({
@@ -215,7 +236,7 @@
                             Swal.showValidationMessage(
                                 "Please type a reason for cancellation"
                             );
-                            return false; 
+                            return false;
                         }
 
                         const data = { orderId: orderId, productId: productId, reason: reason };
@@ -233,7 +254,7 @@
                                 return response.json();
                             })
                             .catch((error) => {
-                                Swal.showValidationMessage(`Request failed: ${ error }`);
+                                Swal.showValidationMessage(`Request failed: ${error}`);
                             });
                     },
                 }).then((result) => {
@@ -262,13 +283,13 @@
                     showCancelButton: true,
                     confirmButtonText: "Return Order",
                     cancelButtonText: "Close",
-                    position:'center',
+                    position: 'center',
                     preConfirm: (reason) => {
                         if (!reason) {
                             Swal.showValidationMessage(
                                 "Please type a reason for return!"
                             );
-                            return false; 
+                            return false;
                         }
 
                         const data = { orderId: orderId, productId: productId, reason: reason };
@@ -286,7 +307,7 @@
                                 return response.json();
                             })
                             .catch((error) => {
-                                Swal.showValidationMessage(`Request failed: ${ error }`);
+                                Swal.showValidationMessage(`Request failed: ${error}`);
                             });
                     },
                 }).then((result) => {
@@ -420,4 +441,106 @@
             </div><!-- End .social-icons -->
         </div><!-- End .mobile-menu-wrapper -->
     </div><!-- End .mobile-menu-container -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script>
+
+        function continuePayment(amount, orderId) {
+            try {
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/continuePayment',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ amount, orderId }),
+                    success: (res) => {
+                        console.log("minhalpppppppppppp", res);
+                        if (res.success) {
+                            pendingPayment(res.order, orderId)
+                            console.log("ygy", res.order);
+                        }
+                    }
+                })
+
+            } catch (error) {
+                console.log(error);
+            }
+
+        }
+
+
+        function pendingPayment(order) {
+            var options = {
+                "key": "rzp_test_CuUqfc6rZSdxRM", // Enter the Key ID generated from the Dashboard
+                "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                "currency": "INR",
+                "name": "Couturie", //your business name
+                "description": "Test Transaction",
+                "image": "https://example.com/your_logo",
+                "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                "handler": function (response) {
+                    console.log("razorpay function", response);
+                    verifyPayment(response, order);
+                    console.log("razorpay order", order, orderId);
+
+                },
+                "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+                    "name": name, //your customer's name
+                    "email": "firzafida2@gmail.com",
+                    "contact": "9000090000" //Provide the customer's phone number for better conversion rates 
+                },
+                "notes": {
+                    "address": "Razorpay Corporate Office"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        }
+
+
+        function verifyPayment(payment, order) {
+            console.log(payment);
+            console.log(order);
+            $.ajax({
+                url: '/continueVerifyPayment',
+                method: 'post',
+                data: {
+                    payment,
+                    order,
+                },
+                success: (response) => {
+                    if (response.paymentSuccess == true) {
+                        const param = response.orderId
+                        console.log("klkl", param);
+                        window.location.href =  "/orderDetails?orderId=" + param
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Payment has failed',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+                }
+            })
+
+        }
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
     <%- include('../layout/user/footer.ejs') %>

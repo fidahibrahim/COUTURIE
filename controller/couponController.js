@@ -124,7 +124,7 @@ const applyCoupon = async (req, res) => {
                 let currentDate = new Date()
                 if(coupon.expiryDate >= currentDate){
                     const totalAmount = total
-                    if( total>coupon.limitOfUse ){
+                    if( total > coupon.limitOfUse ){
                         const discountPercent = parseFloat(coupon.discountAmount)/100
                         const discountAmount = totalAmount*discountPercent
                         const discountedTotal = Math.round(totalAmount - discountAmount)
