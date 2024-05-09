@@ -104,6 +104,7 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
+                                                            <% if(data.length > 0){ %>
                                                             <% data.forEach((data,index)=>{ %>
 
                                                                 <tr>
@@ -133,6 +134,13 @@
                                                                     </td>
                                                                 </tr>
                                                                 <% }) %>
+                                                                <%}else{%>
+                                                                    <tr>
+                                                                        <td>
+                                                                            No data avialable
+                                                                        </td>
+                                                                    </tr>
+                                                                    <%}%>
                                                         </tbody>
                                                         <%}%>
 

@@ -76,15 +76,15 @@
                             </form>
                         </div><!-- End .header-search -->
                         <div class="dropdown compare-dropdown">
-                            <a href="/wishlist" class="dropdown-toggle" role="button" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false" data-display="static"
+                            <a href="/wishlist" class="dropdown-toggle" role="button" 
+                                aria-haspopup="true" aria-expanded="false" 
                                 title="Compare Products" aria-label="Compare Products">
                                 <i class="icon-heart-o"></i>
                             </a>
                         </div><!-- End .compare-dropdown -->
                         <div class="dropdown cart-dropdown">
                             <a href="/cart" class="dropdown-toggle" role="button" aria-haspopup="true"
-                                aria-expanded="false" data-display="static">
+                                aria-expanded="false" >
                                 <i class="icon-shopping-cart"></i>
                                 <span class="cart-count">2</span>
                             </a>
@@ -150,11 +150,29 @@
                                         <td> <a href="/orderDetails?orderId=<%=order._id%>"><button
                                                     class="btn btn-outline-primary mt-1" style="width: 150px">
                                                     View Details
-                                                </button></a></td>
+                                                </button></a>
+                                            <% let invoice=true %>
+                                                <% order.products.forEach((product)=>{ %>
+                                                    <% if(product.status=='shipped' || product.status=='outForDelivery'
+                                                        || product.status=='placed' || product.status=='pending' ){ %>
+                                                        <% invoice=false %>
+                                                            <% } %>
+                                                                <% }) %>
+                                                                    <% if(invoice){ %>
+                                                                        <a href="/invoice?id=<%= order._id %>"
+                                                                            style="margin-left: 7%;font-size: 188%;">
+                                                                            <i class="fa-solid fa-file-arrow-down"
+                                                                                style="color: #6d6f70;"></i>
+                                                                        </a>
+                                                                        <%}%>
+                                        </td>
+
+
+
                                     </tr>
                                 </tbody>
                                 <%})%>
-                                    <%}else if(totalPages === 0 ){%>
+                                    <%}else if(totalPages===0 ){%>
                                         <tr class="text-center">
                                             <td colspan="5" style="color:red;">There are no
                                                 orders in your Account</td>

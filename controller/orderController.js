@@ -32,6 +32,7 @@ const loadOrder = async (req, res) => {
 const placeOrder = async (req, res) => {
     try {
         const { address, subTotal, payment, couponCode } = req.body;
+        console.log("my address:",address)
         const userId = req.session.userId;
         const userData = await User.findOne({ _id: userId })
         const cart = await Cart.findOne({ userId: userId }).populate({
@@ -122,7 +123,7 @@ const placeOrder = async (req, res) => {
                     userData.wallet -= finalAmount
                     userData.walletHistory.push({
                         date: new Date(),
-                        reason: 'Placed Order From Wallet',
+                        reason: 'Debited',
                         amount: finalAmount
                     })
                     await userData.save()
@@ -231,6 +232,38 @@ const loadViewOrder = async (req, res) => {
     }
 
 }
+
+
+const invoice = async (req,res)=>{
+    try {
+        const {id}=req.query
+        let orders 
+        const order = await Order.findOne({ _id:id })
+        if(order.couponUsed){
+            orders = await Order.findOne({ _id:id }).populate('products.productId').populate('couponUsed')
+        } else {
+            orders = await Order.findOne({ _id:id }).populate('products.productId')
+        }
+
+        let deliveryAddress=orders.deliveryAddress.split(',').map(item => item.trim());
+        console.log("gy",deliveryAddress);
+        const user = await User.findOne({ _id:req.session.userId })
+        const email = user.email
+
+        console.log("my orders",orders);
+
+        res.render('invoice',{ orders,email,deliveryAddress })
+
+
+    } catch (error) {
+        res.redirect('/500')
+    }
+}
+
+
+
+
+
 const loadOrderDetails = async (req, res) => {
     try {
         const userId = req.session.userId;
@@ -302,7 +335,7 @@ const cancelOrder = async (req, res) => {
             user.wallet += total
             const data = {
                 amount: total,
-                reason: 'Debited',
+                reason: 'Credited',
                 date: new Date()
             }
             user.walletHistory.push(data)
@@ -366,7 +399,7 @@ const AdminCancelOrder = async (req, res) => {
             user.wallet += total
             const data = {
                 amount: total,
-                reason: 'Debited',
+                reason: 'Credited',
                 date: new Date()
             }
             user.walletHistory.push(data)
@@ -406,7 +439,7 @@ const changeReturnStatus = async (req, res) => {
                     user.walletHistory.push({
                         date: new Date(),
                         amount: amount,
-                        reason: `Refund for returned order`
+                        reason: `Credited`
                     });
 
 
@@ -419,7 +452,7 @@ const changeReturnStatus = async (req, res) => {
                     user.walletHistory.push({
                         date: new Date(),
                         amount: amount,
-                        reason: `Refund for returned order`
+                        reason: `Credited`
                     });
 
 
@@ -537,6 +570,7 @@ module.exports = {
     changeReturnStatus,
     verifyPayment,
     continuePayment,
-    continueVrifyPayment
+    continueVrifyPayment,
+    invoice
 
 }

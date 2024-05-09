@@ -62,6 +62,9 @@ const addProduct = async (req, res) => {
             }
         }
 
+        // const existingProduct = await product.find({name:productName})
+
+
         const selectedCategory = await category.findOne({ _id: Category });
         console.log(selectedCategory, "my categ");
 
@@ -71,6 +74,8 @@ const addProduct = async (req, res) => {
                 .resize(500, 500)
                 .toFile('public/assets/images/productImg/sharpedImg/' + arrImages[i]);
         }
+
+        
 
         if (parseInt(Quantity) > 0 && parseFloat(Price) > 0) {
             const Product = new product({

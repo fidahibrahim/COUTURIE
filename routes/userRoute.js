@@ -82,6 +82,7 @@ userRoute.post("/returnRequest",userAuth.isLogin,orderController.returnRequest);
 userRoute.post('/verifyPayment',userAuth.isLogin,orderController.verifyPayment);
 userRoute.post('/continuePayment',userAuth.isLogin,orderController.continuePayment);
 userRoute.post('/continueVerifyPayment',userAuth.isLogin,orderController.continueVrifyPayment);
+userRoute.get('/invoice',userAuth.isLogin,orderController.invoice);
 
 
 userRoute.get('/wishlist',userAuth.isLogin,wishlistController.loadWishlist);

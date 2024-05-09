@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+             /* Align all text to center */
+        }
+
+        .invoice-section {
+            background-color: #f8f9fa;
+            padding: 50px 0;
+            border: 1px solid #ccc; /* Add border to the section */
+        }
+
+        .invoice-header {
+            text-align: center; /* Align center */
+            margin-bottom: 30px;
+        }
+
+        .invoice-header h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .invoice-logo {
+            max-width: 200px;
+        }
+
+        .invoice-address {
+            margin-bottom: 30px;
+            border: 1px solid #ccc; 
+            padding: 15px;
+         
+        }
+
+        .invoice-address h4 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .invoice-address address {
+            color: #555;
+        }
+
+        .invoice-table th,
+        .invoice-table td {
+            vertical-align: middle;
+            border: 1px solid #ccc; /* Add border to table cells */
+        }
+
+        .invoice-table th.text-uppercase {
+            text-transform: uppercase;
+        }
+
+        .invoice-table th.text-end,
+        .invoice-table td.text-end {
+            text-align: right;
+        }
+
+        .order-summary .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #ccc; /* Add border to the summary table */
+        }
+
+        .order-summary .summary-table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #ddd;
+            color: #555;
+            border: 1px solid #ccc; /* Add border to table cells */
+        }
+
+        .order-summary .summary-table td.label {
+            width: 70%;
+        }
+
+        .order-summary .summary-table td.amount {
+            width: 30%;
+            text-align: right;
+        }
+
+        .total-row {
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        
+    </style>
+</head>
+
+<body>
+
+    <section class="invoice-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="invoice-header">
+                        <h1 class="display-4 text-uppercase mb-3">Invoice</h1>
+                        <h4>COUTURIE</h4>
+                    </div>
+                    <div class="invoice-address">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4>from</h4>
+                                <address>
+                                    <strong>COUTURIE</strong><br>
+                                    875 N Coast Hwy<br>
+                                    RjajiNagar, Banglore, 373510<br>
+                                    INDIA<br>
+                                    Phone: 97***<br>
+                                    Email: couturieshoping@domain.com
+                                </address>
+                            </div>
+                            <div class="col-md-6" style=" text-align: right;">
+                                <h4>Bill to</h4>
+                                <address>
+                                    <strong><%= deliveryAddress[0] %></strong><br>
+                                    <%= deliveryAddress[1] %>, <%= deliveryAddress[2] %><br><%= deliveryAddress[3] %><br>
+                                    INDIA<br>
+                                    Phone: <%= deliveryAddress[4] %><br>
+                                    Email: <%= email%>
+                                </address>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="table-responsive mb-4">
+                        <table class="table invoice-table">
+                            <thead>
+
+                                <tr>
+                                    <th scope="col" class="text-uppercase">Qty</th>
+                                    <th scope="col" class="text-uppercase">Product</th>
+                                    <th scope="col" class="text-uppercase">Status</th>
+                                    <th scope="col" class="text-uppercase text-end">Unit Price</th>
+                                    <th scope="col" class="text-uppercase text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% let subtotal = 0 %>
+                                <% orders.products.forEach((product)=>{ %> 
+                                    <% subtotal += product.productId.price * product.quantity %>
+
+                                <tr>
+                                    <td><%= product.quantity %></td>
+                                    <td><%= product.productId.name %></td>
+                                    <td><%= product.status%></td>
+                                    <td class="text-end">₹<%= product.productId.price%></td>
+                                    <td class="text-end">₹<%= product.quantity*product.productId.price %></td>
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="order-summary mb-4">
+                        <table class="summary-table">
+                            <tr>
+                                <td class="label">Subtotal:</td>
+                                <td class="amount">₹<%= subtotal %></td>
+                            </tr>
+                            <tr>
+                                <td class="label">Offer:</td>
+                                <td class="amount">₹<%= orders.couponApplied ? orders.couponApplied : 0 %></td>
+                            </tr>
+                            <tr>
+                                <td class="label">Shipping:</td>
+                                <td class="amount">Free Delivery</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td class="label">Total:</td>
+                                <td class="amount">₹<%= orders.totalAmount%></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="text-center"> <!-- Align center -->
+                        <button type="submit" onclick="downloadInvoice()" class="btn btn-primary">Download
+                            Invoice</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function downloadInvoice() {
+            window.print()
+        }
+    </script>
+</body>
+
+</html>

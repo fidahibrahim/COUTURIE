@@ -6,7 +6,8 @@ const categoryController = require('../controller/categoryController');
 const productController = require('../controller/productController');
 const orderController = require('../controller/orderController');
 const couponController = require('../controller/couponController')
-const salesReportController=require('../controller/salesReportController')
+const salesReportController=require('../controller/salesReportController');
+const offerController = require('../controller/offerController')
 const adminAuth=require('../middleware/adminAuth')
 const multer = require('../middleware/multer');
 
@@ -56,6 +57,15 @@ adminRoute.get('/salesWeekly',adminAuth.isLogin,salesReportController.weeklySale
 adminRoute.get('/salesMonthly',adminAuth.isLogin,salesReportController.monthlySalesReport);
 adminRoute.get('/salesyearly',adminAuth.isLogin,salesReportController.YearlySalesReport);
 adminRoute.get('/checkDataExist',adminAuth.isLogin,salesReportController.checkDataExist);
+
+adminRoute.get('/offer',adminAuth.isLogin,offerController.loadOffer)
+adminRoute.post('/addOffer',adminAuth.isLogin,offerController.addOffer)
+adminRoute.post('/offerType',adminAuth.isLogin,offerController.offerType)
+adminRoute.get('/editOffer',adminAuth.isLogin,offerController.loadeditOffer)
+adminRoute.post('/editOffer',adminAuth.isLogin,offerController.editOffer)
+adminRoute.post('/offerIdSave',adminAuth.isLogin,offerController.offerproductIdSave)
+adminRoute.post('/catIdSave',adminAuth.isLogin,offerController.offerCategoryIdSave)
+adminRoute.post('/deleteOffer',adminAuth.isLogin,offerController.deleteOffer)
 
 
 adminRoute.get('/logout',adminAuth.isLogin,adminController.logout);

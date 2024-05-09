@@ -1,0 +1,484 @@
+<%-include('../layout/admin/header.ejs') %>
+
+    <style>
+        /* Adjust as needed */
+        .input-group-text {
+            cursor: pointer;
+        }
+    </style>
+    <!-- ============================================================== -->
+    <!-- Preloader - style you can find in spinners.css -->
+    <!-- ============================================================== -->
+    <div class="preloader">
+        <div class="lds-ripple">
+            <div class="lds-pos"></div>
+            <div class="lds-pos"></div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- Main wrapper - style you can find in pages.scss -->
+    <!-- ============================================================== -->
+    <div id="main-wrapper" data-theme="light" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+        data-sidebar-position="fixed" data-header-position="fixed" data-boxed-layout="full">
+        <!-- ============================================================== -->
+        <!-- Topbar header - style you can find in pages.scss -->
+        <!-- ============================================================== -->
+        <%-include('../layout/admin/navbar.ejs') %>
+            <%-include('../layout/admin/nav.ejs') %>
+                <!-- ============================================================== -->
+                <div class="page-wrapper">
+                    <button style="margin-top:4%; margin-left: 5%;" id="addoffer" class="btn btn-primary">Add
+                        Offer</button>
+                    <div class="container-fluid" id="offerlist">
+
+                        <!-- ============================================================== -->
+                        <!-- Start Page Content -->
+                        <!-- ============================================================== -->
+                        <!-- basic table -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <!-- Column -->
+
+                                            <!-- Column -->
+                                        </div>
+                                        <div class="table-responsive">
+                                            <div class="mb-3" style="margin-left: 70%;">
+                                                <form method="get" class="form-inline">
+                                                    <!-- <div class="input-group">
+                                                        <input type="text" name="search" id="searchInput"
+                                                            class="form-control" placeholder="Search users...">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text" id="clearInput"><i
+                                                                    class="fas fa-times"></i></span>
+                                                        </div>
+                                                    </div> -->
+                                                </form>
+                                            </div>
+
+                                            <table id="example" class="table table-striped table-bordered no-wrap">
+
+                                                <thead>
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Offer Name</th>
+                                                        <th>Discount (%)</th>
+                                                        <th>Valid From</th>
+                                                        <th>Valid To</th>
+                                                        <th>Offer Type</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <%if(offers){%>
+                                                <tbody>
+                                                    <% offers.forEach((offer,index)=>{ %>
+
+
+                                                    <tr>
+                                                        <td> <%= index+1 %> </td>
+                                                        <td>
+                                                            <%= offer.offerName %>
+                                                        </td>
+                                                        <td>
+                                                            <%= offer.discount %>
+                                                        </td>
+                                                        <td>
+                                                             <%= moment(offer.startDate).format('DD/MM/YYYY')%>
+                                                        </td>
+                                                        <td>
+                                                             <%= moment(offer.endDate).format('DD/MM/YYYY')%>
+                                                        </td>
+
+                                                        <td>
+                                                              <%= offer.offerType %>
+                                                        </td>
+
+                                                        <td>
+                                                            <a href="/admin/editOffer?id=<%= offer._id %>"><i class="fa-solid fa-pen-to-square"
+                                                                    style="color: #848a94; font-size: 136%;"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    <button class="btn btn-danger delete"
+                                                                    value="<%= offer._id %>">delete</button>
+                                                        </td>
+                                                    </tr>
+
+                                                    <% }) %>
+                                                </tbody>
+                                                <%}%>
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <!-- Add offer -->
+                    <div id="addOfferForm" style="display: none;">
+                                    <div class="col-sm-12 col-md-6 col-lg-4">
+                                        <div class="card" style="width: 300%;">
+                                            <div class="card-body">
+                                                <h4 class="card-title">Add New Offer</h4>
+                                                <p id="errorAddoffer" style="color: red;"></p>
+                                                <form >
+                                                    <div class="form-group">
+                                                        <label for="name">Offer Name</label>
+                                                        <input type="text" name="name" id="name" class="form-control"
+                                                            placeholder="Enter coupon Name">
+                                                       
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="adate">Discount Rate</label>
+                                                        <input type="number" name="discountrate" min="0" max="100"
+                                                            id="discount" class="form-control"
+                                                            placeholder="Disount Rate">
+                                                            <span style="font-size: 80%;" >*Discount rate should not be greater than 80%</span>
+                                                        
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="edate">Started Date</label>
+                                                        <input type="date" name="starteddate" id="startDate"
+                                                            class="form-control" placeholder="dd-mm-yyyy">
+                                                        
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="limit">End Date</label>
+                                                        <input type="date" name="enddate" id="endDate"
+                                                            class="form-control" placeholder="Enter limit">
+                                                        
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-prepend">
+                                                                <label class="input-group-text"
+                                                                    for="inputGroupSelect01">Choose</label>
+                                                            </div>
+                                                            <select class="custom-select" id="offertype"
+                                                                name="offertype">
+                                                                <option selected></option>
+                                                                <option value="category">Category </option>
+                                                                <option value="product">Product</option>
+
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-prepend">
+                                                                <label class="input-group-text"
+                                                                    for="inputGroupSelect01">Selected Items</label>
+                                                            </div>
+                                                            <select class="custom-select" id="selecteditems"
+                                                                name="selecteditems">
+
+
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <!-- product modal -->
+                                                    <div class="modal fade" id="productModal" tabindex="-1"
+                                                        aria-labelledby="productModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-scrollable">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="productModalLabel">
+                                                                        Select a Product</h5>
+                                                                    <button type="button" class="btn-close"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body" id="modalProductList">
+                                                                    <!-- product will be dynamically inserted here -->
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Close</button>
+                                                                    <button type="button" class="btn btn-primary"
+                                                                        id="selectProductBtn">Select</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <!-- category modal -->
+                                                    <div class="modal fade" id="categoryModal" tabindex="-1"
+                                                        aria-labelledby="categoryModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-scrollable">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="categoryModalLabel">
+                                                                        Select Categories</h5>
+                                                                    <button type="button" class="btn-close"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body" id="modalCategoryList">
+                                                                    <!-- Categories will be dynamically inserted here -->
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Close</button>
+                                                                    <button type="button" class="btn btn-primary"
+                                                                        id="selectCategoryBtn">Select</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <button type="button" style="width: 15%; margin-bottom: 2%;"
+                                                        id="submit" class="btn btn-primary">Submit</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                
+    </div>
+ 
+ 
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+
+    <script>
+        document.getElementById('addoffer').addEventListener('click', function () {
+            document.getElementById('offerlist').style.display = 'none';
+            document.getElementById('addOfferForm').style.display = 'block';
+            document.getElementById('addoffer').style.display = 'none';
+
+        });
+
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // selecting offerType
+            document.getElementById('offertype').addEventListener('change', function () {
+                const offerType = this.value
+                console.log("offerType",offerType);
+
+                if (offerType) {
+                    axios.post('/admin/offerType', { offerType })
+                        .then((res) => {
+                            if (res.data.productData) {
+                                const products = res.data.productData;
+                                console.log("products", products);
+                                const modalProductList = document.getElementById('modalProductList');
+                                modalProductList.innerHTML = '';
+
+                                products.forEach(product => {
+                                    const imageUrl = ` /assets/images/productImg/sharpedImg/${product.images[0]}`;
+                                    const productItem = document.createElement('div');
+                                    productItem.className = 'product-item d-flex align-items-center justify-content-between p-2';
+                                    productItem.innerHTML = `
+                                                    <div class="form-check">
+                                                      <input class="form-check-input product-checkbox" type="checkbox" name="productSelect" id="product-${product._id}" value="${product._id}">
+                                                            <label class="form-check-label" for="product-${product._id}">
+                                                                     ${product.name} - Price: ${product.price}
+                                                                          </label>
+                                                                                    </div>
+                                                                             <img src="${imageUrl}" alt="${product.name}" style="width: 50px; height: 50px;">
+                                                                                           `;
+                                    modalProductList.appendChild(productItem);
+                                });
+
+
+                                $('#productModal').modal('show');
+                            } else {
+                                const category = res.data.categoryDetails
+
+                                const modalCategoryList = document.getElementById('modalCategoryList');
+                                modalCategoryList.innerHTML = '';
+
+                                category.forEach(category => {
+                                    const categoryElement = document.createElement('div');
+                                    categoryElement.className = 'form-check';
+                                    categoryElement.innerHTML = `
+                                        <input class="form-check-input category-checkbox" type="checkbox" id="category-${category._id}" name="categ" value="${category._id}">
+                                        <label class="form-check-label" for="category-${category._id}">${category.name}</label>
+                                           `;
+                                    modalCategoryList.appendChild(categoryElement);
+                                });
+                                new bootstrap.Modal(document.getElementById('categoryModal')).show();
+                            }
+                        })
+                        .catch(err=>{
+                            console.error(err);
+                        })
+                }
+
+            })
+
+
+            // showing selectedItems
+
+            document.getElementById('selectProductBtn').addEventListener('click', function () {
+                var modalElement = document.getElementById('productModal');
+                var modalInstance = bootstrap.Modal.getInstance(modalElement);
+                modalInstance.hide();
+            });
+
+            document.getElementById('selectCategoryBtn').addEventListener('click', function () {
+                var modalElement = document.getElementById('categoryModal');
+                var modalInstance = bootstrap.Modal.getInstance(modalElement);
+                modalInstance.hide();
+            });
+
+
+            document.addEventListener('change', function (e) {
+                if (e.target.matches('.product-checkbox')) {
+
+                    const selectedProducts = document.querySelectorAll('input[name="productSelect"]:checked');
+                    const selectedProductNameSelect = document.getElementById('selecteditems')
+
+                    if (selectedProductNameSelect) {
+
+                        selectedProductNameSelect.innerHTML = '';
+
+
+                        selectedProducts.forEach(input => {
+                            const productDetail = input.nextElementSibling.textContent.trim().split('-').map(part => part.trim());
+                            const productName = productDetail[0];
+                            const productId = input.value;
+                            console.log("productId", productId);
+                            const option = document.createElement('option');
+                            option.value = productId;
+                            option.text = productName;
+                            option.selected = true;
+                            selectedProductNameSelect.appendChild(option);
+                        });
+                    }
+                }
+            });
+
+
+
+
+
+
+
+            document.addEventListener('change', function (e) {
+                if (e.target.matches('.category-checkbox')) {
+
+                    const selectedProducts = document.querySelectorAll('input[name="categ"]:checked');
+                    console.log('selectedProducts', selectedProducts);
+                    const selectedProductNameSelect = document.getElementById('selecteditems');
+                    if (selectedProductNameSelect) {
+
+                        selectedProductNameSelect.innerHTML = '';
+                        selectedProducts.forEach(input => {
+                            const categoryDetail = input.nextElementSibling.textContent
+                            console.log("categoryDetail", categoryDetail);
+                            const catName = categoryDetail
+                            const catId = input.value;
+                            console.log("catId", catId);
+
+                            const option = document.createElement('option');
+                            option.value = catId;
+                            option.text = catName;
+                            option.selected = true;
+                            selectedProductNameSelect.appendChild(option);
+                        });
+                    }
+                }
+            });
+
+
+
+
+            // saveData
+            document.getElementById('submit').addEventListener('click', function (e) {
+                e.preventDefault()
+
+                const offerName = document.getElementById('name').value
+                const discountRate = document.getElementById('discount').value
+                const startDate = document.getElementById('startDate').value
+                const endDate = document.getElementById('endDate').value
+                const offerType = document.getElementById('offertype').value
+                const selectedElem = document.getElementById('selecteditems')
+                const selectedValues = Array.from(selectedElem.options)
+                    .map(option => option.value);
+
+
+                console.log("selectedProductNames", selectedValues);
+
+
+                axios.post('/admin/addOffer', { offerName, discountRate, startDate, endDate, offerType, selectedValues })
+                    .then(res => {
+                        if (res.data.success) {
+                            window.location.href = "/admin/offer"
+
+                        }else {
+                            document.getElementById('errorAddoffer').innerHTML = res.data.message
+                          
+                              
+                           
+                        }
+                    }).catch(err => {
+                        console.log('error', err);
+                    })
+
+            })
+
+            // delete offer
+            const deleteBtn = document.querySelectorAll('.delete');
+            deleteBtn.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const id = this.value;
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes, delete it!",
+                        cancelButtonText: "No, cancel!",
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            axios.post('/admin/deleteOffer', { id })
+                                .then(res => {
+                                    if (res.data.success) {
+                                        Swal.fire({
+                                            title: "Deleted!",
+                                            text: "Your file has been deleted.",
+                                            icon: "success"
+                                        }).then(result => {
+                                            window.location.href = "/admin/offer";
+                                        });
+                                    }
+                                }).catch(err => {
+                                    Swal.fire({
+                                        title: "Cancelled",
+                                        text: "Your imaginary file is safe :)",
+                                        icon: "error"
+                                    });
+                                });
+                        } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        }
+                    });
+                });
+            });
+        })
+
+
+
+    </script>
+
+   
+
+
+
+    <%-include('../layout/admin/footer.ejs') %>
