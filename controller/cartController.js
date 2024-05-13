@@ -129,6 +129,7 @@ const loadCart = async (req, res) => {
                 subTotal += discountedPrice * product.quantity;
                 product.discountedPrice = discountedPrice;
                 product.appliedOffer = appliedOffer; 
+                product.offerText=appliedOffer?`${appliedOffer.discount}%off`:'';
             });
             cartId = cartDetails._id;
         } else {
@@ -136,11 +137,10 @@ const loadCart = async (req, res) => {
             return res.render('cart', { cartDetails, user, subTotal: 0 ,cartId});
         }
 
-        res.render('cart', { cartDetails, user, subTotal,cartId });
+       return res.render('cart', { cartDetails, user, subTotal,cartId });
     } catch (error) {
+        console.log(error);
         res.redirect('/500')
-
-        res.status(500).send('Internal Server Error');
     }
 };
 
@@ -178,38 +178,39 @@ const updateQuantity = async (req, res) => {
     try {
         const userId = req.session.userId;
         const { cartId, productId, quantity } = req.body;
-        console.log("asdfghj", req.body);
+
         const product = await Product.findById(productId);
-        const productPrice = product.price;
         const existingCart = await Cart.findById(cartId).populate({
             path: "products.productId",
             model: "Product"
-        })
-        console.log("iuytrew", product);
-        console.log("kjhgfdsa", existingCart);
+        });
 
         if (!existingCart) {
-            req.flash('message', 'Cart Not Found');
+            return res.json({ success: false, message: 'Cart Not Found' });
         }
 
         if (!existingCart.products || existingCart.products.length === 0) {
-            req.flash('message', 'No products in the cart');
             return res.json({ success: false, message: 'No products in the cart' });
         }
 
         const productToUpdate = existingCart.products.find(p => p.productId.equals(productId));
 
         if (!productToUpdate) {
-            req.flash('message', 'Product Not Found In The Cart');
+            return res.json({ success: false, message: 'Product Not Found In The Cart' });
         }
 
-        productToUpdate.quantity = quantity
-        productToUpdate.totalPrice = quantity * productPrice
+        const productPrice = productToUpdate.productPrice; 
 
+        // Update quantity and total price
+        productToUpdate.quantity = quantity;
+        productToUpdate.totalPrice = quantity * productPrice;
+
+        // Update subTotal and grandTotal of the cart
         existingCart.subTotal = existingCart.products.reduce((total, product) => {
-            return total + product.totalPrice
-        }, 0)
-        existingCart.grandTotal = existingCart.subTotal
+            return total + product.totalPrice;
+        }, 0);
+        existingCart.grandTotal = existingCart.subTotal;
+        // Save the updated cart
         const updatedCart = await existingCart.save();
 
         res.json({
@@ -219,9 +220,10 @@ const updateQuantity = async (req, res) => {
             totalPriceTotal: existingCart.subTotal
         });
     } catch (error) {
-        res.redirect('/500')
+        res.redirect('/500');
     }
 }
+
 
 
 

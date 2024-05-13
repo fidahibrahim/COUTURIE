@@ -64,7 +64,7 @@
                                                                         <% }); %>
                                                                     </td>
                                                                 <td><%= groupedOrders[orderId].orderItem.userId.username %></td>
-                                                                <td><%= groupedOrders[orderId].orderItem.totalAmount %></td>
+                                                                <td>₹<%= groupedOrders[orderId].orderItem.totalAmount %></td>
                                                                 <td><small><%= moment(groupedOrders[orderId].orderItem.date).format('DD/MM/YYYY') %></small></td>
                                                                 <td><%= groupedOrders[orderId].orderItem.paymentMethod %></td>
                                                                 <td>

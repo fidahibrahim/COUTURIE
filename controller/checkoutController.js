@@ -3,6 +3,7 @@ const Product = require('../models/productModel');
 const Cart = require('../models/cartModel');
 const Coupon = require('../models/couponModel');
 const moment = require('moment')
+const Offer=require('../models/offerModel')
 
 const loadCheckout = async (req, res) => {
     try {
@@ -15,14 +16,46 @@ const loadCheckout = async (req, res) => {
         const user = await User.findOne({ _id: userData });
         const currentDate = new Date();
         const couponData = await Coupon.find({ status: true, activationDate: { $lte: currentDate }, expiryDate: { $gte: currentDate } });
+        let offerData = await Offer.find({startDate: { $lte: new Date() },endDate: { $gte: new Date() }});
+
 
         let subTotal = 0;
         let cartId = null;
 
         if (cartDetails) {
             cartDetails.products.forEach((product) => {
-                let itemPrice = product.productId.price;
+                let itemPrice = product.productPrice;
                 subTotal += itemPrice * product.quantity;
+
+                // Check for applied offers
+                let appliedOffer = null;
+                const productOffer = offerData.find(offer => 
+                    offer.offerType === 'product' && 
+                    offer.productId.includes(product.productId._id.toString())
+                );
+
+                const categoryOffer = offerData.find(offer => 
+                    offer.offerType === 'category' && 
+                    offer.categoryId.includes(product.productId.category._id.toString())
+                );
+
+                if (productOffer || categoryOffer) {
+                    if (productOffer && categoryOffer) {
+                        if (productOffer.discount > categoryOffer.discount) {
+                            appliedOffer = productOffer;
+                        } else {
+                            appliedOffer = categoryOffer;
+                        }
+                    } else if (productOffer) {
+                        appliedOffer = productOffer;
+                    } else {
+                        appliedOffer = categoryOffer;
+                    }
+                    let discountedPrice = itemPrice - (itemPrice * appliedOffer.discount / 100);
+                    product.discountedPrice = discountedPrice;
+                    product.appliedOffer = appliedOffer; 
+                    product.offerText = `${appliedOffer.discount}% off`;
+                }
             });
             cartId = cartDetails._id;
         } else {
@@ -30,10 +63,10 @@ const loadCheckout = async (req, res) => {
         }
         res.render('checkout', { userData, cartDetails, user, subTotal, cartId, coupon: couponData, moment })
     } catch (error) {
-
         console.log(error);
     }
 }
+
 
 const loadAddCheckoutAddress = async (req, res) => {
     try {

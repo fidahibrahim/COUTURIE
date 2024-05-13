@@ -149,6 +149,9 @@
                                             <div class="product-details">
                                                 <h1 class="product-title">
                                                     <%=product.productId.name%>
+                                                    <% if(product.appliedOffer){ %>
+                                                        <span style="margin-right: 74%;" class="badge badge-success" ><%= product.offerText%></span>
+                                                        <%}%> 
                                                 </h1><!-- End .product-title -->
 
                                                 <div class="details-filter-row details-row-size">
@@ -167,8 +170,14 @@
 
                                                 <div class="details-filter-row details-row-size">
                                                     <label for="qty">Price:</label>
-                                                    <span>₹<%=product.totalPrice%></span>
-                                                </div><!-- End .details-filter-row -->
+
+                                                    <% if (product.appliedOffer) { %>
+                                                        <span style="text-decoration: line-through;color: rgba(255, 19, 19, 0.696);">₹<%=product.productId.price%></span>&nbsp;
+                                                        ₹ <%= product.discountedPrice %>
+                                                    <% } else { %>
+                                                        ₹ <%=product.productId.price%>
+                                                    <% } %>
+                                                </div>
 
                                                 <div class="details-filter-row details-row-size">
                                                     <label for="qty">Discount:</label>

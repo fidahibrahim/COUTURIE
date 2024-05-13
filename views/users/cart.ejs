@@ -186,6 +186,9 @@
                                                         <h3 class="product-title">
                                                             <a href="#">
                                                                 <%= product.productId.name %>
+                                                                <% if(product.appliedOffer){ %>
+                                                                    <span style="margin-right: 74%;" class="badge badge-success" ><%= product.offerText%></span>
+                                                                    <%}%> 
                                                             </a>
                                                         </h3><!-- End .product-title -->
                                                     </div><!-- End .product -->
@@ -193,7 +196,12 @@
                                                 <td class="price-col">
                                                   
 
-                                                   ₹ <%= product.appliedOffer?product.discountedPrice:product.productId.price  %>
+                                                    <% if (product.appliedOffer) { %>
+                                                        <span style="text-decoration: line-through;color: rgba(255, 19, 19, 0.696);">₹<%= product.productId.price %></span><br>
+                                                        ₹ <%= product.discountedPrice %>
+                                                    <% } else { %>
+                                                        ₹ <%= product.productId.price %>
+                                                    <% } %>
                                                 </td>
                                                 <td class="quantity-col">
                                                     <div class="cart-product-quantity">

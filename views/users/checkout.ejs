@@ -143,8 +143,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% if (cartDetails && cartDetails.products && cartDetails.products.length> 0) { %>
-                                        <% cartDetails.products.forEach(product=> { %>
+                                    <% if (cartDetails && cartDetails.products && cartDetails.products.length > 0) { %>
+                                        <% cartDetails.products.forEach(product => { %>
                                             <tr>
                                                 <td class="product-col">
                                                     <div class="product">
@@ -157,33 +157,43 @@
                                                         <h3 class="product-title">
                                                             <a href="#">
                                                                 <%= product.productId.name %>
+                                                                <% if (product.appliedOffer) { %>
+                                                                    <span style="margin-right: 74%;" class="badge badge-success" ><%= product.offerText%></span>
+                                                                <% }%>
                                                             </a>
-                                                        </h3><!-- End .product-title -->
-                                                    </div><!-- End .product -->
+                                                        </h3>
+                                                    </div>
                                                 </td>
                                                 <td class="price-col">
-                                                    ₹ <%= product.productId.price %>
+                                                    <% if (product.appliedOffer) { %>
+                                                        <span style="text-decoration: line-through;color: rgba(255, 19, 19, 0.696);">₹<%= product.productId.price %></span><br>
+                                                        ₹ <%= product.productPrice %>
+                                                    <% } else { %>
+                                                        ₹ <%= product.productPrice %>
+                                                    <% } %>
                                                 </td>
                                                 <td class="quantity-col">
                                                     <div class="cart-product-quantity">
-                                                        <input type="text" class="form-control quantity-input"
-                                                            value="<%= product.quantity %>" readonly>
+                                                        <input type="text" class="form-control quantity-input" value="<%= product.quantity %>" readonly>
                                                     </div>
                                                 </td>
                                                 <td class="total-col">
-                                                    ₹<%= product.productId.price * product.quantity %>
+                                                    <% if (product.appliedOffer) { %>
+                                                        ₹ <%= product.discountedPrice * product.quantity %>
+                                                    <% } else { %>
+                                                        ₹ <%= product.productPrice * product.quantity %>
+                                                    <% } %>
                                                 </td>
                                             </tr>
-                                            <% }); %>
-                                                <% } else { %>
-                                                    <tr class="text-center">
-                                                        <td colspan="5" style="color:red;">There are no products in your
-                                                            Cart</td>
-                                                    </tr>
-                                                    <% } %>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <tr class="text-center">
+                                            <td colspan="6" style="color:red;">There are no products in your Cart</td>
+                                        </tr>
+                                    <% } %>
                                 </tbody>
-
-                            </table><!-- End .table table-wishlist -->
+                            </table>
+                            <!-- End .table table-wishlist -->
                             <p class="title mb-1" style="color: #98928cbe;font-size: medium;">Coupons</p>
                             <% if(coupon.length>0 ){%>
                                 <% coupon.forEach((coupon, index)=> {%>
@@ -287,6 +297,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>Product</th>
+                                                    <th>Quantity</th>
                                                     <th>Total</th>
                                                 </tr>
                                             </thead>
@@ -297,10 +308,9 @@
                                                     0) { %>
                                                     <% cartDetails.products.forEach(product=> { %>
                                                         <tr>
-                                                            <td><a href="#">
-                                                                    <%= product.productId.name %>
-                                                                </a></td>
-                                                            <td>₹<%= product.productId.price * product.quantity %>
+                                                            <td style="margin-left: 5%;">   <%= product.productId.name %> </td> 
+                                                                <td><%= product.quantity %></td>
+                                                            <td>₹<%= product.productPrice * product.quantity %>
                                                             </td>
                                                         </tr>
                                                         <% }); %>
