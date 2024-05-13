@@ -172,8 +172,8 @@
                                 </thead>
 
                                 <tbody>
-                                    <% if (cartDetails && cartDetails.products && cartDetails.products.length> 0) { %>
-                                        <% cartDetails.products.forEach(product=> { %>
+                                    <% if (cartDetails && cartDetails.products && cartDetails.products.length > 0) { %>
+                                        <% cartDetails.products.forEach(product => { %>
                                             <tr>
                                                 <td class="product-col">
                                                     <div class="product">
@@ -191,7 +191,9 @@
                                                     </div><!-- End .product -->
                                                 </td>
                                                 <td class="price-col">
-                                                    <%= product.productId.price %>
+                                                  
+
+                                                   ₹ <%= product.appliedOffer?product.discountedPrice:product.productId.price  %>
                                                 </td>
                                                 <td class="quantity-col">
                                                     <div class="cart-product-quantity">
@@ -203,23 +205,24 @@
                                                             style="margin-left: -4%;">
                                                         <button class="quantity-btn increment-btn">+</button>
                                                     </div>
-
+                                
                                                 </td>
                                                 <td class="total-col">
-                                                    <%= product.productId.price * product.quantity %>
+                                                   ₹ <%= product.appliedOffer?product.discountedPrice * product.quantity :product.productId.price * product.quantity  %>
                                                 </td>
                                                 <td class="remove-col"><button class="btn-remove"
                                                         onclick="deleteCart('<%= product._id %>')"><i
                                                             class="icon-close"></i></button></td>
                                             </tr>
-                                            <% }); %>
-                                                <% } else { %>
-                                                    <tr class="text-center">
-                                                        <td colspan="5" style="color:red;">There are no products in your
-                                                            Cart</td>
-                                                    </tr>
-                                                    <% } %>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <tr class="text-center">
+                                            <td colspan="5" style="color:red;">There are no products in your
+                                                Cart</td>
+                                        </tr>
+                                    <% } %>
                                 </tbody>
+                                
 
                             </table><!-- End .table table-wishlist -->
                             <div class="cart-bottom">
@@ -255,28 +258,7 @@
                                             <td>₹ 0.00</td>
                                         </tr><!-- End .summary-shipping-row -->
 
-                                        <tr class="summary-shipping-row">
-                                            <td>
-                                                <div class="custom-control custom-radio">
-                                                    <input type="radio" id="standart-shipping" name="shipping"
-                                                        class="custom-control-input">
-                                                    <label class="custom-control-label"
-                                                        for="standart-shipping">Standart:</label>
-                                                </div><!-- End .custom-control -->
-                                            </td>
-                                            <td>₹ 20.00</td>
-                                        </tr><!-- End .summary-shipping-row -->
-                                        <tr class="summary-shipping-row">
-                                            <td>
-                                                <div class="custom-control custom-radio">
-                                                    <input type="radio" id="express-shipping" name="shipping"
-                                                        class="custom-control-input">
-                                                    <label class="custom-control-label"
-                                                        for="express-shipping">Express:</label>
-                                                </div><!-- End .custom-control -->
-                                            </td>
-                                            <td>₹ 40.00</td>
-                                        </tr><!-- End .summary-shipping-row -->
+                                        
 
                                         <tr class="summary-total">
                                             <td>Total:</td>

@@ -39,7 +39,7 @@ userRoute.post('/resetPassword',userAuth.isLogin,userController.resetPassword);
 
 userRoute.get('/shop', userAuth.isBlocked, userController.loadShop);
 userRoute.post('/shop', userAuth.isBlocked, userController.loadFilter);
-userRoute.get('/productDetails',userAuth.isLogin, userController.loadProductDetails);
+userRoute.get('/productDetails', userController.loadProductDetails);
 
 userRoute.get('/blocked-user', userAuth.isLogin, userController.loadBlockedUser);
 

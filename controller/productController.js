@@ -2,7 +2,6 @@ const category = require('../models/category');
 const product = require('../models/productModel');
 const path = require('path')
 const fs = require('fs')
-const sharp = require("sharp");
 
 const loadProduct = async (req, res) => {
     try {
@@ -34,7 +33,7 @@ const loadProduct = async (req, res) => {
                 Next: Next,
                 Previous: Previous,
                 totalPages: totalPages,
-                currentPage: page, 
+                currentPage: page,
                 pageSize: limit
             })
     } catch (error) {
@@ -50,48 +49,46 @@ const loadAddProduct = async (req, res) => {
         res.redirect('/500')
     }
 }
+
+
 const addProduct = async (req, res) => {
     try {
-        const { productName, productDescription, Price, Category, Quantity } = req.body;
-        console.log(req.body);
-        const files = req.files;
-        let arrImages = [];
-        if (Array.isArray(req.files)) {
-            for (let i = 0; i < req.files.length; i++) {
-                arrImages[i] = req.files[i].filename;
+        console.log("req.body", req.body);
+        console.log("req.files", req.files);
+        const { productName, productDescription, Price, category, Quantity } = req.body
+        const files = req.files
+
+        const alreadyExist = await product.findOne({ productName: productName })
+
+        if (alreadyExist) {
+
+            return res.json({ success: false, message: 'Item already existed' })
+        } else {
+            const images = files.map(file => file.filename);
+
+            console.log("my images", images);
+
+
+            const products = new product({
+                name: productName,
+                price: Price,
+                quantity: Quantity,
+                images: images,
+                category: category,
+                description: productDescription,
+
+            })
+            const save = await products.save()
+            console.log("save", save);
+            if (save) {
+                return res.status(200).json({ success: true })
+
             }
         }
-
-        // const existingProduct = await product.find({name:productName})
-
-
-        const selectedCategory = await category.findOne({ _id: Category });
-        console.log(selectedCategory, "my categ");
-
-
-        for (let i = 0; i < arrImages.length; i++) {
-            await sharp('public/assets/images/productImg/productImages/' + arrImages[i])
-                .resize(500, 500)
-                .toFile('public/assets/images/productImg/sharpedImg/' + arrImages[i]);
-        }
-
-        
-
-        if (parseInt(Quantity) > 0 && parseFloat(Price) > 0) {
-            const Product = new product({
-                name: productName,
-                price: parseFloat(Price),
-                category: selectedCategory._id,
-                description: productDescription,
-                quantity: parseInt(Quantity),
-                images: arrImages
-            });
-            const savedProduct = await Product.save();
-        }
-        res.redirect('/admin/product');
-
     } catch (error) {
-        console.log('Error:', error);
+        console.log(error);
+        res.redirect('/500')
+
     }
 }
 
@@ -130,51 +127,58 @@ const loadeditProduct = async (req, res) => {
     }
 }
 
+
 const editProduct = async (req, res) => {
     try {
-        const { id, productName, productDescription, Price, Category, Quantity } = req.body
-        const existingProduct = await product.findById(id);
-        const categories = await category.find({ isListed: true });
+        const { productName, category, price, description, quantity, id, oldimageUrl } = req.body
+        console.log("my edit body", req.body);
+        const alreadyExist = await product.findOne({ _id: { $ne: id }, productName: productName })
 
-        let imageData = [];
-        if (req.files) {
-            const allowedImageFormats = ['image/jpeg', 'image/png'];
+        if (alreadyExist) {
 
-            
-
-            if (existingProduct.images.length + req.files.length !== 3 || req.files.some(file => !allowedImageFormats.includes(file.mimetype))) {
-                req.flash("message", "Please upload 3 images of JPEG or PNG format");
-                return res.redirect(`/admin/editProduct?productId=${id}`);
-            }
-
-
-            imageData = await Promise.all(req.files.map(async (file) => {
-                const resizedPath = path.join(__dirname, "../public/assets/images/productImg/sharpedImg", file.filename);
-                await sharp(file.path).resize(500, 500, { fit: "fill" }).toFile(resizedPath);
-                return file.filename;
-                
-            }));
-           
+            return res.json({ success: false, message: 'Item already existed' })
         }
-        
 
-        const selectedCategory = await category.findOne({ _id: Category, isListed: true });
-        const updatedProduct = await product.findByIdAndUpdate(
-            id,
+        const filename = req.files.map(item => {
+            return item.filename
+        })
+
+        const upload = await product.findOne({ _id: id })
+        let array = upload.images
+        console.log("upload", upload);
+
+        if (oldimageUrl && oldimageUrl.length) {
+            const oldImagesToRemove = JSON.parse(oldimageUrl);
+            array = array.filter(item => !oldImagesToRemove.includes(item));
+
+        }
+        array.push(...filename)
+        console.log("array", array);
+
+        const edit = await product.updateOne({ _id: id },
             {
-                name: productName,
-                description: productDescription,
-                price: Price,
-                category: selectedCategory._id,
-                quantity: Quantity,
-                $push: { images: { $each: imageData } },
-            },
-            { new: true }
-        );
+                $set:
+                {
+                    name: productName,
+                    category: category,
+                    price: price,
+                    description: description,
+                    quantity: quantity,
+                    images: array
+                }
+            })
 
-        res.redirect("/admin/product");
+        console.log('edit', edit);
+        if (edit) {
+
+            res.status(200).json({ success: true })
+
+        }
+
 
     } catch (error) {
+
+        console.log(error);
         res.redirect('/500')
 
     }
@@ -182,16 +186,27 @@ const editProduct = async (req, res) => {
 
 const deleteImg = async (req, res) => {
     try {
-        const { image, prdtId } = req.body;
-        fs.unlink(path.join(__dirname, "../public/assets/images/productImg/sharpedImg/", image), () => { });
-        await product.updateOne({ _id: prdtId }, { $pull: { images:image } });
-        res.send({ success: true });
-
+        const { preview, filename, id } = req.body;
+        const fullpath = path.join(__dirname, "..", "public", preview);
+        fs.unlink(fullpath, async (err) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ success: false, error: "Error deleting image" });
+            }
+            try {
+                const result = await product.updateOne({ _id: id }, { $pull: { images: filename } });
+                console.log(result);
+                res.status(200).json({ success: true });
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({ success: false, error: "Error updating product" });
+            }
+        });
     } catch (error) {
-    res.redirect('/500')
+        console.error(error);
+        res.status(500).json({ success: false, error: "Internal server error" });
     }
 };
-
 
 
 module.exports = {

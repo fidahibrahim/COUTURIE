@@ -203,15 +203,13 @@
                                                 <p class="mb-0">coupon code : <span style="color: red;"><b>
                                                             <%= coupon.couponCode%>
                                                         </b></span></p>
-                                                <p class="mb-0">discount : <%= coupon.discountAmount%></b></span></p>
-                                                <p class="mb-0">Expire date : <%= coupon.expiryDate%></b></span></p>
+                                                <p class="mb-0">discount : <%= coupon.discountAmount %></b></span></p>
+                                                <p class="mb-0">Expire date : <%= moment(coupon.expiryDate,'DD/MM/YYYY').format('DD/MM/YYYY') %></b></span></p>
                                             </div>
                                         </div>
                                     </div>
 
                                     <% }) %>
-
-
 
                                         <%}else{%>
                                             <div class="border p-3 mb-3" style="width: 41%;">
@@ -322,9 +320,9 @@
                                                                         <td>Shipping:</td>
                                                                         <td>Free shipping</td>
                                                                     </tr>
-                                                                    <tr>
+                                                                    <tr style="color: red;">
                                                                         <td>Discount:</td>
-                                                                        <td id="discount">₹00.00</td>
+                                                                        <td  id="discount">-₹00.00</td>
                                                                     </tr>
                                                                     <tr class="summary-total">
                                                                         <td>Total:</td>
@@ -695,7 +693,7 @@
                     } else if (response.min) {
                         fireSwal(response.message)
                     } else if (response.amountOkey) {
-                        document.getElementById('discount').innerHTML = '₹' + response.discountAmount
+                        document.getElementById('discount').innerHTML = '-₹' + response.discountAmount
                         document.getElementById('totalAmount').innerHTML = '₹' + response.discountedTotal
                         Swal.fire({
                             position: 'center',

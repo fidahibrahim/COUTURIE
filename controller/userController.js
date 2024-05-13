@@ -6,7 +6,9 @@ const randomstring = require('randomstring')
 const userOtpVerification = require('../models/userOtpVerification');
 const category = require('../models/category');
 const product = require('../models/productModel');
-const moment = require('moment')
+const Offer = require('../models/offerModel')
+const moment = require('moment');
+const cartModel = require('../models/cartModel');
 
 const loadHome = async (req, res) => {
     try {
@@ -417,13 +419,53 @@ const loadShop = async (req, res) => {
         if (Next > totalPages) {
             Next = totalPages
         }
-        const user = await User.findOne({ _id: req.session.userId })
 
-        const products = await product.find({ is_Listed: true })
+        const cartCount = await cartModel.countDocuments({ userId:req.session.userId })
+
+        const offerData = await Offer.find({ startDate: { $lte: new Date() }, endDate: { $gte: new Date() } })
+        const user = await User.findOne({ _id: req.session.userId })
+        let products = await product.find({ is_Listed: true })
             .sort({ createdAt: -1 })
             .limit(limit)
             .skip((page - 1) * limit)
             .exec();
+
+        products = products.map(product => {
+            let productDiscountedPrice;
+            let categoryDiscountPrice;
+            let appliedOffer = null;
+            let discountedPrice;
+
+            offerData.forEach(offer => {
+                if (offer.offerType === 'product' && offer.productId.includes(product._id.toString())) {
+                    productDiscountedPrice = Math.round(product.price - (product.price * offer.discount / 100))
+                }
+            })
+
+            offerData.forEach(offer => {
+                if (offer.offerType === 'category' && offer.categoryId.includes(product.category._id.toString())) {
+                    categoryDiscountPrice = Math.round(product.price - (product.price * offer.discount / 100))
+                }
+            })
+
+            if (productDiscountedPrice <= categoryDiscountPrice) {
+                appliedOffer = offerData.find(offer => offer.offerType === 'product' && offer.productId.includes(product._id.toString()))
+                discountedPrice = Math.round(productDiscountedPrice)
+            }
+            else {
+                appliedOffer = offerData.find(offer => offer.offerType === 'category' && offer.categoryId.includes(product.category._id.toString()))
+                discountedPrice = Math.round(categoryDiscountPrice)
+            }
+
+            return {
+                ...product.toObject(),
+                originalPrice: product.price,
+                discountedPrice,
+                appliedOffer: appliedOffer ? { offerName: appliedOffer.offerName, discount: appliedOffer.discount } : null,
+                offerText: appliedOffer ? `${appliedOffer.discount}%off` : ''
+            }
+
+        })
 
         const Category = await category.find({ isListed: true })
         res.render('shop', {
@@ -432,9 +474,11 @@ const loadShop = async (req, res) => {
             categories: Category,
             Next,
             Previous,
-            totalPages
+            totalPages,
+            cartCount
         });
     } catch (error) {
+        console.log(error);
         res.redirect('/500')
     }
 }
@@ -473,8 +517,43 @@ const loadProductDetails = async (req, res) => {
     try {
         const productId = req.query.productId
         const productData = await product.findOne({ _id: productId }).populate('category')
-        res.render('productDetails', { product: productData })
+        const offerData = await Offer.find({ startDate: { $lte: new Date() }, endDate: { $gte: new Date() } })
+        let productDiscountedPrice;
+        let categoryDiscountPrice;
+        let appliedOffer = null;
+        let discountedPrice;
+
+        offerData.forEach(offer => {
+            if (offer.offerType === 'product' && offer.productId.includes(productData._id.toString())) {
+                productDiscountedPrice = Math.round(productData.price - (productData.price * offer.discount / 100))
+            }
+        })
+
+        offerData.forEach(offer => {
+            if (offer.offerType === 'category' && offer.categoryId.includes(productData.category._id.toString())) {
+                categoryDiscountPrice = Math.round(productData.price - (productData.price * offer.discount / 100))
+            }
+        })
+
+        if (productDiscountedPrice <= categoryDiscountPrice) {
+            appliedOffer = offerData.find(offer => offer.offerType === 'product' && offer.productId.includes(productData._id.toString()))
+            discountedPrice = Math.round(productDiscountedPrice)
+        }
+        else {
+            appliedOffer = offerData.find(offer => offer.offerType === 'category' && offer.categoryId.includes(productData.category._id.toString()))
+            discountedPrice = Math.round(categoryDiscountPrice)
+        }
+        res.render('productDetails', {
+            product: {
+                ...productData.toObject(),
+                originalPrice: productData.price,
+                discountedPrice,
+                appliedOffer: appliedOffer ? { offerName: appliedOffer.offerName, discount: appliedOffer.discount } : null,
+                offerText: appliedOffer ? `${appliedOffer.discount}%off` : ''
+            }
+        })
     } catch (error) {
+        console.log(error);
         res.redirect('/500')
     }
 }
@@ -571,11 +650,32 @@ const loadWallet = async (req, res) => {
 
 const loadTransaction = async (req, res) => {
     try {
+        let page = 1;
+        if (req.query.id) {
+            page = req.query.id
+        }
+        let limit = 5;
+        let Next = page + 1;
+        let Previous = page > 1 ? page - 1 : 1
         const userId = req.session.userId;
-        const user = await User.findOne({ _id: userId });
-        console.log(user);
-        res.render('transaction', { user, moment })
+        const userData = await User.findOne({ _id: userId });
+        let count = userData.walletHistory.length
+        console.log("c", count);
+        let totalPages = Math.ceil(count / limit)
+        if (Next > totalPages) {
+            Next = totalPages
+        }
+
+        const walletHistory = await User.findOne({ _id: userId })
+            .select('walletHistory')
+            .slice('walletHistory', (page - 1) * limit, page * limit)
+            .sort({ createdAt: -1 })
+            .lean()
+            .exec();
+
+        res.render('transaction', { user: walletHistory, moment, Next, Previous, totalPages });
     } catch (error) {
+        console.log(error);
         res.redirect('/500')
     }
 }

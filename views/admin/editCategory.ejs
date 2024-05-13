@@ -56,6 +56,11 @@
                                     </div>
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </form>
+                                <% if (locals.message) { %>
+                                    <p style="color: red;">
+                                        <%= message %>
+                                    </p>
+                                    <% } %>
                             </div>
                         </div>
                     </div>

@@ -2,7 +2,7 @@ const User = require('../models/userModel');
 const Product = require('../models/productModel');
 const Cart = require('../models/cartModel');
 const Coupon = require('../models/couponModel');
-
+const moment = require('moment')
 
 const loadCheckout = async (req, res) => {
     try {
@@ -13,7 +13,8 @@ const loadCheckout = async (req, res) => {
             model: "Product"
         });
         const user = await User.findOne({ _id: userData });
-        const couponData = await Coupon.find({ status: true })
+        const currentDate = new Date();
+        const couponData = await Coupon.find({ status: true, activationDate: { $lte: currentDate }, expiryDate: { $gte: currentDate } });
 
         let subTotal = 0;
         let cartId = null;
@@ -25,11 +26,12 @@ const loadCheckout = async (req, res) => {
             });
             cartId = cartDetails._id;
         } else {
-            return res.render('cart', { cartDetails, user, subTotal: 0, discountAmnt: 0, cartId, coupon: couponData });
+            return res.render('cart', { cartDetails, user, subTotal: 0, discountAmnt: 0, cartId, coupon: couponData, moment });
         }
-        res.render('checkout', { userData, cartDetails, user, subTotal, cartId, coupon: couponData })
+        res.render('checkout', { userData, cartDetails, user, subTotal, cartId, coupon: couponData, moment })
     } catch (error) {
-        res.redirect('/500')
+
+        console.log(error);
     }
 }
 

@@ -89,7 +89,7 @@
 							<a href="/cart" class="dropdown-toggle" role="button" aria-haspopup="true"
 								aria-expanded="false" data-display="static">
 								<i class="icon-shopping-cart"></i>
-								<span class="cart-count">2</span>
+								<span class="cart-count"><%= cartCount %></span>
 							</a>
 						</div><!-- End .cart-dropdown -->
 					</div><!-- End .header-right -->
@@ -132,17 +132,23 @@
 										<% products.forEach(product=>{%>
 											<div class="col-6 col-md-4 col-lg-4 col-xl-3">
 												<div class="product product-7 text-center">
+													<% if(product.appliedOffer){ %>
+														<span style="margin-right: 74%;" class="badge badge-success" ><%= product.offerText%></span>
+														<%}%> 
 													<figure class="product-media">
-														<!-- <span class="product-label label-new">New</span> -->
+														
 														<a href="/productDetails?productId=<%= product._id %>">
 															<img src="/assets/images/productImg/sharpedImg/<%= product.images[0]%>"
 																alt="Product image" class="product-image">
 														</a>
-														<div class="product-action-vertical">
+														<div class="product-action-vertical">	
 															<a href="/wishlist"
 																class="btn-product-icon btn-wishlist btn-expandable"><span>add
 																	to wishlist</span></a>
-														</div><!-- End .product-action-vertical -->
+														</div>
+														
+
+
 														<%if(product.quantity >0){%>
 														<div class="product-action">
 															<a class="btn-product btn-cart"
@@ -155,30 +161,36 @@
 																><span>Out of Stock</span></a>
 														</div>
 														<%}%>
-													</figure><!-- End .product-media -->
+													</figure>
 													<input type="hidden" id="productId" value="<%=product._id%>">
 													<input type="hidden" id="quantity" value="1">
 													<div class="product-body">
-														<div class="product-cat">
-															<!-- <a href="#">Women</a>    -->
-														</div><!-- End .product-cat -->
-														<h3 class="product-title"><a
-																href="/productDetails?productId=<%= product._id %>">
-																<%= product.name %>
-															</a></h3><!-- End .product-title -->
-														<div class="product-price">
-															₹<%= product.price%>
-														</div><!-- End .product-price -->
-														<div class="ratings-container">
+														<h3 class="product-title">
+															<a href="/productDetails?productId=<%= product._id %>">
+																<%= product.name %> 
+															</a>
+														</h3>
+													
+														<% if (product.appliedOffer) { %>
+															<span class="product-price">
+																<span style="text-decoration: line-through;color: rgba(255, 19, 19, 0.696);">₹<%= product.price %></span>
+																₹<%= product.discountedPrice %>
+															</span>
+														<% } else { %>
+															<div class="product-price">
+																₹<%= product.price %>
+															</div>
+														<% } %>
+													
+														<!-- <div class="ratings-container">
 															<div class="ratings">
 																<div class="ratings-val" style="width: 20%;"></div>
-																<!-- End .ratings-val -->
-															</div><!-- End .ratings -->
+															</div>
 															<span class="ratings-text">( 2 Reviews )</span>
-														</div><!-- End .rating-container -->
-													</div><!-- End .product-body -->
-												</div><!-- End .product -->
-											</div><!-- End .col-sm-6 col-lg-4 col-xl-3 -->
+														</div> -->
+													</div>
+												</div>
+											</div>
 											<% }) %>
 												<%}else{%>
 													<span>no products</span>

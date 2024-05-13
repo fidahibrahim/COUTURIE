@@ -21,16 +21,16 @@ const addOffer = async (req, res) => {
             return res.json({ success: false, message: "Please enter offer name" })
         }
         if (!discountRate || discountRate.trim() == "" || discountRate < 0 || discountRate > 80) {
-            return res.json({ success: false, message: "Plase Enter a valid discount Amount" })
+            return res.json({ success: false, message: "Please Enter a valid discount Amount" })
         }
         if (offerType == "Choose") {
-            return res.json({ success: false, message: "Plase select offer type" })
+            return res.json({ success: false, message: "Please select offer type" })
         }
         if (!startDate) {
-            return res.json({ success: false, message: "Plase select start date" })
+            return res.json({ success: false, message: "Please select start date" })
         }
         if (!endDate) {
-            return res.json({ success: false, message: "Plase select End date" })
+            return res.json({ success: false, message: "Please select End date" })
         }
 
         if (offerType == "category") {

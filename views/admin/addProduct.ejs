@@ -18,30 +18,33 @@
                                 <div class="card" style="width: 300%;">
                                     <div class="card-body">
                                         <h4 class="card-title">Add Product</h4>
-                                        <form class="mt-4" id="productForm" method="post" enctype="multipart/form-data">
+                                        <form class="mt-4" id="productForm">
                                             <div class="form-group">
+                                                <label for="name">Product Name</label>
                                                 <input type="text" name="productName" id="productName"
                                                     class="form-control" placeholder="Enter Product Name">
                                                 <span id="productNameError" class="text-danger"></span>
                                             </div>
                                             <div class="form-group">
+                                                <label for="desciption">Description</label>
                                                 <input type="text" name="productDescription" id="productDescription"
                                                     class="form-control" placeholder="Enter Description">
-                                                    <span id="descriptionError" class="text-danger"></span>
+                                                <span id="descriptionError" class="text-danger"></span>
                                             </div>
                                             <div class="form-group">
+                                                <label for="price">Price</label>
                                                 <input type="text" name="Price" id="Price" class="form-control"
                                                     placeholder="Enter Price">
                                                 <span id="priceError" class="text-danger"></span>
                                             </div>
                                             <div class="form-group">
+                                                <label for="category">Category</label>
                                                 <div class="input-group mb-3">
                                                     <div class="input-group-prepend">
                                                         <label class="input-group-text"
                                                             for="inputGroupSelect01">Options</label>
                                                     </div>
-                                                    <select class="custom-select" id="inputGroupSelect01"
-                                                        name="Category">
+                                                    <select class="custom-select" id="category" name="Category">
                                                         <option selected>category</option>
                                                         <% category.forEach(category=>{ %>
                                                             <option value="<%= category._id %>">
@@ -52,84 +55,96 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
+                                                <label for="quantity">Quantity</label>
                                                 <input type="text" name="Quantity" id="Quantity" class="form-control"
                                                     placeholder="Enter Quantity">
                                                 <span id="quantityError" class="text-danger"></span>
                                             </div>
-                                            <div id="imagePreview" class="mt-2"></div>
 
                                             <div class="form-group">
-                                                <div class="input-group mb-3">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text">Upload</span>
+                                                <label>Images</label>
+                                                <div class="d-flex justify-content-between">
+                                                    <div class="image-upload-container">
+                                                        <div class="close-icon"
+                                                            onclick="deleteImage('img1', 'preview1');">&times;</div>
+                                                        <label for="img1" class="form-label">
+                                                            <img style="width: 85%;" id="preview1"
+                                                                src="https://bit.ly/3ubuq5o" alt="Preview 1">
+                                                        </label>
+                                                        <input type="file" class="form-control" id="img1"
+                                                            name="cropImages" style="display: none;">
+                                                        <button class="btn btn-light" type="button"
+                                                            onclick="document.getElementById('img1').click();">Upload
+                                                            Image</button>
                                                     </div>
-
-                                                    <div class="custom-file">
-                                                        <input type="file" name="images" class="custom-file-input"
-                                                            id="productImage" multiple accept="image/*">
-                                                        <label class="custom-file-label" for="inputGroupFile01">Choose
-                                                            file</label>
+                                                    <div class="image-upload-container">
+                                                        <div class="close-icon"
+                                                            onclick="deleteImage('img2', 'preview2');">&times;</div>
+                                                        <label for="img2" class="form-label">
+                                                            <img style="width: 85%;" id="preview2"
+                                                                src="https://bit.ly/3ubuq5o" alt="Preview 2">
+                                                        </label>
+                                                        <input type="file" class="form-control" id="img2"
+                                                            name="cropImages" style="display: none;">
+                                                        <button class="btn btn-light" type="button"
+                                                            onclick="document.getElementById('img2').click();">Upload
+                                                            Image</button>
+                                                    </div>
+                                                    <div class="image-upload-container">
+                                                        <div class="close-icon"
+                                                            onclick="deleteImage('img3', 'preview3');">&times;</div>
+                                                        <label for="img3" class="form-label">
+                                                            <img style="width: 85%;" id="preview3"
+                                                                src="https://bit.ly/3ubuq5o" alt="Preview 3">
+                                                        </label>
+                                                        <input type="file" class="form-control" id="img3"
+                                                            name="cropImages" style="display: none;">
+                                                        <button class="btn btn-light" type="button"
+                                                            onclick="document.getElementById('img3').click();">Upload
+                                                            Image</button>
                                                     </div>
                                                 </div>
-                                                <span id="imageError" class="text-danger"></span>
+
+
+                                                <!-- Modal  for cropping image  -->
+                                                <div class="modal fade" id="imageCropModal" tabindex="-1"
+                                                    aria-labelledby="imageCropModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="imageCropModalLabel">Crop
+                                                                    Image</h5>
+                                                                <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body ">
+                                                                <img id="imageToCrop" src="" alt="Crop this image"
+                                                                    style="max-width: 100%;">
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Cancel</button>
+                                                                <button type="button" class="btn btn-primary"
+                                                                    id="cropImageBtn">Crop</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
+
                                             <br>
-                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                            <button type="submit" id="submitBtn" class="btn btn-primary">Submit</button>
                                         </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <footer class="footer text-center">
-                        All Rights Reserved by Adminmart. Designed and Developed by <a
-                            href="https://wrappixel.com">WrapPixel</a>.
-                    </footer>
                 </div>
     </div>
-    <div class="chat-windows "></div>
-
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const fileInput = document.getElementById('productImage')
-            const imagePreviewContainer = document.getElementById('imagePreview');
-            fileInput.addEventListener('change', function () {
-                imagePreviewContainer.innerHTML = '';
-
-                for (const file of fileInput.files) {
-                    const imgContainer = document.createElement('div');
-                    imgContainer.className = 'd-inline-block mr-2';
-
-                    const img = document.createElement('img');
-                    img.src = URL.createObjectURL(file);
-                    img.className = 'img-sm img-thumbnail';
-                    img.alt = 'Image Preview';
-                    img.style.width = '80px';
-                    img.style.height = '80px';
-
-                    const deselectIcon = document.createElement('i');
-                    deselectIcon.className = 'fa-solid fa-xmark text-black mt-1';
-                    deselectIcon.style.cursor = 'pointer';
-                    deselectIcon.addEventListener('click', function () {
-                        imgContainer.parentNode.removeChild(imgContainer);
-                        // Remove the corresponding file from the file input
-                        const index = Array.from(fileInput.files).findIndex(f => f === file);
-                        if (index !== -1) {
-                            fileInput.files = Array.from(fileInput.files).filter((_, i) => i !== index);
-                        }
-                    });
-
-                    imgContainer.appendChild(img);
-                    imgContainer.appendChild(deselectIcon);
-                    imagePreviewContainer.appendChild(imgContainer);
-                }
-            });
-        });
-    </script>
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         document.getElementById('productForm').addEventListener('submit', function (event) {
             const productName = document.getElementById('productName').value.trim();
@@ -173,22 +188,155 @@
             } else {
                 document.getElementById('quantityError').innerText = '';
             }
-
-            const fileInput = document.getElementById('inputGroupFile01');
-            const file = fileInput.files[0];
-            if (!file) {
-                document.getElementById('imageError').innerText = 'Please select an image file';
-                event.preventDefault();
-            } else {
-                const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
-                if (!allowedExtensions.test(fileInput.value)) {
-                    document.getElementById('imageError').innerText = 'Please select a valid image file (jpg, jpeg, png, gif)';
-                    event.preventDefault();
-                } else {
-                    document.getElementById('imageError').innerText = '';
-                }
-            }
         });
+    </script>
+
+    <!-- ================================add Product========================== -->
+
+    <script>
+        function deleteImage(inputId, previewId) {
+            var input = document.getElementById(inputId);
+            var preview = document.getElementById(previewId);
+            input.value = "";
+            preview.src = "https://bit.ly/3ubuq5o";
+
+        }
+    </script>
+
+    <script>
+
+        let currentInputId, currentPreviewId, cropper;
+        let croppedImages = {};
+        let originalFileNames = {};
+
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById('img1').addEventListener('change', function () { prepareImageForCropping('img1', 'preview1'); });
+            document.getElementById('img2').addEventListener('change', function () { prepareImageForCropping('img2', 'preview2'); });
+            document.getElementById('img3').addEventListener('change', function () { prepareImageForCropping('img3', 'preview3'); });
+
+            document.getElementById('cropImageBtn').addEventListener('click', function () {
+                performCropping();
+            });
+
+            $('#imageCropModal').on('shown.bs.modal', function () {
+                let image = document.getElementById('imageToCrop');
+                cropper = new Cropper(image, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    dragMode: "move",
+                    minContainerWidth: 450,
+                    minContainerHeight: 500,
+                    minCropBoxWidth: 400,
+                    minCropBoxHeight: 400,
+                    minCanvasHeight: 500,
+                    minCanvasWidth: 500,
+
+                });
+            });
+
+            $('#imageCropModal').on('hidden.bs.modal', function () {
+                if (cropper) {
+                    cropper.destroy();
+                    cropper = null;
+                }
+            });
+
+        })
+
+        function prepareImageForCropping(inputId, previewId) {
+
+            console.log("my id",inputId);
+
+            currentInputId = inputId;
+            currentPreviewId = previewId;
+            const input = document.getElementById(inputId);
+            const file = input.files[0];
+            const newDate = new Date().getTime();
+            originalFileNames[inputId] = `${file.name}_${newDate}`;
+            console.log("originalFileNames[inputId]", originalFileNames[inputId]);
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('imageToCrop').src = e.target.result;
+                $('#imageCropModal').modal('show');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function performCropping() {
+            if (!cropper) {
+                console.error("Cropper is not initialized.");
+                return;
+            }
+            cropper.getCroppedCanvas().toBlob((blob) => {
+
+                const preview = document.getElementById(currentPreviewId);
+                preview.src = URL.createObjectURL(blob);
+
+                croppedImages[currentInputId] = blob;
+
+
+                $('#imageCropModal').modal('hide');
+            }, 'image/png')
+
+
+        }
+
+
+        // adding 
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector('form')
+            form.addEventListener('submit', function (e) {
+                e.preventDefault()
+
+                const productName = document.getElementById('productName').value
+                const category = document.getElementById('category').value
+                const price = document.getElementById('Price').value
+                const description = document.getElementById('productDescription').value
+                const quantity = document.getElementById('Quantity').value
+
+                const image1 = document.getElementById('img1').files[0]
+                const image2 = document.getElementById('img2').files[0]
+                const image3 = document.getElementById('img3').files[0]
+
+                const formData = new FormData()
+                formData.append('productName', productName)
+                formData.append('category', category)
+                formData.append('Price', price)
+                formData.append('productDescription', description)
+                formData.append('Quantity', quantity)
+
+                Object.keys(croppedImages).forEach(key => {
+                    const originalFileName = originalFileNames[key];
+                    formData.append('cropImages', croppedImages[key], originalFileName);
+                });
+
+                console.log(formData);
+
+                axios.post('/admin/addProduct', formData, {
+                    headers: {
+                        'Content-type': "multipart/form-data"
+                    }
+                }).then((res) => {
+                    if (res.data.success) {
+                        window.location.href = '/admin/product'
+                    }
+                    // } else {
+                    //     document.getElementById('addproductError').innerHTML = res.data.message
+                    //     document.getElementById('addproductError').style.color = 'red'
+                    // }
+
+                }).catch((err) => {
+                    console.log('error', err);
+                });
+
+            })
+        })
+
+
+
+
     </script>
 
 

@@ -11,7 +11,7 @@ const cartSchema = mongoose.Schema({
         {
             productId:{
                 type:ObjectId,
-                ref:'product',
+                ref:'Product',
                 required:true
             },
             quantity:{
@@ -25,6 +25,10 @@ const cartSchema = mongoose.Schema({
             totalPrice:{
                 type:Number,
                 default:0
+            },
+            offerApplied: {
+                type: ObjectId,
+                ref: 'Offer' 
             }   
         }
     ]

@@ -141,7 +141,7 @@ const placeOrder = async (req, res) => {
                 }
             } else if (orderDetails.paymentMethod == 'RAZORPAY') {
                 var options = {
-                    amount: subTotal * 100,
+                    amount: finalAmount * 100,
                     currency: 'INR',
                     receipt: "" + orderId,
                 }
@@ -216,7 +216,9 @@ const loadViewOrder = async (req, res) => {
         let Next = page + 1
         let Previous = page > 1 ? page - 1 : 1
         let count = await Order.find().count()
+        console.log(count);
         let totalPages = Math.ceil(count / limit)
+        console.log("ttttttttttttt", totalPages);
         if (Next > totalPages) {
             Next = totalPages
         }

@@ -18,10 +18,10 @@ const productSchema = mongoose.Schema({
         ref: "category",
         required: true
     },
-    images: {
-        type: Array,
-        validate: [arrayLimit, 'you can pass only 3 images']
-    },
+    images: [{
+        type:String,
+        required:true  
+     }],
     is_Listed: {
         type: Boolean, 
         default: true,

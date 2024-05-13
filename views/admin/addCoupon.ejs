@@ -1,4 +1,4 @@
-<%-include('../layout/admin/header.ejs') %>
+<%-include('.. /layout/admin/header.ejs') %>
     <div class="preloader">
         <div class="lds-ripple">
             <div class="lds-pos"></div>
@@ -7,8 +7,8 @@
     </div>
     <div id="main-wrapper" data-theme="light" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
         data-sidebar-position="fixed" data-header-position="fixed" data-boxed-layout="full">
-        <%-include('../layout/admin/navbar.ejs') %>
-            <%-include('../layout/admin/nav.ejs') %>
+        <%-include('.. /layout/admin/navbar.ejs') %>
+            <%-include('.. /layout/admin/nav.ejs') %>
 
                 <div class="page-wrapper">
 
@@ -21,30 +21,39 @@
                                         <form class="mt-4" id="productForm" method="post">
                                             <div class="form-group">
                                                 <label for="name">Name</label>
-                                                <input type="text" name="name" id="name" class="form-control" placeholder="Enter coupon Name">
+                                                <input type="text" name="name" id="name" class="form-control"
+                                                    placeholder="Enter coupon Name">
                                                 <span id="nameError" class="text-danger"></span>
                                             </div>
                                             <div class="form-group">
                                                 <label for="adate">Activation date</label>
-                                                <input type="date" name="adate" id="adate" class="form-control" placeholder="dd-mm-yyyy">
+                                                <input type="date" name="adate" id="adate" class="form-control"
+                                                    placeholder="dd-mm-yyyy">
                                                 <span id="adateError" class="text-danger"></span>
                                             </div>
                                             <div class="form-group">
                                                 <label for="edate">Expire date</label>
-                                                <input type="date" name="edate" id="edate" class="form-control" placeholder="dd-mm-yyyy">
+                                                <input type="date" name="edate" id="edate" class="form-control"
+                                                    placeholder="dd-mm-yyyy">
                                                 <span id="edateError" class="text-danger"></span>
                                             </div>
                                             <div class="form-group">
-                                                <label for="limit">Limit of use</label>
-                                                <input type="text" name="limit" id="limit" class="form-control" placeholder="Enter limit">
+                                                <label for="limit">Minimum Amount</label>
+                                                <input type="text" name="limit" id="limit" class="form-control"
+                                                    placeholder="Enter limit">
                                                 <span id="limitError" class="text-danger"></span>
                                             </div>
                                             <div class="form-group">
                                                 <label for="damount">Discount amount</label>
-                                                <input type="text" name="damount" id="damount" class="form-control" placeholder="Enter Discount amount">
+                                                <input type="text" name="damount" id="damount" class="form-control"
+                                                    placeholder="Enter Discount amount">
                                                 <span id="damountError" class="text-danger"></span>
+                                                <small id="discountText" class="form-text text-muted">Discount should be
+                                                    less than 70%</small>
                                             </div>
-                                            <button type="submit" onclick="validateForm()" style="width: 15%; margin-bottom: 2%;" class="btn btn-primary">Submit</button>
+                                            <button type="submit" onclick="validateForm(event)"
+                                                style="width: 15%; margin-bottom: 2%;"
+                                                class="btn btn-primary">Submit</button>
                                         </form>
                                     </div>
                                 </div>
@@ -59,43 +68,44 @@
     </div>
 
     <script>
-        function validateForm() {
+        function validateForm(event) {
+            event.preventDefault()
             let name = document.getElementById("name").value.trim();
             let adate = document.getElementById("adate").value;
             let edate = document.getElementById("edate").value;
             let limit = document.getElementById("limit").value.trim();
             let damount = document.getElementById("damount").value.trim();
-            
+
             let nameError = document.getElementById("nameError");
             let adateError = document.getElementById("adateError");
             let edateError = document.getElementById("edateError");
             let limitError = document.getElementById("limitError");
             let damountError = document.getElementById("damountError");
-            
+
             let isValid = true;
-    
+
             nameError.innerHTML = "";
             adateError.innerHTML = "";
             edateError.innerHTML = "";
             limitError.innerHTML = "";
             damountError.innerHTML = "";
-    
-          
+
+
             if (name === "") {
                 nameError.innerHTML = "Name is required";
                 isValid = false;
             }
-    
+
             if (adate === "") {
                 adateError.innerHTML = "Activation date is required";
                 isValid = false;
             }
-    
+
             if (edate === "") {
                 edateError.innerHTML = "Expire date is required";
                 isValid = false;
             }
-    
+
             if (limit === "") {
                 limitError.innerHTML = "Limit of use is required";
                 isValid = false;
@@ -109,8 +119,15 @@
             } else if (!/^(\d+(\.\d{1,2})?|\.\d{1,2})%?$/.test(damount)) {
                 damountError.innerHTML = "Discount amount must be a number with optional '%' sign";
                 isValid = false;
+            } else {
+                let discount = parseFloat(damount);
+                if (discount < 0 || discount >= 70) {
+                    damountError.innerHTML = "Discount amount should be greater than 0 and less than 70";
+                    isValid = false;
+                }
             }
-    
+
+
             if (isValid) {
                 document.getElementById("productForm").submit();
             }
@@ -118,4 +135,4 @@
     </script>
 
 
-    <%-include('../layout/admin/footer.ejs') %>
+    <%-include('.. /layout/admin/footer.ejs') %>
