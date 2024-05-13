@@ -7,7 +7,6 @@ const moment = require('moment');
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
 const couponModel = require('../models/couponModel');
-const orderModel = require('../models/orderModel');
 
 
 var instance = new Razorpay({
@@ -32,7 +31,7 @@ const loadOrder = async (req, res) => {
 const placeOrder = async (req, res) => {
     try {
         const { address, subTotal, payment, couponCode } = req.body;
-        console.log("my address:",address)
+        console.log("my address:", address)
         const userId = req.session.userId;
         const userData = await User.findOne({ _id: userId })
         const cart = await Cart.findOne({ userId: userId }).populate({
@@ -98,7 +97,7 @@ const placeOrder = async (req, res) => {
 
             if (coupon) {
                 let discounted = Math.round(subTotal * (parseFloat(coupon.discountAmount) / 100))
-                await orderModel.findOneAndUpdate({ _id: orderId }, { $set: { couponApplied: discounted } })
+                await Order.findOneAndUpdate({ _id: orderId }, { $set: { couponApplied: discounted } })
 
             }
 
@@ -236,25 +235,25 @@ const loadViewOrder = async (req, res) => {
 }
 
 
-const invoice = async (req,res)=>{
+const invoice = async (req, res) => {
     try {
-        const {id}=req.query
-        let orders 
-        const order = await Order.findOne({ _id:id })
-        if(order.couponUsed){
-            orders = await Order.findOne({ _id:id }).populate('products.productId').populate('couponUsed')
+        const { id } = req.query
+        let orders
+        const order = await Order.findOne({ _id: id })
+        if (order.couponUsed) {
+            orders = await Order.findOne({ _id: id }).populate('products.productId').populate('couponUsed')
         } else {
-            orders = await Order.findOne({ _id:id }).populate('products.productId')
+            orders = await Order.findOne({ _id: id }).populate('products.productId')
         }
 
-        let deliveryAddress=orders.deliveryAddress.split(',').map(item => item.trim());
-        console.log("gy",deliveryAddress);
-        const user = await User.findOne({ _id:req.session.userId })
+        let deliveryAddress = orders.deliveryAddress.split(',').map(item => item.trim());
+        console.log("gy", deliveryAddress);
+        const user = await User.findOne({ _id: req.session.userId })
         const email = user.email
 
-        console.log("my orders",orders);
+        console.log("my orders", orders);
 
-        res.render('invoice',{ orders,email,deliveryAddress })
+        res.render('invoice', { orders, email, deliveryAddress })
 
 
     } catch (error) {
@@ -282,8 +281,28 @@ const loadOrderDetails = async (req, res) => {
 
 const loadAdminOrders = async (req, res) => {
     try {
-        const order = await Order.find({}).populate('products.productId').populate('userId').sort({ date: -1 })
-        res.render('orders', { order, moment })
+        let page = 1
+        if (req.query.id) {
+            page = req.query.id
+        }
+        const limit = 5
+        let Next = page + 1
+        let Previous = page > 1 ? page - 1 : 1
+        let count = await Order.find().count()
+        let totalPages = Math.ceil(count / limit)
+        if (Next > totalPages) {
+            Next = totalPages
+        }
+        const order = await Order.find({}).populate('products.productId').populate('userId').sort({ date: -1 }).limit(limit).skip((page - 1) * limit).exec()
+        res.render('orders', {
+            order,
+            moment,
+            Next: Next,
+            Previous: Previous,
+            totalPages: totalPages,
+            currentPage: page,
+            pageSize: limit
+        })
 
     } catch (error) {
         res.redirect('/500')
@@ -511,7 +530,7 @@ const continueVrifyPayment = async (req, res) => {
         const cartData = await Cart.findOne({ userId: req.session.userId });
         const cartProducts = cartData.products
         const { payment, order } = req.body
-        console.log("gug",req.body);
+        console.log("gug", req.body);
         const userId = req.session.userId
 
         secretKey = process.env.RAZORPAY_KEY_SECRET

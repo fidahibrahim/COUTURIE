@@ -13,7 +13,8 @@ const cartModel = require('../models/cartModel');
 const loadHome = async (req, res) => {
     try {
         const userData = await User.findOne({ _id: req.session.userId })
-        res.render("home", { user: userData });
+        const cartCount=await cartModel.countDocuments({userId:req.session.userId})
+        res.render("home", { user: userData,cartCount });
 
     } catch (error) {
         res.redirect('/500')

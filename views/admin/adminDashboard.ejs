@@ -1,58 +1,28 @@
 <%-include('../layout/admin/header.ejs') %>
-    <!-- ============================================================== -->
-    <!-- Preloader - style you can find in spinners.css -->
-    <!-- ============================================================== -->
     <div class="preloader">
         <div class="lds-ripple">
             <div class="lds-pos"></div>
             <div class="lds-pos"></div>
         </div>
     </div>
-    <!-- ============================================================== -->
-    <!-- Main wrapper - style you can find in pages.scss -->
-    <!-- ============================================================== -->
     <div id="main-wrapper" data-theme="light" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
         data-sidebar-position="fixed" data-header-position="fixed" data-boxed-layout="full">
-        <!-- ============================================================== -->
-        <!-- Topbar header - style you can find in pages.scss -->
-        <!-- ============================================================== -->
         <%-include('../layout/admin/navbar.ejs') %>
-            <!-- ============================================================== -->
-            <!-- End Topbar header -->
-            <!-- ============================================================== -->
-            <!-- ============================================================== -->
-            <!-- Left Sidebar - style you can find in sidebar.scss  -->
-            <!-- ============================================================== -->
             <%-include('../layout/admin/nav.ejs') %>
-                <!-- ============================================================== -->
-                <!-- End Left Sidebar - style you can find in sidebar.scss  -->
-                <!-- ============================================================== -->
-                <!-- ============================================================== -->
-                <!-- Page wrapper  -->
-                <!-- ============================================================== -->
                 <div class="page-wrapper">
-                    <!-- ============================================================== -->
-                    <!-- Bread crumb and right sidebar toggle -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- End Bread crumb and right sidebar toggle -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- Container fluid  -->
-                    <!-- ============================================================== -->
                     <div class="container-fluid">
-                        <!-- *************************************************************** -->
-                        <!-- Start First Cards -->
-                        <!-- *************************************************************** -->
                         <a
                             style="color: rgb(73, 70, 70); font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif ;">
                             <h1>Dashboard </h1>
                         </a>
                         <p>Whole data about your business is here.</p>
+
+                        <!-- sales report -->
                         <a href="/admin/salesDaily">
                             <button class=" btn btn-outline-secondary"
                                 style="margin-bottom: 1%; margin-left: 88%;">Sales Report</button>
                         </a>
+
                         <div class="card-group">
                             <div class="card border-right">
                                 <div class="card-body">
@@ -127,12 +97,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- *************************************************************** -->
-                        <!-- End First Cards -->
-                        <!-- *************************************************************** -->
-                        <!-- *************************************************************** -->
-                        <!-- Start Sales Charts Section -->
-                        <!-- *************************************************************** -->
                         <div class="row">
                             <div class="col-lg-6 col-md-12">
 
@@ -155,12 +119,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- *************************************************************** -->
-                        <!-- End Sales Charts Section -->
-                        <!-- *************************************************************** -->
-                        <!-- *************************************************************** -->
-                        <!-- Start Location and Earnings Charts Section -->
-                        <!-- *************************************************************** -->
                         <div class="row">
                             <div class="col-lg-6 col-md-4">
                                 <div class="card" style="margin-top: -24%;">
@@ -191,8 +149,11 @@
                                                                         <p style="margin-top: 9px;margin-bottom: 3%;">
                                                                             Product Name: <%= product.productName %>
                                                                         </p>
-                                                                        <p>Product Id: <%= product._id %></p>
-                                                                        <p style="margin-top: -6%;">Quantity: <%= product.quantitySold %></p>
+                                                                        <p>Product Id: <%= product._id %>
+                                                                        </p>
+                                                                        <p style="margin-top: -6%;">Quantity: <%=
+                                                                                product.quantitySold %>
+                                                                        </p>
                                                                     </div>
                                                                 </div>
                                                                 <% }) %>
@@ -207,10 +168,13 @@
                                                     </a>
                                                 </div>
                                                 <div class="ml-3 mt-2">
-                                                    <h5 class="text-dark font-weight-medium mb-2">Best Selling Category</h5>
+                                                    <h5 class="text-dark font-weight-medium mb-2">Best Selling Category
+                                                    </h5>
                                                     <% bestCategories.forEach((category)=>{ %>
-                                                    <p> <%= category.categoryName %></p>
-                                                    <% }) %>
+                                                        <p>
+                                                            <%= category.categoryName %>
+                                                        </p>
+                                                        <% }) %>
                                                 </div>
                                             </div>
                                         </div>
@@ -229,12 +193,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- *************************************************************** -->
-                        <!-- End Location and Earnings Charts Section -->
-                        <!-- *************************************************************** -->
-                        <!-- *************************************************************** -->
-                        <!-- Start Top Leader Table -->
-                        <!-- *************************************************************** -->
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
@@ -354,27 +312,8 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- *************************************************************** -->
-                        <!-- End Top Leader Table -->
-                        <!-- *************************************************************** -->
                     </div>
-                    <!-- ============================================================== -->
-                    <!-- End Container fluid  -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- footer -->
-                    <!-- ============================================================== -->
-                    <footer class="footer text-center text-muted">
-                        All Rights Reserved by Adminmart. Designed and Developed by <a
-                            href="https://wrappixel.com">WrapPixel</a>.
-                    </footer>
-                    <!-- ============================================================== -->
-                    <!-- End footer -->
-                    <!-- ============================================================== -->
                 </div>
-                <!-- ============================================================== -->
-                <!-- End Page wrapper  -->
-                <!-- ============================================================== -->
     </div>
 
 

@@ -1,5 +1,5 @@
 <%- include('../layout/user/header.ejs') %>
-
+    <!-- =============================HEADER===================================== -->
     <div class="page-wrapper">
         <header class="header">
             <div class="header-top">
@@ -12,9 +12,8 @@
                                     <li><a href="#">Eur</a></li>
                                     <li><a href="#">Usd</a></li>
                                 </ul>
-                            </div><!-- End .header-menu -->
-                        </div><!-- End .header-dropdown -->
-
+                            </div>
+                        </div>
                         <div class="header-dropdown">
                             <a href="#">Eng</a>
                             <div class="header-menu">
@@ -23,9 +22,9 @@
                                     <li><a href="#">French</a></li>
                                     <li><a href="#">Spanish</a></li>
                                 </ul>
-                            </div><!-- End .header-menu -->
-                        </div><!-- End .header-dropdown -->
-                    </div><!-- End .header-left -->
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="header-right">
                         <ul class="top-menu">
@@ -35,10 +34,10 @@
                                     <li><a href="tel:#"><i class="icon-phone"></i>Call: +0123 456 789</a></li>
                                 </ul>
                             </li>
-                        </ul><!-- End .top-menu -->
-                    </div><!-- End .header-right -->
-                </div><!-- End .container -->
-            </div><!-- End .header-top -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
 
             <div class="header-middle sticky-header">
                 <div class="container">
@@ -69,10 +68,9 @@
                                 <li>
                                     <a href="#" class="sf--ul">Profile</a>
                                 </li>
-                            </ul><!-- End .menu -->
-                        </nav><!-- End .main-nav -->
-                    </div><!-- End .header-left -->
-
+                            </ul>
+                        </nav>
+                    </div>
                     <div class="header-right">
                         <div class="header-search">
                             <a href="#" class="search-toggle" role="button" title="Search"><i
@@ -82,9 +80,9 @@
                                     <label for="q" class="sr-only">Search</label>
                                     <input type="search" class="form-control" name="q" id="q" placeholder="Search in..."
                                         required>
-                                </div><!-- End .header-search-wrapper -->
+                                </div>
                             </form>
-                        </div><!-- End .header-search -->
+                        </div>
 
 
                         <div class="dropdown cart-dropdown">
@@ -93,11 +91,12 @@
                                 <i class="icon-shopping-cart"></i>
                             </a>
 
-                        </div><!-- End .header-middle -->
-        </header><!-- End .header -->
+                        </div>
+        </header>
+
+        <!-- ===========================/HEADER========================================= -->
 
         <main class="main">
-
             <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17"
                 style="background-image: url('assets/images/backgrounds/login-bg.jpg')">
                 <div class="container">
@@ -112,20 +111,21 @@
                             <div class="tab-content">
                                 <div class="tab-pane fade show active" id="signin-2" role="tabpanel"
                                     aria-labelledby="signin-tab-2">
+                                    <!-- ======================= FORM =================================== -->
                                     <form method="post" onsubmit="return validateLoginForm()">
                                         <div class="form-group">
                                             <label for="singin-email-2"> Email </label>
                                             <input type="text" class="form-control" id="singin-email-2" name="email"
                                                 value="<%= locals.email %>">
                                             <span id="email-error" style="color: red;"></span>
-                                        </div><!-- End .form-group -->
+                                        </div>
 
                                         <div class="form-group">
                                             <label for="singin-password-2">Password </label>
                                             <input type="password" class="form-control" id="singin-password-2"
                                                 name="password" value="<%= locals.password %>">
                                             <span id="password-error" style="color: red;"></span>
-                                        </div><!-- End .form-group -->
+                                        </div>
 
 
                                         <% if( messages.message ) { %>
@@ -134,24 +134,26 @@
                                             </p>
                                             <%}%>
 
-                                            <% if (locals.message) { %>
-                                                <p style="color: red;">
-                                                    <%= message %>
-                                                </p>
-                                                <% } %>
+                                                <% if (locals.message) { %>
+                                                    <p style="color: red;">
+                                                        <%= message %>
+                                                    </p>
+                                                    <% } %>
 
-                                                <div class="form-footer">
-                                                    <button type="submit" class="btn btn-outline-primary-2">
-                                                        <span>LOG IN</span>
-                                                        <i class="icon-long-arrow-right"></i>
-                                                    </button>
-                                                    <a href="/forgotPassword" class="forgot-link">Forgot Your Password?</a>
+                                                        <div class="form-footer">
+                                                            <button type="submit" class="btn btn-outline-primary-2">
+                                                                <span>LOG IN</span>
+                                                                <i class="icon-long-arrow-right"></i>
+                                                            </button>
+                                                            <a href="/forgotPassword" class="forgot-link">Forgot Your
+                                                                Password?</a>
 
-                                                </div><!-- End .form-footer -->
+                                                        </div>
 
                                     </form>
+                                    <!-- ================================= /FORM ========================================= -->
                                     <span>Not a Member ? <a href="/register">Register</a></span>
-                                    
+
 
                                     <div class="form-choice">
                                         <p class="text-center">or sign in with</p>
@@ -161,23 +163,16 @@
                                                     <i class="icon-google"></i>
                                                     Login With Google
                                                 </a>
-                                            </div><!-- End .col-6 -->
-                                            <!-- <div class="col-sm-6">
-                                                <a href="#" class="btn btn-login btn-f">
-                                                    <i class="icon-facebook-f"></i>
-                                                    Login With Facebook
-                                                </a>
-                                            </div> -->
-                                        </div><!-- End .row -->
-                                    </div><!-- End .form-choice -->
-                                </div><!-- .End .tab-pane -->
-                            </div><!-- End .tab-content -->
-                        </div><!-- End .form-tab -->
-                    </div><!-- End .form-box -->
-                </div><!-- End .container -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <!-- End .login-page section-bg -->
-        </main><!-- End .main -->
+        </main>
 
         <footer class="footer">
             <div class="footer-middle">
@@ -201,13 +196,13 @@
                                             class="icon-youtube"></i></a>
                                     <a href="#" class="social-icon" target="_blank" title="Pinterest"><i
                                             class="icon-pinterest"></i></a>
-                                </div><!-- End .soial-icons -->
-                            </div><!-- End .widget about-widget -->
-                        </div><!-- End .col-sm-6 col-lg-3 -->
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="col-sm-6 col-lg-3">
                             <div class="widget">
-                                <h4 class="widget-title">Useful Links</h4><!-- End .widget-title -->
+                                <h4 class="widget-title">Useful Links</h4>
 
                                 <ul class="widget-list">
                                     <li><a href="about.html">About Molla</a></li>
@@ -215,13 +210,13 @@
                                     <li><a href="#">FAQ</a></li>
                                     <li><a href="contact.html">Contact us</a></li>
                                     <li><a href="login.html">Log in</a></li>
-                                </ul><!-- End .widget-list -->
-                            </div><!-- End .widget -->
-                        </div><!-- End .col-sm-6 col-lg-3 -->
+                                </ul>
+                            </div>
+                        </div>
 
                         <div class="col-sm-6 col-lg-3">
                             <div class="widget">
-                                <h4 class="widget-title">Customer Service</h4><!-- End .widget-title -->
+                                <h4 class="widget-title">Customer Service</h4>
 
                                 <ul class="widget-list">
                                     <li><a href="#">Payment Methods</a></li>
@@ -230,42 +225,39 @@
                                     <li><a href="#">Shipping</a></li>
                                     <li><a href="#">Terms and conditions</a></li>
                                     <li><a href="#">Privacy Policy</a></li>
-                                </ul><!-- End .widget-list -->
-                            </div><!-- End .widget -->
-                        </div><!-- End .col-sm-6 col-lg-3 -->
-
+                                </ul>
+                            </div>
+                        </div>
                         <div class="col-sm-6 col-lg-3">
                             <div class="widget">
-                                <h4 class="widget-title">My Account</h4><!-- End .widget-title -->
-
+                                <h4 class="widget-title">My Account</h4>
                                 <ul class="widget-list">
                                     <li><a href="#">Sign In</a></li>
                                     <li><a href="#">View Cart</a></li>
                                     <li><a href="#">My Wishlist</a></li>
                                     <li><a href="#">Track My Order</a></li>
                                     <li><a href="#">Help</a></li>
-                                </ul><!-- End .widget-list -->
-                            </div><!-- End .widget -->
-                        </div><!-- End .col-sm-6 col-lg-3 -->
-                    </div><!-- End .row -->
-                </div><!-- End .container -->
-            </div><!-- End .footer-middle -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="footer-bottom">
                 <div class="container">
                     <p class="footer-copyright">Copyright © 2019 Molla Store. All Rights Reserved.</p>
-                    <!-- End .footer-copyright -->
+
                     <figure class="footer-payments">
                         <img src="assets/images/payments.png" alt="Payment methods" width="272" height="20">
-                    </figure><!-- End .footer-payments -->
-                </div><!-- End .container -->
-            </div><!-- End .footer-bottom -->
-        </footer><!-- End .footer -->
-    </div><!-- End .page-wrapper -->
+                    </figure>
+                </div>
+            </div>
+        </footer>
+    </div>
     <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
 
-    <!-- Mobile Menu -->
-    <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
+    <div class="mobile-menu-overlay"></div>
 
     <div class="mobile-menu-container">
         <div class="mobile-menu-wrapper">
@@ -296,22 +288,19 @@
                         <a href="#">Profile</a>
                     </li>
                 </ul>
-            </nav><!-- End .mobile-nav -->
-
+            </nav>
             <div class="social-icons">
                 <a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
                 <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
                 <a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
                 <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
-            </div><!-- End .social-icons -->
-        </div><!-- End .mobile-menu-wrapper -->
-    </div><!-- End .mobile-menu-container -->
+            </div>
+        </div>
+    </div>
 
     <script>
         function validateLoginForm() {
             let isValid = true;
-
-            // Reset error messages
             document.getElementById('email-error').textContent = '';
             document.getElementById('password-error').textContent = '';
 

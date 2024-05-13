@@ -11,9 +11,9 @@
                                     <li><a href="#">Eur</a></li>
                                     <li><a href="#">Usd</a></li>
                                 </ul>
-                            </div><!-- End .header-menu -->
+                            </div>
 
-                        </div><!-- End .header-dropdown -->
+                        </div>
 
                         <div class="header-dropdown">
                             <a href="#">Eng</a>
@@ -23,27 +23,21 @@
                                     <li><a href="#">French</a></li>
                                     <li><a href="#">Spanish</a></li>
                                 </ul>
-                            </div><!-- End .header-menu -->
-                        </div><!-- End .header-dropdown -->
-                    </div><!-- End .header-left -->
-
+                            </div>
+                        </div>
+                    </div>
                     <div class="header-right">
                         <ul class="top-menu">
                             <li>
                                 <a href="#">Links</a>
                                 <ul>
                                     <li><a href="tel:#"><i class="icon-phone"></i>Call: +0123 456 789</a></li>
-                                    <!-- <li><a href="wishlist.html"><i class="icon-heart-o"></i>Wishlist <span>(3)</span></a></li>
-                                    <li><a href="about.html">About Us</a></li>
-                                    <li><a href="contact.html">Contact Us</a></li>  
-                                    <li><a href="#signin-modal" data-toggle="modal"><i class="icon-user"></i>Login</a></li> -->
                                 </ul>
                             </li>
-                        </ul><!-- End .top-menu -->
-                    </div><!-- End .header-right -->
-                </div><!-- End .container -->
-            </div><!-- End .header-top -->
-
+                        </ul>
+                    </div>
+                </div>
+            </div>
             <div class="header-middle sticky-header">
                 <div class="container">
                     <div class="header-left">
@@ -102,7 +96,7 @@
                             <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false" data-display="static">
                                 <i class="icon-shopping-cart"></i>
-                                <!-- <span class="cart-count">2</span> -->
+                           
                             </a>
                         </div><!-- End .cart-dropdown -->
                     </div><!-- End .header-right -->
@@ -111,16 +105,6 @@
         </header><!-- End .header -->
 
         <main class="main">
-            <!-- <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
-                <div class="container">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                        <li class="breadcrumb-item"><a href="#">Profile</a>
-                        <li class="breadcrumb-item active" aria-current="page">Register</li>
-                    </ol>
-                </div>
-            </nav> -->
-
             <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17"
                 style="background-image: url('assets/images/backgrounds/login-bg.jpg')">
                 <div class="container">
@@ -135,6 +119,7 @@
                             <div class="tab-content">
                                 <div class="tab-pane fade show active" id="register-2" role="tabpanel"
                                     aria-labelledby="register-tab-2">
+                                    <!-- ==========================form -==================================== -->
                                     <form method="post" onsubmit="return validateForm()">
                                         <div class="form-group">
                                             <% if(locals.referralCode){%>
