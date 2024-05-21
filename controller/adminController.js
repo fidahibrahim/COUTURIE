@@ -73,6 +73,12 @@ const loadDashboard = async (req, res) => {
 
         const totalOrders = totalOrderCount.length != 0 ? totalOrderCount[0].totalOrders : 0
 
+        // if(totalOrderCount.length != 0){
+        //     totalOrders = totalOrderCount[0].totalOrders
+        // }else{
+        //     totalOrders = 0
+        // }
+
         const totalSales = await orderModel.aggregate([
             {
                 $unwind: '$products'

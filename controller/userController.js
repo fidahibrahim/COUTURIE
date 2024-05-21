@@ -432,8 +432,8 @@ const loadShop = async (req, res) => {
             .exec();
 
         products = products.map(product => {
-            let productDiscountedPrice;
-            let categoryDiscountPrice;
+            let productDiscountedPrice = product.price;
+            let categoryDiscountPrice = product.price;
             let appliedOffer = null;
             let discountedPrice;
 
@@ -519,8 +519,8 @@ const loadProductDetails = async (req, res) => {
         const productId = req.query.productId
         const productData = await product.findOne({ _id: productId }).populate('category')
         const offerData = await Offer.find({ startDate: { $lte: new Date() }, endDate: { $gte: new Date() } })
-        let productDiscountedPrice;
-        let categoryDiscountPrice;
+        let productDiscountedPrice = productData.price;
+        let categoryDiscountPrice = productData.price;
         let appliedOffer = null;
         let discountedPrice;
 

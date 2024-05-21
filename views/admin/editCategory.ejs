@@ -43,4 +43,37 @@
             </div>
         </div>
     </div>
+
+
+    <script>
+        function validateForm() {
+            let categoryName = document.getElementById("categoryName").value.trim();
+            let categoryDescription = document.getElementById("categoryDescription").value.trim();
+            let categoryNameError = document.getElementById("categoryNameError");
+            let categoryDescriptionError = document.getElementById("categoryDescriptionError");
+            let letters = /^[A-Za-z]+$/;
+    
+            
+            categoryNameError.textContent = "";
+            categoryDescriptionError.textContent = "";
+    
+            
+            if (categoryName === "") {
+                categoryNameError.textContent = "Category Name is required";
+                return false;
+            } else if (!categoryName.match(letters)) {
+                categoryNameError.textContent = "Category Name should only contain letters";
+                return false;
+            }
+    
+            
+            if (categoryDescription === "") {
+                categoryDescriptionError.textContent = "Category Description is required";
+                return false;
+            }
+    
+            return true; 
+        }
+    </script>
+    
     <%-include('../layout/admin/footer.ejs') %>

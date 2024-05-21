@@ -58,10 +58,9 @@ const addProduct = async (req, res) => {
         const { productName, productDescription, Price, category, Quantity } = req.body
         const files = req.files
 
-        const alreadyExist = await product.findOne({ productName: productName })
+        const alreadyExist = await product.findOne({ name: productName })
 
         if (alreadyExist) {
-
             return res.json({ success: false, message: 'Item already existed' })
         } else {
             const images = files.map(file => file.filename);

@@ -393,9 +393,10 @@
 
 
 
-    <input type="hidden" value="<%= paymentCounts.cod %>" id="cod">
-    <input type="hidden" value="<%= paymentCounts.razorpay %>" id="razorpay">
-    <input type="hidden" value="<%= paymentCounts.wallet %>" id="wallet">
+    <input type="hidden" value="<%= paymentCounts && paymentCounts.cod ? paymentCounts.cod : 0 %>" id="cod">
+    <input type="hidden" value="<%= paymentCounts && paymentCounts.razorpay ? paymentCounts.razorpay : 0 %>" id="razorpay">
+    <input type="hidden" value="<%= paymentCounts && paymentCounts.wallet ? paymentCounts.wallet : 0 %>" id="wallet">
+    
 
 
 

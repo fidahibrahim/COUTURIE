@@ -143,58 +143,61 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script>
-        document.getElementById('productForm').addEventListener('submit', function (event) {
-            const productName = document.getElementById('productName').value.trim();
-            if (productName === '') {
-                document.getElementById('productNameError').innerText = 'Product Name cannot be empty';
-                event.preventDefault();
-            } else if (!productName.match(/^[A-Za-z\s]+$/)) {
-                document.getElementById('productNameError').innerText = 'Product Name should only contain letters';
-                event.preventDefault();
-            } else {
-                document.getElementById('productNameError').innerText = '';
-            }
 
-            const description = document.getElementById('productDescription').value.trim();
-            if (description === '') {
-                document.getElementById('descriptionError').innerText = 'Description cannot be empty';
-                event.preventDefault();
-            } else {
-                document.getElementById('descriptionError').innerText = '';
-            }
-
-
-            const price = document.getElementById('Price').value.trim();
-            if (isNaN(price) || price === '') {
-                document.getElementById('priceError').innerText = 'Price must be a number';
-                event.preventDefault();
-            } else if (parseFloat(price) <= 0) {
-                document.getElementById('priceError').innerText = 'Price must be a positive number';
-                event.preventDefault();
-            } else {
-                document.getElementById('priceError').innerText = '';
-            }
-
-            const quantity = document.getElementById('Quantity').value.trim();
-            if (isNaN(quantity) || quantity === '') {
-                document.getElementById('quantityError').innerText = 'Quantity must be a number';
-                event.preventDefault();
-            } else if (parseFloat(quantity) <= 0) {
-                document.getElementById('quantityError').innerText = 'Quantity must be a positive number';
-                event.preventDefault();
-            } else {
-                document.getElementById('quantityError').innerText = '';
-            }
-        });
-    </script>
+        <script>
+            document.getElementById('productForm').addEventListener('submit', function (event) {
+                const productName = document.getElementById('productName').value.trim();
+                if (productName === '') {
+                    document.getElementById('productNameError').innerText = 'Product Name cannot be empty';
+                    event.preventDefault();
+                } else if (!productName.match(/^[A-Za-z\s]+$/)) {
+                    document.getElementById('productNameError').innerText = 'Product Name should only contain letters';
+                    event.preventDefault();
+                } else {
+                    document.getElementById('productNameError').innerText = '';
+                }
+    
+                const description = document.getElementById('productDescription').value.trim();
+                if (description === '') {
+                    document.getElementById('descriptionError').innerText = 'Description cannot be empty';
+                    event.preventDefault();
+                } else {
+                    document.getElementById('descriptionError').innerText = '';
+                }
+    
+    
+                const price = document.getElementById('Price').value.trim();
+                if (isNaN(price) || price === '') {
+                    document.getElementById('priceError').innerText = 'Price must be a number';
+                    event.preventDefault();
+                } else if (parseFloat(price) <= 0) {
+                    document.getElementById('priceError').innerText = 'Price must be a positive number';
+                    event.preventDefault();
+                } else {
+                    document.getElementById('priceError').innerText = '';
+                }
+    
+                const quantity = document.getElementById('Quantity').value.trim();
+                if (isNaN(quantity) || quantity === '') {
+                    document.getElementById('quantityError').innerText = 'Quantity must be a number';
+                    event.preventDefault();
+                } else if (parseFloat(quantity) <= 0) {
+                    document.getElementById('quantityError').innerText = 'Quantity must be a positive number';
+                    event.preventDefault();
+                } else {
+                    document.getElementById('quantityError').innerText = '';
+                }
+            });
+        </script>
+        
+        
 
     <!-- ================================add Product========================== -->
 
     <script>
         function deleteImage(inputId, previewId) {
-            var input = document.getElementById(inputId);
-            var preview = document.getElementById(previewId);
+            let input = document.getElementById(inputId);
+            let preview = document.getElementById(previewId);
             input.value = "";
             preview.src = "https://bit.ly/3ubuq5o";
 
@@ -288,11 +291,11 @@
             form.addEventListener('submit', function (e) {
                 e.preventDefault()
 
-                const productName = document.getElementById('productName').value
-                const category = document.getElementById('category').value
-                const price = document.getElementById('Price').value
-                const description = document.getElementById('productDescription').value
-                const quantity = document.getElementById('Quantity').value
+                const productName = document.getElementById('productName').value.trim()
+                const category = document.getElementById('category').value.trim()
+                const price = document.getElementById('Price').value.trim()
+                const description = document.getElementById('productDescription').value.trim()
+                const quantity = document.getElementById('Quantity').value.trim()
 
                 const image1 = document.getElementById('img1').files[0]
                 const image2 = document.getElementById('img2').files[0]
@@ -320,10 +323,6 @@
                     if (res.data.success) {
                         window.location.href = '/admin/product'
                     }
-                    // } else {
-                    //     document.getElementById('addproductError').innerHTML = res.data.message
-                    //     document.getElementById('addproductError').style.color = 'red'
-                    // }
 
                 }).catch((err) => {
                     console.log('error', err);

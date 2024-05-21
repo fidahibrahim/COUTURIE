@@ -49,34 +49,71 @@
 
     <script>
         function validateForm() {
-            let categoryName = document.getElementById("categoryName").value.trim();
-            let categoryDescription = document.getElementById("categoryDescription").value.trim();
-            let categoryNameError = document.getElementById("categoryNameError");
-            let categoryDescriptionError = document.getElementById("categoryDescriptionError");
-            let letters = /^[A-Za-z]+$/;
-
-            // Reset error messages
-            categoryNameError.textContent = "";
-            categoryDescriptionError.textContent = "";
-
-            // Validate Category Name
-            if (categoryName === "") {
-                categoryNameError.textContent = "Category Name is required";
-                return false;
-            } else if (!categoryName.match(letters)) {
-                categoryNameError.textContent = "Category Name should only contain letters";
-                return false;
+            var productName = document.getElementById('productName').value.trim().replace(/[^a-zA-Z]/g, '');
+            var productDescription = document.getElementById('productDescription').value.trim().replace(/[^a-zA-Z]/g, '');
+            var price = parseFloat(document.getElementById('Price').value.trim());
+            var quantity = parseInt(document.getElementById('Quantity').value.trim());
+    
+            var productNameError = document.getElementById('productNameError');
+            var productDescriptionError = document.getElementById('productDescriptionError');
+            var priceError = document.getElementById('priceError');
+            var quantityError = document.getElementById('quantityError');
+    
+            var isValid = true;
+    
+            // Validate Product Name
+            if (productName === '') {
+                productNameError.textContent = 'Product Name is required';
+                isValid = false;
+            } else if (!productName.match(/^[A-Za-z\s]*$/)) {
+                productNameError.textContent = 'Product Name should only contain letters and spaces';
+                isValid = false;
+            } else {
+                productNameError.textContent = '';
             }
-
-            // Validate Category Description
-            if (categoryDescription === "") {
-                categoryDescriptionError.textContent = "Category Description is required";
-                return false;
+    
+            // Validate Description
+            if (productDescription === '') {
+                productDescriptionError.textContent = 'Description is required';
+                isValid = false;
+            } else if (!productDescription.match(/^[A-Za-z\s]*$/)) {
+                productDescriptionError.textContent = 'Description should only contain letters and spaces';
+                isValid = false;
+            } else {
+                productDescriptionError.textContent = '';
             }
-
-            return true; // Form is valid
+    
+            // Validate Price
+            if (isNaN(price) || price <= 0) {
+                priceError.textContent = 'Price must be a valid number greater than 0';
+                isValid = false;
+            } else {
+                priceError.textContent = '';
+            }
+    
+            // Validate Quantity
+            if (isNaN(quantity) || quantity <= 0) {
+                quantityError.textContent = 'Quantity must be a valid number greater than 0';
+                isValid = false;
+            } else {
+                quantityError.textContent = '';
+            }
+    
+            // Additional check to prevent submission if fields contain only spaces
+            if (
+                productName.replace(/\s/g, '') === '' ||
+                productDescription.replace(/\s/g, '') === '' ||
+                isNaN(price) ||
+                isNaN(quantity)
+            ) {
+                isValid = false;
+            }
+    
+            return isValid;
         }
     </script>
+    
+    
 
 
 

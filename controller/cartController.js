@@ -124,7 +124,7 @@ const loadCart = async (req, res) => {
                         appliedOffer = categoryOffer;
                     }
 
-                    discountedPrice = itemPrice - (itemPrice * appliedOffer.discount / 100);
+                    discountedPrice = Math.round(itemPrice - (itemPrice * appliedOffer.discount / 100));
                 }
                 subTotal += discountedPrice * product.quantity;
                 product.discountedPrice = discountedPrice;

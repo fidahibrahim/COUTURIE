@@ -18,24 +18,23 @@ const loadCheckout = async (req, res) => {
         const couponData = await Coupon.find({ status: true, activationDate: { $lte: currentDate }, expiryDate: { $gte: currentDate } });
         let offerData = await Offer.find({startDate: { $lte: new Date() },endDate: { $gte: new Date() }});
 
-
         let subTotal = 0;
+        let totalSavings = 0; 
         let cartId = null;
 
         if (cartDetails) {
             cartDetails.products.forEach((product) => {
                 let itemPrice = product.productPrice;
-                subTotal += itemPrice * product.quantity;
 
-                // Check for applied offers
+               
                 let appliedOffer = null;
-                const productOffer = offerData.find(offer => 
-                    offer.offerType === 'product' && 
+                const productOffer = offerData.find(offer =>
+                    offer.offerType === 'product' &&
                     offer.productId.includes(product.productId._id.toString())
                 );
 
-                const categoryOffer = offerData.find(offer => 
-                    offer.offerType === 'category' && 
+                const categoryOffer = offerData.find(offer =>
+                    offer.offerType === 'category' &&
                     offer.categoryId.includes(product.productId.category._id.toString())
                 );
 
@@ -51,17 +50,23 @@ const loadCheckout = async (req, res) => {
                     } else {
                         appliedOffer = categoryOffer;
                     }
-                    let discountedPrice = itemPrice - (itemPrice * appliedOffer.discount / 100);
+                    let discountedPrice = Math.round(itemPrice);
+                    console.log("ddddddddddddd",itemPrice,appliedOffer.discount,discountedPrice);
                     product.discountedPrice = discountedPrice;
-                    product.appliedOffer = appliedOffer; 
+                    product.appliedOffer = appliedOffer;
                     product.offerText = `${appliedOffer.discount}% off`;
+                    subTotal += discountedPrice * product.quantity;
+                    let savings = Math.round(product.productId.price * product.quantity - discountedPrice * product.quantity)
+                    totalSavings += Math.round(savings);
+                } else {
+                    subTotal += itemPrice * product.quantity;
                 }
             });
             cartId = cartDetails._id;
         } else {
-            return res.render('cart', { cartDetails, user, subTotal: 0, discountAmnt: 0, cartId, coupon: couponData, moment });
+            return res.render('cart', { cartDetails, user, subTotal: 0, totalSavings: 0, cartId, coupon: couponData, moment });
         }
-        res.render('checkout', { userData, cartDetails, user, subTotal, cartId, coupon: couponData, moment })
+        res.render('checkout', { userData, cartDetails, user, subTotal, totalSavings, cartId, coupon: couponData, moment })
     } catch (error) {
         console.log(error);
     }

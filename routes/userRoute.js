@@ -73,7 +73,7 @@ userRoute.get('/paymentPolicy', userAuth.isLogin, userController.loadPaymentPoli
 
 // =============================ORDER========================================
 userRoute.get('/order/:id', userAuth.isLogin, orderController.loadOrder);
-userRoute.post('/placeOrder', userAuth.isLogin, orderController.placeOrder);
+userRoute.post('/placeOrder', userAuth.isLogin,userAuth.isBlocked, orderController.placeOrder);
 userRoute.get('/viewOrders', userAuth.isLogin, orderController.loadViewOrder);
 userRoute.get('/orderDetails', userAuth.isLogin, orderController.loadOrderDetails);
 userRoute.post('/cancelOrder', userAuth.isLogin, orderController.cancelOrder);

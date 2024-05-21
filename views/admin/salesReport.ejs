@@ -1,46 +1,25 @@
 <%-include('../layout/admin/header.ejs') %>
-    <!-- ============================================================== -->
-    <!-- Preloader - style you can find in spinners.css -->
-    <!-- ============================================================== -->
     <div class="preloader">
         <div class="lds-ripple">
             <div class="lds-pos"></div>
             <div class="lds-pos"></div>
         </div>
     </div>
-    <!-- ============================================================== -->
-    <!-- Main wrapper - style you can find in pages.scss -->
-    <!-- ============================================================== -->
     <div id="main-wrapper" data-theme="light" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
         data-sidebar-position="fixed" data-header-position="fixed" data-boxed-layout="full">
-        <!-- ============================================================== -->
-        <!-- Topbar header - style you can find in pages.scss -->
-        <!-- ============================================================== -->
+
         <%-include('../layout/admin/navbar.ejs') %>
             <%-include('../layout/admin/nav.ejs') %>
                 <div class="page-wrapper">
-                    <!-- ============================================================== -->
-                    <!-- Bread crumb and right sidebar toggle -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- End Bread crumb and right sidebar toggle -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- Container fluid  -->
-                    <!-- ============================================================== -->
+            
                     <div class="container-fluid">
-                        <!-- ============================================================== -->
-                        <!-- Start Page Content -->
-                        <!-- ============================================================== -->
-                        <!-- basic table -->
+                
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="row">
-                                            <!-- Column -->
-
-                                            <!-- Column -->
+                                    
                                         </div>
                                         <div style="margin-bottom: 2%;">
                                             <button onclick="downloadAsPdf('print')">Download as PDF</button>
@@ -159,6 +138,7 @@
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
+                                                                    <% if(data.length > 0){ %>
 
                                                                     <% data.forEach((data,index)=>{ %>
                                                                         <tr>
@@ -190,6 +170,14 @@
                                                                             </td>
                                                                         </tr>
                                                                         <% }) %>
+                                                                        <%}else{%>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    No data avialable
+                                                                                </td>
+                                                                            </tr>
+                                                                            <%}%>
+
                                                                 </tbody>
                                                                 <%}%>
 
@@ -206,6 +194,7 @@
                                                                         </thead>
                                                                         <tbody>
 
+                                                                            <% if(data.length > 0 ){ %>
                                                                             <% data.forEach((data,index)=>{ %>
                                                                                 <tr>
                                                                                     <td><span
@@ -233,10 +222,16 @@
                                                                                     </td>
                                                                                 </tr>
                                                                                 <% }) %>
+                                                                                <%}else{%>
+                                                                    <tr>
+                                                                        <td>
+                                                                            No data avialable
+                                                                        </td>
+                                                                    </tr>
+                                                                    <%}%>
                                                                         </tbody>
                                                                         <%}%>
-
-
+                                                                        
                                                                             <% if(page=='yearly' ){ %>
                                                                                 <thead>
                                                                                     <tr>
@@ -250,6 +245,7 @@
                                                                                 </thead>
                                                                                 <tbody>
 
+                                                                                    <% if(data.length > 0) {%>
                                                                                     <% data.forEach((data,index)=>{ %>
                                                                                         <tr>
                                                                                             <td>
@@ -279,10 +275,15 @@
                                                                                             </td>
                                                                                         </tr>
                                                                                         <% }) %>
+                                                                                        <%}else{%>
+                                                                                            <tr>
+                                                                                                <td>
+                                                                                                    No data avialable
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                            <%}%>
                                                                                 </tbody>
                                                                                 <%}%>
-
-
 
 
                                                                                     <% if(page=='customDate' ){ %>
@@ -297,6 +298,7 @@
                                                                                             </tr>
                                                                                         </thead>
                                                                                         <tbody>
+                                                                                            <% if(data.length > 0){ %>
                                                                                             <% data.forEach((data,index)=>{ %>
                                                                                                 <tr>
                                                                                                     <td><span
@@ -330,6 +332,13 @@
                                                                                                     </td>
                                                                                                 </tr>
                                                                                                 <% }) %>
+                                                                                                <%}else{%>
+                                                                                                    <tr>
+                                                                                                        <td>
+                                                                                                            No data avialable
+                                                                                                        </td>
+                                                                                                    </tr>
+                                                                                                    <%}%>
                                                                                         </tbody>
                                                                                         <%}%>
                                                 </table>
