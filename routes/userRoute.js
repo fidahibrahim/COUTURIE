@@ -42,55 +42,54 @@ userRoute.post('/shop', userAuth.isBlocked, userController.loadFilter);
 userRoute.get('/productDetails', userController.loadProductDetails);
 
 // =============================USER PROFILE=================================
-userRoute.get('/profile', userAuth.isLogin, profileController.loadProfile);
-userRoute.get('/editProfile', userAuth.isLogin, userController.loadEditProfile);
-userRoute.post('/editProfile', userAuth.isLogin, userController.editProfile);
-userRoute.get('/changePass', userAuth.isLogin, profileController.loadChangePass);
-userRoute.post('/changePass', userAuth.isLogin, profileController.changePass);
-userRoute.get('/address', userAuth.isLogin, profileController.loadAddress);
-userRoute.get('/addAddress', userAuth.isLogin, profileController.loadAddAddress);
-userRoute.post('/addAddress', userAuth.isLogin, profileController.addAddress);
-userRoute.get('/editAddress', userAuth.isLogin, profileController.loadEditAddress);
-userRoute.post('/editAddress', userAuth.isLogin, profileController.editAddress);
-userRoute.post('/deleteAddress', userAuth.isLogin, profileController.deleteAddress);
-userRoute.get('/wallet', userAuth.isLogin, userController.loadWallet);
-userRoute.get('/transaction', userAuth.isLogin, userController.loadTransaction)
+userRoute.get('/profile',userAuth.isBlocked, userAuth.isLogin, profileController.loadProfile);
+userRoute.get('/editProfile',userAuth.isBlocked, userAuth.isLogin, userController.loadEditProfile);
+userRoute.post('/editProfile',userAuth.isBlocked, userAuth.isLogin, userController.editProfile);
+userRoute.get('/changePass',userAuth.isBlocked, userAuth.isLogin, profileController.loadChangePass);
+userRoute.post('/changePass',userAuth.isBlocked, userAuth.isLogin, profileController.changePass);
+userRoute.get('/address',userAuth.isBlocked, userAuth.isLogin, profileController.loadAddress);
+userRoute.get('/addAddress',userAuth.isBlocked, userAuth.isLogin, profileController.loadAddAddress);
+userRoute.post('/addAddress',userAuth.isBlocked, userAuth.isLogin, profileController.addAddress);
+userRoute.get('/editAddress',userAuth.isBlocked, userAuth.isLogin, profileController.loadEditAddress);
+userRoute.post('/editAddress',userAuth.isBlocked, userAuth.isLogin, profileController.editAddress);
+userRoute.post('/deleteAddress',userAuth.isBlocked, userAuth.isLogin, profileController.deleteAddress);
+userRoute.get('/wallet',userAuth.isBlocked, userAuth.isLogin, userController.loadWallet);
+userRoute.get('/transaction',userAuth.isBlocked, userAuth.isLogin, userController.loadTransaction)
 
 // ==============================USER CART===================================
-userRoute.get('/cart', userAuth.isLogin, cartController.loadCart);
-userRoute.post('/addToCart', userAuth.isLogin, cartController.addToCart);
-userRoute.post('/deleteCart', userAuth.isLogin, cartController.deleteCart);
-userRoute.post('/updateQuantity', userAuth.isLogin, cartController.updateQuantity);
+userRoute.get('/cart',userAuth.isBlocked, userAuth.isLogin, cartController.loadCart);
+userRoute.post('/addToCart',userAuth.isBlocked, userAuth.isLogin, cartController.addToCart);
+userRoute.post('/deleteCart',userAuth.isBlocked, userAuth.isLogin, cartController.deleteCart);
+userRoute.post('/updateQuantity',userAuth.isBlocked, userAuth.isLogin, cartController.updateQuantity);
 
 // =========================CHECKOUT============================================
-userRoute.get('/checkout', userAuth.isLogin, checkoutController.loadCheckout);
-userRoute.get('/checkoutAddAddress', userAuth.isLogin, checkoutController.loadAddCheckoutAddress);
+userRoute.get('/checkout',userAuth.isBlocked, userAuth.isLogin, checkoutController.loadCheckout);
+userRoute.get('/checkoutAddAddress',userAuth.isBlocked, userAuth.isLogin, checkoutController.loadAddCheckoutAddress);
 userRoute.post('/checkoutAddAddress', userAuth.isLogin, checkoutController.addCheckoutAddress)
-userRoute.get('/checkoutEditAddress', userAuth.isLogin, checkoutController.loadEditCheckoutAddress);
-userRoute.post('/checkoutEditAddress', userAuth.isLogin, checkoutController.editCheckoutAddress);
-userRoute.post('/applyCoupon', userAuth.isLogin, couponController.applyCoupon)
-userRoute.get('/paymentPolicy', userAuth.isLogin, userController.loadPaymentPolicy);
+userRoute.get('/checkoutEditAddress',userAuth.isBlocked, userAuth.isLogin, checkoutController.loadEditCheckoutAddress);
+userRoute.post('/checkoutEditAddress',userAuth.isBlocked, userAuth.isLogin, checkoutController.editCheckoutAddress);
+userRoute.post('/applyCoupon',userAuth.isBlocked, userAuth.isLogin, couponController.applyCoupon)
+userRoute.get('/paymentPolicy',userAuth.isBlocked, userAuth.isLogin, userController.loadPaymentPolicy);
 
 // =============================ORDER========================================
-userRoute.get('/order/:id', userAuth.isLogin, orderController.loadOrder);
-userRoute.post('/placeOrder', userAuth.isLogin,userAuth.isBlocked, orderController.placeOrder);
-userRoute.get('/viewOrders', userAuth.isLogin, orderController.loadViewOrder);
-userRoute.get('/orderDetails', userAuth.isLogin, orderController.loadOrderDetails);
-userRoute.post('/cancelOrder', userAuth.isLogin, orderController.cancelOrder);
-userRoute.post("/returnRequest", userAuth.isLogin, orderController.returnRequest);
-userRoute.post('/verifyPayment', userAuth.isLogin, orderController.verifyPayment);
-userRoute.post('/continuePayment', userAuth.isLogin, orderController.continuePayment);
-userRoute.post('/continueVerifyPayment', userAuth.isLogin, orderController.continueVrifyPayment);
-userRoute.get('/invoice', userAuth.isLogin, orderController.invoice);
+userRoute.get('/order/:id',userAuth.isBlocked, userAuth.isLogin, orderController.loadOrder);
+userRoute.post('/placeOrder',userAuth.isBlocked, userAuth.isLogin,userAuth.isBlocked, orderController.placeOrder);
+userRoute.get('/viewOrders',userAuth.isBlocked, userAuth.isLogin, orderController.loadViewOrder);
+userRoute.get('/orderDetails',userAuth.isBlocked, userAuth.isLogin, orderController.loadOrderDetails);
+userRoute.post('/cancelOrder',userAuth.isBlocked, userAuth.isLogin, orderController.cancelOrder);
+userRoute.post("/returnRequest",userAuth.isBlocked, userAuth.isLogin, orderController.returnRequest);
+userRoute.post('/verifyPayment',userAuth.isBlocked, userAuth.isLogin, orderController.verifyPayment);
+userRoute.post('/continuePayment',userAuth.isBlocked, userAuth.isLogin, orderController.continuePayment);
+userRoute.post('/continueVerifyPayment',userAuth.isBlocked, userAuth.isLogin, orderController.continueVrifyPayment);
+userRoute.get('/invoice',userAuth.isBlocked, userAuth.isLogin, orderController.invoice);
 
 // ========================WHISLIST==============================================
-userRoute.get('/wishlist', userAuth.isLogin, wishlistController.loadWishlist);
-userRoute.post('/addToWishlist', userAuth.isLogin, wishlistController.addToWishlist);
-userRoute.post('/removeFromWishlist', userAuth.isLogin, wishlistController.removeFromWishlist);
-userRoute.post('/addCart', userAuth.isLogin, wishlistController.addToCart);
-
-userRoute.get('/blocked-user', userAuth.isLogin, userController.loadBlockedUser);
-userRoute.get('/about', userAuth.isLogin, userController.loadAbout);
-userRoute.get('/contact', userAuth.isLogin, userController.loadContact);
+userRoute.get('/wishlist',userAuth.isBlocked, userAuth.isLogin, wishlistController.loadWishlist);
+userRoute.post('/addToWishlist',userAuth.isBlocked, userAuth.isLogin, wishlistController.addToWishlist);
+userRoute.post('/removeFromWishlist',userAuth.isBlocked, userAuth.isLogin, wishlistController.removeFromWishlist);
+userRoute.post('/addCart',userAuth.isBlocked, userAuth.isLogin, wishlistController.addToCart);
+userRoute.get('/blocked-user',userAuth.isBlocked, userAuth.isLogin, userController.loadBlockedUser);
+userRoute.get('/about',userAuth.isBlocked, userAuth.isLogin, userController.loadAbout);
+userRoute.get('/contact',userAuth.isBlocked, userAuth.isLogin, userController.loadContact);
 
 module.exports = userRoute

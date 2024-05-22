@@ -54,7 +54,6 @@ const addToCart = async (req, res) => {
         if (cartData) {
             const existingProductIndex = cartData.products.findIndex(product => product.productId.toString() === productId);
             if (existingProductIndex !== -1) {
-                // If the product already exists in the cart, update its quantity and total price
                 cartData.products[existingProductIndex].quantity += parseInt(quantity);
                 cartData.products[existingProductIndex].totalPrice += parseInt(quantity) * cartProduct.productPrice;
             } else {
@@ -81,6 +80,7 @@ const addToCart = async (req, res) => {
 const loadCart = async (req, res) => {
     try {
         const userData = req.session.userId;
+        const cartCount = await Cart.countDocuments({ userId:req.session.userId })
         const cartDetails = await Cart.findOne({ userId: userData }).populate({
             path: "products.productId",
             model: "Product"
@@ -137,7 +137,7 @@ const loadCart = async (req, res) => {
             return res.render('cart', { cartDetails, user, subTotal: 0 ,cartId});
         }
 
-       return res.render('cart', { cartDetails, user, subTotal,cartId });
+       return res.render('cart', { cartDetails, user, subTotal,cartId, userData, cartCount });
     } catch (error) {
         console.log(error);
         res.redirect('/500')

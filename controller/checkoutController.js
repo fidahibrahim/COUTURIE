@@ -9,6 +9,7 @@ const loadCheckout = async (req, res) => {
     try {
         const id = req.session.userId;
         const userData = await User.findOne({ _id: id });
+        const cartCount = await Cart.countDocuments({ userId:req.session.userId })
         const cartDetails = await Cart.findOne({ userId: userData }).populate({
             path: "products.productId",
             model: "Product"
@@ -66,7 +67,7 @@ const loadCheckout = async (req, res) => {
         } else {
             return res.render('cart', { cartDetails, user, subTotal: 0, totalSavings: 0, cartId, coupon: couponData, moment });
         }
-        res.render('checkout', { userData, cartDetails, user, subTotal, totalSavings, cartId, coupon: couponData, moment })
+        res.render('checkout', { userData, cartDetails,cartCount, user, subTotal, totalSavings:0, cartId, coupon: couponData, moment })
     } catch (error) {
         console.log(error);
     }

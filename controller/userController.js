@@ -100,7 +100,9 @@ const verifyRegister = async (req, res) => {
 
         }
     } catch (error) {
+        console.log(error);
         res.redirect('/500')
+    
     }
 }
 
@@ -164,6 +166,7 @@ const sendOtpVerification = async ({ email }, res) => {
         await transporter.sendMail(emailOptions);
         res.redirect(`/otp?email=${email}`)
     } catch (error) {
+        console.log(error);
         res.redirect('/500')
     }
 }
@@ -172,6 +175,7 @@ const loadOtp = async (req, res) => {
         const email = req.query.email
         res.render('otp', { email: email })
     } catch (error) {
+        console.log(error);
         res.redirect('/500')
     }
 }
@@ -286,6 +290,7 @@ const verifyLogin = async (req, res) => {
 
     } catch (error) {
         res.redirect('/500')
+
     }
 }
 
@@ -519,6 +524,8 @@ const loadProductDetails = async (req, res) => {
         const productId = req.query.productId
         const productData = await product.findOne({ _id: productId }).populate('category')
         const offerData = await Offer.find({ startDate: { $lte: new Date() }, endDate: { $gte: new Date() } })
+        const userData = await User.findOne({ _id:req.session.userId })
+        const cartCount = await cartModel.countDocuments({ userId:req.session.userId })
         let productDiscountedPrice = productData.price;
         let categoryDiscountPrice = productData.price;
         let appliedOffer = null;
@@ -549,6 +556,8 @@ const loadProductDetails = async (req, res) => {
                 ...productData.toObject(),
                 originalPrice: productData.price,
                 discountedPrice,
+                user:userData,
+                cartCount,
                 appliedOffer: appliedOffer ? { offerName: appliedOffer.offerName, discount: appliedOffer.discount } : null,
                 offerText: appliedOffer ? `${appliedOffer.discount}%off` : ''
             }

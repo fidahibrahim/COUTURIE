@@ -125,35 +125,37 @@
                 <div class="checkout">
                     <div class="container">
                         <div class="checkout-discount">
-                            <!-- <form action="#">
-        						<input type="text" class="form-control" required id="checkout-discount-input">
-            					<label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here to enter your code</span></label>
-            				</form> -->
                         </div><!-- End .checkout-discount -->
-                        <form action="" style="margin-top: -2%;" method="post">
+                        <form id="addressForm" action="" style="margin-top: -2%;" method="post">
                             <div class="row">
                                 <div class="col-lg-9">
 
-
+                                    <div>
                                     <label> Name *</label>
                                     <input type="hidden" name="addressId" value="<%= addressData._id%>"
                                         class="form-control">
                                     <input type="text" name="name" value="<%= addressData.name %>" class="form-control">
+                                    <span style="color: red;" id="nameError" class="error"></span><br>
 
                                     <label> State *</label>
                                     <input type="text" name="state" value="<%= addressData.state%>"
                                         class="form-control">
+                                        <span style="color: red;" id="stateError" class="error"></span><br>
 
                                     <label> City *</label>
                                     <input type="text" name="city" value="<%= addressData.city%>" class="form-control">
+                                    <span style="color: red;" id="cityError" class="error"></span><br>
 
                                     <label> Pincode *</label>
                                     <input type="number" name="pincode" value="<%= addressData.pincode%>"
                                         class="form-control">
+                                        <span style="color: red;" id="pincodeError" class="error"></span><br>
 
                                     <label> Mobile *</label>
                                     <input type="number" name="mobile" value="<%= addressData.mobile%>"
                                         class="form-control">
+                                    </div>
+                                    <span style="color: red;" id="mobileError" class="error"></span><br>
 
                                     <button type="submit" class="btn btn-outline-primary-2">
                                         <span>SAVE CHANGES</span>
@@ -420,6 +422,57 @@
         });
 
     </script>
+
+<script>
+    document.getElementById("addressForm").addEventListener("submit", function(event) {
+        let state = document.getElementsByName("state")[0].value.trim();
+        let city = document.getElementsByName("city")[0].value.trim();
+        let pincode = document.getElementsByName("pincode")[0].value.trim();
+        let name = document.getElementsByName("name")[0].value.trim();
+        let mobile = document.getElementsByName("mobile")[0].value.trim();
+
+        let nameRegex = /^[A-Za-z]+( [A-Za-z]+)*$/;
+        let pincodeRegex = /^\d{6}$/;
+        let mobileRegex = /^\d{10}$/;
+        let errorFlag = false;
+
+        
+        document.getElementById("nameError").innerText = "";
+        document.getElementById("stateError").innerText = "";
+        document.getElementById("cityError").innerText = "";
+        document.getElementById("pincodeError").innerText = "";
+        document.getElementById("mobileError").innerText = "";
+
+        if (!name.match(nameRegex)) {
+            document.getElementById("nameError").innerText = "Name should only contain letters and spaces";
+            errorFlag = true;
+        }
+
+        if (!state.match(nameRegex)) {
+            document.getElementById("stateError").innerText = "State should only contain letters and spaces";
+            errorFlag = true;
+        }
+
+        if (!city.match(nameRegex)) {
+            document.getElementById("cityError").innerText = "City should only contain letters and spaces";
+            errorFlag = true;
+        }
+
+        if (!pincode.match(pincodeRegex)) {
+            document.getElementById("pincodeError").innerText = "Pincode should contain exactly 6 digits";
+            errorFlag = true;
+        }
+
+        if (!mobile.match(mobileRegex)) {
+            document.getElementById("mobileError").innerText = "Mobile should contain exactly 10 digits";
+            errorFlag = true;
+        }
+
+        if (errorFlag) {
+            event.preventDefault();
+        }
+    });
+</script>
 
 
     <%-include('../layout/user/footer.ejs') %>
