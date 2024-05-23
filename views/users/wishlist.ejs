@@ -109,7 +109,6 @@
 						<thead>
 							<tr>
 								<th>Product</th>
-								<th>Quantity</th>
 								<th>Price</th>
 								<th>Stock Status</th>
 								<th></th>
@@ -134,24 +133,21 @@
 												</figure>
 
 												<h3 class="product-title">
-													<a href="#">
+													<a href="/productDetails?productId=<%= product.productId._id %>">
 														<%= product.productId.name%>
 													</a>
 												</h3><!-- End .product-title -->
 											</div><!-- End .product -->
 										</td>
-										<td class="price-col">
-											<%= product.productId.quantity%>
-										</td>
 										<td class="price-col">₹<%= product.productId.price%>
 										</td>
 										<% if(product.productId.quantity>1){%>
 											<td class="stock-col">
-												<span class="in-stock">In stock</span>
+												<span style="color: green;" class="in-stock">In stock</span>
 											</td>
 											<%}else{%>
 												<td class="stock-col">
-													<span class="in-stock">Out of stock</span>
+													<span style="color: red;" class="in-stock">Out of stock</span>
 												</td>
 												<%}%>
 													<td class="action-col">

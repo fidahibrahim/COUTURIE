@@ -89,7 +89,7 @@ userRoute.get('/wishlist',userAuth.isBlocked, userAuth.isLogin, wishlistControll
 userRoute.post('/addToWishlist',userAuth.isBlocked, userAuth.isLogin, wishlistController.addToWishlist);
 userRoute.post('/removeFromWishlist',userAuth.isBlocked, userAuth.isLogin, wishlistController.removeFromWishlist);
 userRoute.post('/addCart',userAuth.isBlocked, userAuth.isLogin, wishlistController.addToCart);
-userRoute.get('/about',userAuth.isBlocked, userAuth.isLogin, userController.loadAbout);
-userRoute.get('/contact',userAuth.isBlocked, userAuth.isLogin, userController.loadContact);
+userRoute.get('/about', userController.loadAbout);
+userRoute.get('/contact', userController.loadContact);
 
 module.exports = userRoute
