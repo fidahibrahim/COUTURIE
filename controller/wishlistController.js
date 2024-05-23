@@ -1,13 +1,15 @@
 const Wishlist = require('../models/wishlistModel');
 const Product = require('../models/productModel');
 const Cart = require('../models/cartModel');
+const userModel = require('../models/userModel');
 
 
 const loadWishlist = async (req, res) => {
     try {
         const userId = req.session.userId;
+        const user=await userModel.findOne({_id:userId})
         const wishlist = await Wishlist.find({ userId: userId }).populate('products.productId');
-        res.render('wishlist', { wishlist });
+        res.render('wishlist', { wishlist,user });
 
     } catch (error) {
         res.redirect('/500')

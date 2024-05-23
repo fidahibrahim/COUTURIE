@@ -35,7 +35,8 @@ const editProfile = async (req, res) => {
 
 const loadChangePass = async (req, res) => {
     try {
-        res.render('changePass')
+        const user=await User.findOne({_id:req.session.userId})
+        res.render('changePass',{user})
     } catch (error) {
         res.redirect('/500')
     }
@@ -89,7 +90,8 @@ const loadAddress = async (req, res) => {
 
 const loadAddAddress = async (req, res) => {
     try {
-        res.render('addAddress')
+        const user=await User.findOne({_id:req.session.userId})
+        res.render('addAddress',{user})
     } catch (error) {
         res.redirect('/500')
     }
@@ -120,10 +122,11 @@ const addAddress = async (req, res) => {
 
 const loadEditAddress = async (req, res) => {
     try {
+        const user=await User.findOne({_id:req.session.userId})
         const addressId = req.query.addressId
         const addressData = await User.findOne({ "address._id": addressId })
         const foundAddress = addressData.address.find(address => address._id == addressId);
-        res.render('editAddress', { addressData: foundAddress })
+        res.render('editAddress', { addressData: foundAddress ,user})
     } catch (error) {
         res.redirect('/500')
     }

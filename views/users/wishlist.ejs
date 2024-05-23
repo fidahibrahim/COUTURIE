@@ -181,23 +181,6 @@
 						</tbody>
 
 					</table>
-
-
-					<div class="wishlist-share">
-						<div class="social-icons social-icons-sm mb-2">
-							<label class="social-label">Share on:</label>
-							<a href="#" class="social-icon" title="Facebook" target="_blank"><i
-									class="icon-facebook-f"></i></a>
-							<a href="#" class="social-icon" title="Twitter" target="_blank"><i
-									class="icon-twitter"></i></a>
-							<a href="#" class="social-icon" title="Instagram" target="_blank"><i
-									class="icon-instagram"></i></a>
-							<a href="#" class="social-icon" title="Youtube" target="_blank"><i
-									class="icon-youtube"></i></a>
-							<a href="#" class="social-icon" title="Pinterest" target="_blank"><i
-									class="icon-pinterest"></i></a>
-						</div><!-- End .soial-icons -->
-					</div><!-- End .wishlist-share -->
 				</div><!-- End .container -->
 			</div><!-- End .page-content -->
 		</main><!-- End .main -->
@@ -302,14 +285,45 @@
 			</form>
 
 			<nav class="mobile-nav">
-				<ul class="mobile-menu">
-					<li class="active"><a href="/">Home</a></li>
-					<li><a href="/shop">Shop</a></li>
-					<li><a href="/about" class="sf-ul">About</a></li>
-					<li><a href="/contact">Contact</a></li>
-					<li><a href="#">profile</a></li>
-				</ul>
-			</nav><!-- End .mobile-nav -->
+                <ul class="mobile-menu">
+                    <li class="megamenu-container active">
+                        <a href="/" class="sf--ul">Home</a>
+                    </li>
+                    <li>
+                        <a href="/shop" class="sf--ul">Shop</a>
+                    </li>
+                    <li>
+                        <a href="/about" class="sf--ul">About</a>
+                    </li>
+                    <li>
+                        <a href="/contact" class="sf--ul">Contact</a>
+                    </li>
+                    <li>
+                        <a href="#" class="sf-with-ul">
+                            <%= locals.user ? user.username :"Profile" %>
+                        </a>
+
+                        <div class="megamenu megamenu-sm" style="width:140%;">
+                            <div class="row no-gutters">
+                                <div class="col-md-6">
+                                    <div class="menu-col">
+                                        <!-- End .menu-title -->
+                                        <ul>
+
+                                            <li><a href="/profile">Account </a></li>
+                                            <% if(locals.user){ %>
+                                                <li><a href="/logout">Logout</a></li>
+                                                <% }else{ %>
+                                                    <li><a href="/login">Login</a></li>
+                                                    <%}%>
+                                        </ul>
+                                    </div><!-- End .menu-col -->
+                                </div><!-- End .col-md-6 -->
+                            </div><!-- End .row -->
+                        </div><!-- End .megamenu megamenu-sm -->
+                    </li>
+                </ul><!-- End .menu -->
+            </nav>
 
 			<div class="social-icons">
 				<a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>

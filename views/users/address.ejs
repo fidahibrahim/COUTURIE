@@ -71,7 +71,7 @@
                             </li>
                             <li class="active">
                                 <a href="/profile" class="sf-ul">
-                                    <%= locals.user ? user.username :"Profile" %>
+                                    <%= locals.userData ? userData.username :"Profile" %>
                                 </a>
                             </li>
                         </ul><!-- End .menu -->
@@ -150,19 +150,19 @@
                                         Password</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link active" id="tab-address-link"  href="#" role="tab"
+                                    <a class="nav-link active" id="tab-address-link"  href="/address" role="tab"
                                         aria-controls="tab-address" aria-selected="false">Adresses</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="tab-account-link"  href="#" role="tab"
+                                    <a class="nav-link" id="tab-account-link"  href="/viewOrders" role="tab"
                                         aria-controls="tab-account" aria-selected="false">Orders</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#" role="tab"
+                                    <a class="nav-link" id="tab-account-link"  href="/wallet" role="tab"
                                         aria-controls="tab-account" aria-selected="false">Wallet</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#" role="tab"
+                                    <a class="nav-link" id="tab-account-link"  href="/wishlist" role="tab"
                                         aria-controls="tab-account" aria-selected="false">Wishlist</a>
                                 </li>
                                 <li class="nav-item">

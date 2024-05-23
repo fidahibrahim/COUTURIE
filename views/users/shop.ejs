@@ -418,24 +418,45 @@
 			</form>
 
 			<nav class="mobile-nav">
-				<ul class="mobile-menu">
-					<li class="active">
-						<a href="/">Home</a>
-					</li>
-					<li>
-						<a href="/shop">Shop</a>
-					</li>
-					<li>
-						<a href="/about" class="sf-ul">About</a>
-					</li>
-					<li>
-						<a href="/contact">Contact</a>
-					</li>
-					<li>
-						<a href="/profile">profile</a>
-					</li>
-				</ul>
-			</nav><!-- End .mobile-nav -->
+                <ul class="mobile-menu">
+                    <li class="megamenu-container active">
+                        <a href="/" class="sf--ul">Home</a>
+                    </li>
+                    <li>
+                        <a href="/shop" class="sf--ul">Shop</a>
+                    </li>
+                    <li>
+                        <a href="/about" class="sf--ul">About</a>
+                    </li>
+                    <li>
+                        <a href="/contact" class="sf--ul">Contact</a>
+                    </li>
+                    <li>
+                        <a href="#" class="sf-with-ul">
+                            <%= locals.user ? user.username :"Profile" %>
+                        </a>
+
+                        <div class="megamenu megamenu-sm" style="width:140%;">
+                            <div class="row no-gutters">
+                                <div class="col-md-6">
+                                    <div class="menu-col">
+                                        <!-- End .menu-title -->
+                                        <ul>
+
+                                            <li><a href="/profile">Account </a></li>
+                                            <% if(locals.user){ %>
+                                                <li><a href="/logout">Logout</a></li>
+                                                <% }else{ %>
+                                                    <li><a href="/login">Login</a></li>
+                                                    <%}%>
+                                        </ul>
+                                    </div><!-- End .menu-col -->
+                                </div><!-- End .col-md-6 -->
+                            </div><!-- End .row -->
+                        </div><!-- End .megamenu megamenu-sm -->
+                    </li>
+                </ul><!-- End .menu -->
+            </nav><!-- End .mobile-nav -->
 
 			<div class="social-icons">
 				<a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>

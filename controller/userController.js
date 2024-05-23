@@ -51,17 +51,12 @@ const securePassword = async (password) => {
 
 const verifyRegister = async (req, res) => {
     try {
-
-
         const { userName, email, password, mobile, referralCode } = req.body
         console.log(req.body);
 
         if (referralCode) {
             req.session.referralCode = referralCode
         }
-
-
-
         const findUser = await User.findOne({ email: email });
         console.log(findUser,"ffffffffffff");
         const findUserByMobile = await User.findOne({ mobile: mobile });
@@ -352,7 +347,7 @@ const sendResetPasswordMail = async (name, email, token) => {
             }
         });
 
-        const resetPage = `http://localhost:3000/resetPassword?token=${token}`
+        const resetPage = `couturie.online/resetPassword?token=${token}`
 
         const emailOptions = {
             from: 'fidahibrahim2@gmail.com',
@@ -594,7 +589,8 @@ const loadBlockedUser = async (req, res) => {
 
 const loadAbout = async (req, res) => {
     try {
-        res.render('about');
+        const user=await User.findOne({_id:req.session.userId})
+        res.render('about',{user});
     } catch (error) {
         res.redirect('/500')
     }
@@ -602,7 +598,8 @@ const loadAbout = async (req, res) => {
 
 const loadContact = async (req, res) => {
     try {
-        res.render('contact');
+        const user=await User.findOne({_id:req.session.userId})
+        res.render('contact',{user});
     } catch (error) {
         res.redirect('/500')
     }
