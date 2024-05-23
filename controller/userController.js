@@ -63,10 +63,15 @@ const verifyRegister = async (req, res) => {
 
 
         const findUser = await User.findOne({ email: email });
+        console.log(findUser,"ffffffffffff");
         const findUserByMobile = await User.findOne({ mobile: mobile });
         const findUserByName = await User.findOne({ username: userName });
 
-        if (findUser) {
+        if( findUser && findUser.verified == false ){
+
+            await User.deleteOne({ email:email })
+        }
+        else if (findUser) {
 
             const message = 'This user is already existing';
             return res.render('register', { message, userName, email, password, mobile });
@@ -125,7 +130,7 @@ const googleLogin = async (req, res, next) => {
             return res.redirect('/login');
 
         } else {
-            const user = new User({ username: name, email });
+            const user = new User({ username: name, email, verified:true });
             await user.save();
             req.session.userId = user;
             res.redirect('/home');

@@ -23,6 +23,7 @@ userRoute.post('/register', userAuth.isLogout, userController.verifyRegister);
 userRoute.get('/login', userController.loadLogin);
 userRoute.post('/login', userController.verifyLogin);
 userRoute.get('/success', userController.googleLogin);
+userRoute.get('/blocked-user', userAuth.isLogin, userController.loadBlockedUser);
 userRoute.get('/logout', userAuth.isLogin, userController.logout)
 
 // ==============================OTP=======================================================
@@ -73,7 +74,7 @@ userRoute.get('/paymentPolicy',userAuth.isBlocked, userAuth.isLogin, userControl
 
 // =============================ORDER========================================
 userRoute.get('/order/:id',userAuth.isBlocked, userAuth.isLogin, orderController.loadOrder);
-userRoute.post('/placeOrder',userAuth.isBlocked, userAuth.isLogin,userAuth.isBlocked, orderController.placeOrder);
+userRoute.post('/placeOrder', userAuth.isLogin,userAuth.isBlocked, orderController.placeOrder);
 userRoute.get('/viewOrders',userAuth.isBlocked, userAuth.isLogin, orderController.loadViewOrder);
 userRoute.get('/orderDetails',userAuth.isBlocked, userAuth.isLogin, orderController.loadOrderDetails);
 userRoute.post('/cancelOrder',userAuth.isBlocked, userAuth.isLogin, orderController.cancelOrder);
@@ -88,7 +89,6 @@ userRoute.get('/wishlist',userAuth.isBlocked, userAuth.isLogin, wishlistControll
 userRoute.post('/addToWishlist',userAuth.isBlocked, userAuth.isLogin, wishlistController.addToWishlist);
 userRoute.post('/removeFromWishlist',userAuth.isBlocked, userAuth.isLogin, wishlistController.removeFromWishlist);
 userRoute.post('/addCart',userAuth.isBlocked, userAuth.isLogin, wishlistController.addToCart);
-userRoute.get('/blocked-user',userAuth.isBlocked, userAuth.isLogin, userController.loadBlockedUser);
 userRoute.get('/about',userAuth.isBlocked, userAuth.isLogin, userController.loadAbout);
 userRoute.get('/contact',userAuth.isBlocked, userAuth.isLogin, userController.loadContact);
 

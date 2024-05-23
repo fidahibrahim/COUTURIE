@@ -104,7 +104,9 @@
                         <div class="dropdown cart-dropdown">
                             <a href="/cart" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
                                 <i class="icon-shopping-cart"></i>
-                                <span class="cart-count"><%= cartCount %></span>
+                                <span class="cart-count">
+                                    <%= cartCount %>
+                                </span>
                             </a>
                         </div><!-- End .cart-dropdown -->
                     </div><!-- End .header-right -->
@@ -143,8 +145,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% if (cartDetails && cartDetails.products && cartDetails.products.length > 0) { %>
-                                        <% cartDetails.products.forEach(product => { %>
+                                    <% if (cartDetails && cartDetails.products && cartDetails.products.length> 0) { %>
+                                        <% cartDetails.products.forEach(product=> { %>
                                             <tr>
                                                 <td class="product-col">
                                                     <div class="product">
@@ -157,40 +159,46 @@
                                                         <h3 class="product-title">
                                                             <a href="#">
                                                                 <%= product.productId.name %>
-                                                                <% if (product.appliedOffer) { %>
-                                                                    <span  class="badge badge-success" ><%= product.offerText%></span>
-                                                                <% }%>
+                                                                    <% if (product.appliedOffer) { %>
+                                                                        <span class="badge badge-success">
+                                                                            <%= product.offerText%>
+                                                                        </span>
+                                                                        <% }%>
                                                             </a>
                                                         </h3>
                                                     </div>
                                                 </td>
                                                 <td class="price-col">
                                                     <% if (product.appliedOffer) { %>
-                                                        <span style="text-decoration: line-through;color: rgba(255, 19, 19, 0.696);">₹<%= product.productId.price %></span><br>
-                                                        ₹ <%= product.discountedPrice  %>
-                                                    <% } else { %>
-                                                        ₹ <%= product.productPrice %>
-                                                    <% } %>
+                                                        <span
+                                                            style="text-decoration: line-through;color: rgba(255, 19, 19, 0.696);">₹
+                                                            <%= product.productId.price %></span><br>
+                                                        ₹ <%= product.discountedPrice %>
+                                                            <% } else { %>
+                                                                ₹ <%= product.productPrice %>
+                                                                    <% } %>
                                                 </td>
                                                 <td class="quantity-col">
                                                     <div class="cart-product-quantity">
-                                                        <input type="text" class="form-control quantity-input" value="<%= product.quantity %>" readonly>
+                                                        <input type="text" class="form-control quantity-input"
+                                                            value="<%= product.quantity %>" readonly>
                                                     </div>
                                                 </td>
                                                 <td class="total-col">
                                                     <% if (product.appliedOffer) { %>
                                                         ₹ <%= product.discountedPrice * product.quantity %>
-                                                    <% } else { %>
-                                                        ₹ <%= product.productPrice * product.quantity %>
-                                                    <% } %>
+                                                            <% } else { %>
+                                                                ₹ <%= product.productPrice * product.quantity %>
+                                                                    <% } %>
                                                 </td>
                                             </tr>
-                                        <% }); %>
-                                    <% } else { %>
-                                        <tr class="text-center">
-                                            <td colspan="6" style="color:red;">There are no products in your Cart</td>
-                                        </tr>
-                                    <% } %>
+                                            <% }); %>
+                                                <% } else { %>
+                                                    <tr class="text-center">
+                                                        <td colspan="6" style="color:red;">There are no products in your
+                                                            Cart</td>
+                                                    </tr>
+                                                    <% } %>
                                 </tbody>
                             </table>
                             <!-- End .table table-wishlist -->
@@ -214,7 +222,9 @@
                                                             <%= coupon.couponCode%>
                                                         </b></span></p>
                                                 <p class="mb-0">discount : <%= coupon.discountAmount %></b></span></p>
-                                                <p class="mb-0">Expire date : <%= moment(coupon.expiryDate,'DD/MM/YYYY').format('DD/MM/YYYY') %></b></span></p>
+                                                <p class="mb-0">Expire date : <%=
+                                                        moment(coupon.expiryDate,'DD/MM/YYYY').format('DD/MM/YYYY') %>
+                                                        </b></span></p>
                                             </div>
                                         </div>
                                     </div>
@@ -308,30 +318,37 @@
                                                     0) { %>
                                                     <% cartDetails.products.forEach(product=> { %>
                                                         <tr>
-                                                            <td>   
-                                                                <%= product.productId.name %> 
+                                                            <td>
+                                                                <%= product.productId.name %>
+                                                                    <% if (product.appliedOffer) { %>
+                                                                        <span class="badge badge-success">
+                                                                            <%= product.offerText%>
+                                                                        </span>
+                                                                        <% }%>
+
+                                                            </td>
+                                                            <td>
+                                                                <%= product.quantity %>
+                                                            </td>
+                                                            <td>
                                                                 <% if (product.appliedOffer) { %>
-                                                                  <span  class="badge badge-success" ><%= product.offerText%></span>
-                                                                <% }%>
-                                                            
-                                                            </td> 
-                                                                <td ><%= product.quantity %></td>
-                                                               <td>
-                                                                <% if (product.appliedOffer) { %>
-                                                                    <span style="text-decoration: line-through;color: rgba(255, 19, 19, 0.696);">₹<%= product.productId.price * product.quantity %></span><br>
+                                                                    <span
+                                                                        style="text-decoration: line-through;color: rgba(255, 19, 19, 0.696);">₹
+                                                                        <%= product.productId.price * product.quantity
+                                                                            %></span><br>
                                                                     ₹ <%= product.discountedPrice * product.quantity %>
-                                                                <% } else { %>
-                                                                    ₹ <%= product.productPrice %>
-                                                                <% } %>
-                                                               </td>
+                                                                        <% } else { %>
+                                                                            ₹ <%= product.productPrice %>
+                                                                                <% } %>
+                                                            </td>
                                                         </tr>
                                                         <% }); %>
-                                                        <% } else { %>
-                                                            <tr class="text-center">
-                                                                <td colspan="5" style="color:red;">There are no
-                                                                    products in your Cart</td>
-                                                            </tr>
-                                                            <% } %>
+                                                            <% } else { %>
+                                                                <tr class="text-center">
+                                                                    <td colspan="5" style="color:red;">There are no
+                                                                        products in your Cart</td>
+                                                                </tr>
+                                                                <% } %>
                                                                     <tr class="summary-subtotal">
                                                                         <td>Subtotal:</td>
                                                                         <td></td>
@@ -346,22 +363,23 @@
                                                                     <tr style="color: red;">
                                                                         <td>Discount:</td>
                                                                         <td></td>
-                                                                        <td  id="discount">-₹00.00</td>
+                                                                        <td id="discount">-₹00.00</td>
                                                                     </tr>
-                                                                   
+
                                                                     <tr style="color: red;">
                                                                         <td>You saved:</td>
                                                                         <td></td>
-                                                                        <td  id="discount">-₹<%= totalSavings %></td>
+                                                                        <td id="discount">-₹<%= totalSavings %>
+                                                                        </td>
                                                                     </tr>
-                                                                
+
                                                                     <tr class="summary-total">
                                                                         <td>Total:</td>
                                                                         <td></td>
                                                                         <td id="totalAmount"> ₹<%= subTotal %>
                                                                         </td>
                                                                     </tr>
-                                                              
+
                                             </tbody>
                                         </table><!-- End .table table-summary -->
 
@@ -608,20 +626,27 @@
                         title: 'Cannot Add Product!',
                         text: `Product ${responseData.insufficientProducts} is Out of Stock`,
                     });
-                }else if(responseData.min){
+                } else if (responseData.min) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Cannot place Order!',
                         text: 'COD is only applicable upto ₹1000',
                     });
 
-                
-                } else if (responseData.insufficientBalance){
+
+                } else if (responseData.insufficientBalance) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Cannot place order',
                         text: 'insufficient wallet Amount',
                     });
+                } else if (responseData.blocked) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Your account has been blocked. Please contact support for assistance.",
+                    });
+
                 } else {
                     razorpayPayment(responseData.order);
                     console.log("Frontend Data:", responseData.order);

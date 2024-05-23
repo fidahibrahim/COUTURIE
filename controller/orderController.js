@@ -7,7 +7,7 @@ const moment = require('moment');
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
 const couponModel = require('../models/couponModel');
-const Offer=require('../models/offerModel')
+const Offer = require('../models/offerModel')
 
 
 var instance = new Razorpay({
@@ -31,10 +31,13 @@ const loadOrder = async (req, res) => {
 
 const placeOrder = async (req, res) => {
     try {
-        const { address, subTotal, payment, couponCode } = req.body;
-        console.log("my address:",address)
         const userId = req.session.userId;
         const userData = await User.findOne({ _id: userId })
+        if (userData.blocked) {
+            return res.json({ blocked: true });
+        }
+        const { address, subTotal, payment, couponCode } = req.body;
+        console.log("my address:", address)
         const cart = await Cart.findOne({ userId: userId }).populate({
             path: "products.productId",
             model: "Product"
@@ -52,6 +55,7 @@ const placeOrder = async (req, res) => {
         let finalAmount = subTotal
         let discountPerItem = 0;
 
+       
 
         if (coupon) {
             coupon.userUsed.push({ userId: userId })
@@ -153,8 +157,8 @@ const placeOrder = async (req, res) => {
         }
 
     } catch (error) {
+        console.log(error);
         res.redirect('/500')
-        res.status(500).json({ error: 'Internal server error' });
     }
 };
 
@@ -236,25 +240,25 @@ const loadViewOrder = async (req, res) => {
 }
 
 
-const invoice = async (req,res)=>{
+const invoice = async (req, res) => {
     try {
-        const {id}=req.query
-        let orders 
-        const order = await Order.findOne({ _id:id })
-        if(order.couponUsed){
-            orders = await Order.findOne({ _id:id }).populate('products.productId').populate('couponUsed')
+        const { id } = req.query
+        let orders
+        const order = await Order.findOne({ _id: id })
+        if (order.couponUsed) {
+            orders = await Order.findOne({ _id: id }).populate('products.productId').populate('couponUsed')
         } else {
-            orders = await Order.findOne({ _id:id }).populate('products.productId')
+            orders = await Order.findOne({ _id: id }).populate('products.productId')
         }
 
-        let deliveryAddress=orders.deliveryAddress.split(',').map(item => item.trim());
-        console.log("gy",deliveryAddress);
-        const user = await User.findOne({ _id:req.session.userId })
+        let deliveryAddress = orders.deliveryAddress.split(',').map(item => item.trim());
+        console.log("gy", deliveryAddress);
+        const user = await User.findOne({ _id: req.session.userId })
         const email = user.email
 
-        console.log("my orders",orders);
+        console.log("my orders", orders);
 
-        res.render('invoice',{ orders,email,deliveryAddress })
+        res.render('invoice', { orders, email, deliveryAddress })
 
 
     } catch (error) {
@@ -274,10 +278,10 @@ const loadOrderDetails = async (req, res) => {
             .populate('products.productId')
             .populate({ path: 'userId', populate: { path: 'address' } });
 
-        // Fetch offer data
+        
         const offerData = await Offer.find({ startDate: { $lte: new Date() }, endDate: { $gte: new Date() } });
 
-        // Iterate over each product in the order and find the applied offer
+        
         for (let product of order.products) {
             let appliedOffer = null;
 
@@ -304,7 +308,7 @@ const loadOrderDetails = async (req, res) => {
                     appliedOffer = categoryOffer;
                 }
 
-                // Calculate discounted price
+            
                 let itemPrice = product.productId.price;
                 let discountedPrice = itemPrice - (itemPrice * appliedOffer.discount / 100);
                 product.discountedPrice = discountedPrice;
@@ -323,14 +327,14 @@ const loadOrderDetails = async (req, res) => {
 
 const loadAdminOrders = async (req, res) => {
     try {
-        let page=1
+        let page = 1
         if (req.query.id) {
             page = req.query.id
         }
         const limit = 5
         let Next = page + 1
         let Previous = page > 1 ? page - 1 : 1
-        let count=await Order.find().count()
+        let count = await Order.find().count()
         let tota
         const order = await Order.find({}).populate('products.productId').populate('userId').sort({ date: -1 })
         res.render('orders', { order, moment })
@@ -561,7 +565,7 @@ const continueVrifyPayment = async (req, res) => {
         const cartData = await Cart.findOne({ userId: req.session.userId });
         const cartProducts = cartData.products
         const { payment, order } = req.body
-        console.log("gug",req.body);
+        console.log("gug", req.body);
         const userId = req.session.userId
 
         secretKey = process.env.RAZORPAY_KEY_SECRET

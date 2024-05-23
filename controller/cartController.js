@@ -59,7 +59,7 @@ const addToCart = async (req, res) => {
             } else {
                 cartData.products.push(cartProduct);
             }
-            
+
             await cartData.save();
         } else {
             const newCart = new Cart({
@@ -80,14 +80,14 @@ const addToCart = async (req, res) => {
 const loadCart = async (req, res) => {
     try {
         const userData = req.session.userId;
-        const cartCount = await Cart.countDocuments({ userId:req.session.userId })
+        const cartCount = await Cart.countDocuments({ userId: req.session.userId })
         const cartDetails = await Cart.findOne({ userId: userData }).populate({
             path: "products.productId",
             model: "Product"
         });
         const user = await User.findOne({ _id: userData });
 
-        let offerData = await Offer.find({startDate: { $lte: new Date() },endDate: { $gte: new Date() }});
+        let offerData = await Offer.find({ startDate: { $lte: new Date() }, endDate: { $gte: new Date() } });
 
 
 
@@ -100,17 +100,17 @@ const loadCart = async (req, res) => {
                 let discountedPrice = itemPrice;
                 let appliedOffer = null;
 
-                const productOffer = offerData.find(offer => 
-                    offer.offerType === 'product' && 
+                const productOffer = offerData.find(offer =>
+                    offer.offerType === 'product' &&
                     offer.productId.includes(product.productId._id.toString())
                 );
 
-                const categoryOffer = offerData.find(offer => 
-                    offer.offerType === 'category' && 
+                const categoryOffer = offerData.find(offer =>
+                    offer.offerType === 'category' &&
                     offer.categoryId.includes(product.productId.category._id.toString())
                 );
 
-                
+
                 if (productOffer || categoryOffer) {
                     if (productOffer && categoryOffer) {
                         if (productOffer.discount > categoryOffer.discount) {
@@ -128,16 +128,16 @@ const loadCart = async (req, res) => {
                 }
                 subTotal += discountedPrice * product.quantity;
                 product.discountedPrice = discountedPrice;
-                product.appliedOffer = appliedOffer; 
-                product.offerText=appliedOffer?`${appliedOffer.discount}%off`:'';
+                product.appliedOffer = appliedOffer;
+                product.offerText = appliedOffer ? `${appliedOffer.discount}%off` : '';
             });
             cartId = cartDetails._id;
         } else {
 
-            return res.render('cart', { cartDetails, user, subTotal: 0 ,cartId, cartCount});
+            return res.render('cart', { cartDetails, user, subTotal: 0, cartId, cartCount });
         }
 
-       return res.render('cart', { cartDetails, user, subTotal,cartId, userData, cartCount });
+        return res.render('cart', { cartDetails, user, subTotal, cartId, userData, cartCount });
     } catch (error) {
         console.log(error);
         res.redirect('/500')
@@ -150,7 +150,7 @@ const deleteCart = async (req, res) => {
         const userId = req.session.userId;
 
         const cartUser = await Cart.findOne({ userId: userId });
-        let totalPrice = 0; 
+        let totalPrice = 0;
 
         if (cartUser.products.length == 1) {
             await Cart.deleteOne({ userId: userId });
@@ -199,7 +199,7 @@ const updateQuantity = async (req, res) => {
             return res.json({ success: false, message: 'Product Not Found In The Cart' });
         }
 
-        const productPrice = productToUpdate.productPrice; 
+        const productPrice = productToUpdate.productPrice;
 
         // Update quantity and total price
         productToUpdate.quantity = quantity;

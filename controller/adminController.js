@@ -573,7 +573,8 @@ const loadUsers = async (req, res) => {
 
 
         const count = await User.find({
-            is_admin: 0
+            is_admin: 0,
+            verified:true
         }).count()
 
         let totalPages = Math.ceil(count / limit)

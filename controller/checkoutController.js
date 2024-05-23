@@ -3,31 +3,36 @@ const Product = require('../models/productModel');
 const Cart = require('../models/cartModel');
 const Coupon = require('../models/couponModel');
 const moment = require('moment')
-const Offer=require('../models/offerModel')
+const Offer = require('../models/offerModel')
 
 const loadCheckout = async (req, res) => {
     try {
         const id = req.session.userId;
         const userData = await User.findOne({ _id: id });
-        const cartCount = await Cart.countDocuments({ userId:req.session.userId })
+        const cartCount = await Cart.countDocuments({ userId: req.session.userId })
         const cartDetails = await Cart.findOne({ userId: userData }).populate({
             path: "products.productId",
             model: "Product"
         });
         const user = await User.findOne({ _id: userData });
         const currentDate = new Date();
-        const couponData = await Coupon.find({ status: true, activationDate: { $lte: currentDate }, expiryDate: { $gte: currentDate } });
-        let offerData = await Offer.find({startDate: { $lte: new Date() },endDate: { $gte: new Date() }});
+        const couponData = await Coupon.find({
+            status: true,
+            activationDate: { $lte: currentDate },
+            expiryDate: { $gte: currentDate },
+            userUsed: { $size: 0 }
+        });
+        let offerData = await Offer.find({ startDate: { $lte: new Date() }, endDate: { $gte: new Date() } });
 
         let subTotal = 0;
-        let totalSavings = 0; 
+        let totalSavings = 0;
         let cartId = null;
 
         if (cartDetails) {
             cartDetails.products.forEach((product) => {
                 let itemPrice = product.productPrice;
 
-               
+
                 let appliedOffer = null;
                 const productOffer = offerData.find(offer =>
                     offer.offerType === 'product' &&
@@ -52,7 +57,7 @@ const loadCheckout = async (req, res) => {
                         appliedOffer = categoryOffer;
                     }
                     let discountedPrice = Math.round(itemPrice);
-                    console.log("ddddddddddddd",itemPrice,appliedOffer.discount,discountedPrice);
+                    console.log("ddddddddddddd", itemPrice, appliedOffer.discount, discountedPrice);
                     product.discountedPrice = discountedPrice;
                     product.appliedOffer = appliedOffer;
                     product.offerText = `${appliedOffer.discount}% off`;
@@ -67,7 +72,7 @@ const loadCheckout = async (req, res) => {
         } else {
             return res.render('cart', { cartDetails, user, subTotal: 0, totalSavings: 0, cartId, coupon: couponData, moment });
         }
-        res.render('checkout', { userData, cartDetails,cartCount, user, subTotal, totalSavings:0, cartId, coupon: couponData, moment })
+        res.render('checkout', { userData, cartDetails, cartCount, user, subTotal, totalSavings: 0, cartId, coupon: couponData, moment })
     } catch (error) {
         console.log(error);
     }
