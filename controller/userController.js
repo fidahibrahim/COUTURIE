@@ -351,13 +351,13 @@ const sendResetPasswordMail = async (name, email, token) => {
             }
         });
 
-        const resetPage = `couturie.online/resetPassword?token=${token}`
+        const resetPage = `https://couturie.online/resetPassword?token=${token}`
 
         const emailOptions = {
             from: 'fidahibrahim2@gmail.com',
             to: email,
             subject: 'For Reset Password',
-            html: `your reset password link is ${resetPage}`
+            html: `Your <a href="${resetPage}">reset password link</a>`
         }
 
         await transporter.sendMail(emailOptions);
