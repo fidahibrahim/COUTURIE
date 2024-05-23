@@ -42,8 +42,6 @@ app.get('/google/callback', passport.authenticate('google', { failureRedirect: '
     })
 app.get('/success', userController.googleLogin);
 
-
-
 const userRoute = require("./routes/userRoute");
 app.use('/', userRoute);
 
@@ -55,12 +53,9 @@ app.get('/500',(req,res)=>{
     res.status(500).render('500')
 })
 
-
 app.get('*',(req,res)=>{
     res.status(404).render('404')
 })
-
-
 
 const port = process.env.PORT || 8080
 

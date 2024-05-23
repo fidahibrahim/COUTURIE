@@ -172,7 +172,8 @@
                                                     <% if (product.appliedOffer) { %>
                                                         <span
                                                             style="text-decoration: line-through;color: rgba(255, 19, 19, 0.696);">₹
-                                                            <%= product.productId.price %></span><br>
+                                                            <%= product.productId.price %>
+                                                        </span><br>
                                                         ₹ <%= product.discountedPrice %>
                                                             <% } else { %>
                                                                 ₹ <%= product.productPrice %>
@@ -335,7 +336,8 @@
                                                                     <span
                                                                         style="text-decoration: line-through;color: rgba(255, 19, 19, 0.696);">₹
                                                                         <%= product.productId.price * product.quantity
-                                                                            %></span><br>
+                                                                            %>
+                                                                    </span><br>
                                                                     ₹ <%= product.discountedPrice * product.quantity %>
                                                                         <% } else { %>
                                                                             ₹ <%= product.productPrice %>
@@ -654,6 +656,13 @@
                         text: 'COD is only applicable upto ₹1000',
                     });
 
+
+                } else if (responseData.unlistedProducts) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Cannot place Order!',
+                        text: `The following products are not listed: ${responseData.unlistedProducts.join(', ')}`,
+                    });
 
                 } else if (responseData.insufficientBalance) {
                     Swal.fire({

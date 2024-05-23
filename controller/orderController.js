@@ -71,6 +71,19 @@ const placeOrder = async (req, res) => {
             return updatedProduct
         })
 
+
+        let unlistedProducts = [];
+        for (const prod of products) {
+            const currentProduct = await Product.findById(prod.productId._id);
+            if (!currentProduct || !currentProduct.is_Listed) {
+                unlistedProducts.push(prod.productId.name);
+            }
+        }
+
+        if (unlistedProducts.length > 0) {
+            return res.json({ unlistedProducts });
+        }
+
         let insufficientProducts = [];
         for (const prod of products) {
             const currentProduct = await Product.findById(prod.productId._id);
