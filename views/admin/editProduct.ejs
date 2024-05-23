@@ -66,7 +66,7 @@
                                             <div class="form-group">
                                                 <label>Images</label>
                                                 <div class="d-flex justify-content-between">
-                                                    <div class="image-upload-container"  style="width: 100%;">
+                                                    <div class="image-upload-container" style="width: 100%;">
                                                         <div class="close-icon"
                                                             onclick="deleteImage('img1', 'preview1');">&times;</div>
                                                         <label for="img1" class="form-label">
@@ -310,7 +310,7 @@
             const segments = oldurl.split('/');
             const filename = segments[segments.length - 1];
 
-            oldimageUrl.push("file name",   )
+            oldimageUrl.push("file name",)
 
             if (input.files && input.files[0]) {
                 let reader = new FileReader();
@@ -339,35 +339,44 @@
                 const image3 = document.getElementById('img3').files[0]
                 console.log(image1);
 
-                const formData = new FormData()
-                formData.append('productName', productName)
-                formData.append('category', category)
-                formData.append('price', price)
-                formData.append('description', description)
-                formData.append('quantity', quantity)
-                formData.append('oldimageUrl', JSON.stringify(oldimageUrl))
-                formData.append('id', id)
-                console.log('id', id);
+                if (image1 && image2 && image3) {
+                    const formData = new FormData()
+                    formData.append('productName', productName)
+                    formData.append('category', category)
+                    formData.append('price', price)
+                    formData.append('description', description)
+                    formData.append('quantity', quantity)
+                    formData.append('oldimageUrl', JSON.stringify(oldimageUrl))
+                    formData.append('id', id)
+                    console.log('id', id);
 
-                Object.keys(croppedImages).forEach(key => {
-                    const originalFileName = originalFileNames[key];
-                    formData.append('cropImages', croppedImages[key], originalFileName);
-                });
+                    Object.keys(croppedImages).forEach(key => {
+                        const originalFileName = originalFileNames[key];
+                        formData.append('cropImages', croppedImages[key], originalFileName);
+                    });
 
-                axios.post('/admin/editProduct', formData, {
-                    headers: {
-                        'Content-type': "multipart/form-data"
-                    }
-                })
-                    .then(res => {
-                        console.log(res);
-                        if (res.data.success) {
-                            window.location.href = '/admin/product'
+                    axios.post('/admin/editProduct', formData, {
+                        headers: {
+                            'Content-type': "multipart/form-data"
                         }
-
-                    }).catch(err => {
-                        console.log('error in editproduct submission');
                     })
+                        .then(res => {
+                            console.log(res);
+                            if (res.data.success) {
+                                window.location.href = '/admin/product'
+                            }
+
+                        }).catch(err => {
+                            console.log('error in editproduct submission');
+                        })
+
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Please select three images.'
+                    });
+                }
 
 
             })
