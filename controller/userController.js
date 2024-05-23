@@ -297,6 +297,7 @@ const verifyLogin = async (req, res) => {
 
 const loadForgotPassword = async (req, res) => {
     try {
+        console.log("hi");
         res.render('forgotPassword')
     } catch (error) {
         res.redirect('/500')
@@ -304,12 +305,14 @@ const loadForgotPassword = async (req, res) => {
 }
 
 const forgotPasswordVerify = async (req, res) => {
-    try {
+    try {   
+        console.log("fsf");
         const email = req.body.email;
+        console.log("rg",email);
         const userData = await User.findOne({ email: email });
         if (userData) {
 
-            if (userData.verified === 0) {
+            if (userData.verified === false) {
 
                 req.flash("message", "Verify Your Mail");
                 return res.redirect("/forgotPassword");
@@ -329,6 +332,7 @@ const forgotPasswordVerify = async (req, res) => {
         }
 
     } catch (error) {
+        console.log(error);
         res.redirect('/500')
     }
 }
@@ -342,8 +346,8 @@ const sendResetPasswordMail = async (name, email, token) => {
             port: 465,
             secure: true,
             auth: {
-                user: "fidahibrahim2@gmail.com",
-                pass: "hzul wvdm qijl dweg"
+                user: process.env.USER_EMAIL,
+                pass: process.env.USER_PASS
             }
         });
 

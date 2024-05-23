@@ -33,9 +33,9 @@ userRoute.post('/resend-otp', userAuth.isLogout, userController.resendOtp);
 
 // ==========================FORGET AND RESET PASSWORD=================================
 userRoute.get('/forgotPassword', userAuth.isLogout, userController.loadForgotPassword);
-userRoute.post('/forgotPassword', userAuth.isLogin, userController.forgotPasswordVerify);
-userRoute.get('/resetPassword', userAuth.isLogin, userController.loadResetPassword);
-userRoute.post('/resetPassword', userAuth.isLogin, userController.resetPassword);
+userRoute.post('/forgotPassword', userController.forgotPasswordVerify);
+userRoute.get('/resetPassword', userAuth.isLogout, userController.loadResetPassword);
+userRoute.post('/resetPassword', userController.resetPassword);
 
 // ============================SHOP==========================================
 userRoute.get('/shop', userAuth.isBlocked, userController.loadShop);
