@@ -419,21 +419,21 @@ const loadShop = async (req, res) => {
     try {
         let page = 1;
         if (req.query.id) {
-            page = req.query.id
+            page = parseInt(req.query.id, 10);
         }
-        const limit = 8
-        let Next = page + 1
-        let Previous = page > 1 ? page - 1 : 1
-        let count = await product.find().count()
-        let totalPages = Math.ceil(count / limit)
+        const limit = 8;
+        let Next = page + 1;
+        let Previous = page > 1 ? page - 1 : 1;
+        let count = await product.find().count();
+        let totalPages = Math.ceil(count / limit);
         if (Next > totalPages) {
-            Next = totalPages
+            Next = totalPages;
         }
 
-        const cartCount = await cartModel.countDocuments({ userId:req.session.userId })
+        const cartCount = await cartModel.countDocuments({ userId: req.session.userId });
 
-        const offerData = await Offer.find({ startDate: { $lte: new Date() }, endDate: { $gte: new Date() } })
-        const user = await User.findOne({ _id: req.session.userId })
+        const offerData = await Offer.find({ startDate: { $lte: new Date() }, endDate: { $gte: new Date() } });
+        const user = await User.findOne({ _id: req.session.userId });
         let products = await product.find({ is_Listed: true })
             .sort({ createdAt: -1 })
             .limit(limit)
@@ -443,28 +443,39 @@ const loadShop = async (req, res) => {
         products = products.map(product => {
             let productDiscountedPrice = product.price;
             let categoryDiscountPrice = product.price;
+            let highestProductDiscount = 0;
+            let highestCategoryDiscount = 0;
             let appliedOffer = null;
             let discountedPrice;
 
             offerData.forEach(offer => {
                 if (offer.offerType === 'product' && offer.productId.includes(product._id.toString())) {
-                    productDiscountedPrice = Math.round(product.price - (product.price * offer.discount / 100))
+                    const discountPrice = Math.round(product.price - (product.price * offer.discount / 100));
+                    if (offer.discount > highestProductDiscount) {
+                        highestProductDiscount = offer.discount;
+                        productDiscountedPrice = discountPrice;
+                    }
                 }
-            })
+            });
+
 
             offerData.forEach(offer => {
                 if (offer.offerType === 'category' && offer.categoryId.includes(product.category._id.toString())) {
-                    categoryDiscountPrice = Math.round(product.price - (product.price * offer.discount / 100))
+                    const discountPrice = Math.round(product.price - (product.price * offer.discount / 100));
+                    if (offer.discount > highestCategoryDiscount) {
+                        highestCategoryDiscount = offer.discount;
+                        categoryDiscountPrice = discountPrice;
+                    }
                 }
-            })
+            });
 
-            if (productDiscountedPrice <= categoryDiscountPrice) {
-                appliedOffer = offerData.find(offer => offer.offerType === 'product' && offer.productId.includes(product._id.toString()))
-                discountedPrice = Math.round(productDiscountedPrice)
-            }
-            else {
-                appliedOffer = offerData.find(offer => offer.offerType === 'category' && offer.categoryId.includes(product.category._id.toString()))
-                discountedPrice = Math.round(categoryDiscountPrice)
+         
+            if (highestProductDiscount >= highestCategoryDiscount) {
+                discountedPrice = productDiscountedPrice;
+                appliedOffer = offerData.find(offer => offer.offerType === 'product' && offer.productId.includes(product._id.toString()) && offer.discount === highestProductDiscount);
+            } else {
+                discountedPrice = categoryDiscountPrice;
+                appliedOffer = offerData.find(offer => offer.offerType === 'category' && offer.categoryId.includes(product.category._id.toString()) && offer.discount === highestCategoryDiscount);
             }
 
             return {
@@ -472,12 +483,11 @@ const loadShop = async (req, res) => {
                 originalPrice: product.price,
                 discountedPrice,
                 appliedOffer: appliedOffer ? { offerName: appliedOffer.offerName, discount: appliedOffer.discount } : null,
-                offerText: appliedOffer ? `${appliedOffer.discount}%off` : ''
-            }
+                offerText: appliedOffer ? `${appliedOffer.discount}% off` : ''
+            };
+        });
 
-        })
-
-        const Category = await category.find({ isListed: true })
+        const Category = await category.find({ isListed: true });
         res.render('shop', {
             user: user,
             products: products,
@@ -489,9 +499,9 @@ const loadShop = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.redirect('/500')
+        res.redirect('/500');
     }
-}
+};
 
 
 const loadFilter = async (req, res) => {
@@ -525,52 +535,65 @@ const loadFilter = async (req, res) => {
 
 const loadProductDetails = async (req, res) => {
     try {
-        const productId = req.query.productId
-        const productData = await product.findOne({ _id: productId }).populate('category')
-        const offerData = await Offer.find({ startDate: { $lte: new Date() }, endDate: { $gte: new Date() } })
-        const userData = await User.findOne({ _id:req.session.userId })
-        const cartCount = await cartModel.countDocuments({ userId:req.session.userId })
+        const productId = req.query.productId;
+        const productData = await product.findOne({ _id: productId }).populate('category');
+        const offerData = await Offer.find({ startDate: { $lte: new Date() }, endDate: { $gte: new Date() } });
+        const userData = await User.findOne({ _id: req.session.userId });
+        const cartCount = await cartModel.countDocuments({ userId: req.session.userId });
+
         let productDiscountedPrice = productData.price;
         let categoryDiscountPrice = productData.price;
+        let highestProductDiscount = 0;
+        let highestCategoryDiscount = 0;
         let appliedOffer = null;
         let discountedPrice;
 
         offerData.forEach(offer => {
             if (offer.offerType === 'product' && offer.productId.includes(productData._id.toString())) {
-                productDiscountedPrice = Math.round(productData.price - (productData.price * offer.discount / 100))
+                const discountPrice = Math.round(productData.price - (productData.price * offer.discount / 100));
+                if (offer.discount > highestProductDiscount) {
+                    highestProductDiscount = offer.discount;
+                    productDiscountedPrice = discountPrice;
+                }
             }
-        })
+        });
 
+      
         offerData.forEach(offer => {
             if (offer.offerType === 'category' && offer.categoryId.includes(productData.category._id.toString())) {
-                categoryDiscountPrice = Math.round(productData.price - (productData.price * offer.discount / 100))
+                const discountPrice = Math.round(productData.price - (productData.price * offer.discount / 100));
+                if (offer.discount > highestCategoryDiscount) {
+                    highestCategoryDiscount = offer.discount;
+                    categoryDiscountPrice = discountPrice;
+                }
             }
-        })
+        });
 
-        if (productDiscountedPrice <= categoryDiscountPrice) {
-            appliedOffer = offerData.find(offer => offer.offerType === 'product' && offer.productId.includes(productData._id.toString()))
-            discountedPrice = Math.round(productDiscountedPrice)
+        if (highestProductDiscount >= highestCategoryDiscount) {
+            discountedPrice = productDiscountedPrice;
+            appliedOffer = offerData.find(offer => offer.offerType === 'product' && offer.productId.includes(productData._id.toString()) && offer.discount === highestProductDiscount);
+        } else {
+            discountedPrice = categoryDiscountPrice;
+            appliedOffer = offerData.find(offer => offer.offerType === 'category' && offer.categoryId.includes(productData.category._id.toString()) && offer.discount === highestCategoryDiscount);
         }
-        else {
-            appliedOffer = offerData.find(offer => offer.offerType === 'category' && offer.categoryId.includes(productData.category._id.toString()))
-            discountedPrice = Math.round(categoryDiscountPrice)
-        }
+
         res.render('productDetails', {
             product: {
                 ...productData.toObject(),
                 originalPrice: productData.price,
                 discountedPrice,
-                user:userData,
+                user: userData,
                 cartCount,
                 appliedOffer: appliedOffer ? { offerName: appliedOffer.offerName, discount: appliedOffer.discount } : null,
-                offerText: appliedOffer ? `${appliedOffer.discount}%off` : ''
+                offerText: appliedOffer ? `${appliedOffer.discount}% off` : ''
             }
-        })
+        });
     } catch (error) {
         console.log(error);
-        res.redirect('/500')
+        res.redirect('/500');
     }
-}
+};
+
 
 const logout = async (req, res) => {
     try {

@@ -13,49 +13,63 @@ const addToCart = async (req, res) => {
             return res.json({ loginRequired: true });
         }
 
-        const productData = await Product.findOne({ _id: productId });
+        const productData = await Product.findOne({ _id: productId }).populate('category');
         const cartData = await Cart.findOne({ userId: userId });
         const offerData = await Offer.find({
             startDate: { $lte: new Date() },
             endDate: { $gte: new Date() }
         });
 
-        let discountedPrice = productData.price;
+        let productDiscountedPrice = productData.price;
+        let categoryDiscountPrice = productData.price;
+        let highestProductDiscount = 0;
+        let highestCategoryDiscount = 0;
         let appliedOffer = null;
+        let discountedPrice;
 
+      
         offerData.forEach(offer => {
             if (offer.offerType === 'product' && offer.productId.includes(productData._id.toString())) {
-                discountedPrice = productData.price - (productData.price * offer.discount / 100);
-                appliedOffer = offer;
+                const discountPrice = productData.price - (productData.price * offer.discount / 100);
+                if (offer.discount > highestProductDiscount) {
+                    highestProductDiscount = offer.discount;
+                    productDiscountedPrice = discountPrice;
+                }
             }
         });
 
-        if (!appliedOffer) {
-            for (const offer of offerData) {
-                if (productData && productData.categoryId && offer.offerType === 'category' && offer.categoryId.includes(productData.categoryId._id.toString())) {
-                    const currentDiscountPrice = productData.price - (productData.price * offer.discount / 100);
-                    if (currentDiscountPrice < discountedPrice) {
-                        discountedPrice = currentDiscountPrice;
-                        appliedOffer = offer;
-                    }
+        offerData.forEach(offer => {
+            if (offer.offerType === 'category' && offer.categoryId.includes(productData.category._id.toString())) {
+                const discountPrice = productData.price - (productData.price * offer.discount / 100);
+                if (offer.discount > highestCategoryDiscount) {
+                    highestCategoryDiscount = offer.discount;
+                    categoryDiscountPrice = discountPrice;
                 }
             }
+        });
+
+     
+        if (highestProductDiscount >= highestCategoryDiscount) {
+            discountedPrice = Math.round(productDiscountedPrice);
+            appliedOffer = offerData.find(offer => offer.offerType === 'product' && offer.productId.includes(productData._id.toString()) && offer.discount === highestProductDiscount);
+        } else {
+            discountedPrice = Math.round(categoryDiscountPrice);
+            appliedOffer = offerData.find(offer => offer.offerType === 'category' && offer.categoryId.includes(productData.category._id.toString()) && offer.discount === highestCategoryDiscount);
         }
-        discountedPrice = Math.round(discountedPrice);
 
         const cartProduct = {
             productId: productId,
             quantity: quantity,
-            productPrice: appliedOffer ? discountedPrice : productData.price,
-            totalPrice: quantity * (appliedOffer ? discountedPrice : productData.price),
+            productPrice: discountedPrice,
+            totalPrice: quantity * discountedPrice,
             offerApplied: appliedOffer
         };
 
         if (cartData) {
             const existingProductIndex = cartData.products.findIndex(product => product.productId.toString() === productId);
             if (existingProductIndex !== -1) {
-                cartData.products[existingProductIndex].quantity += parseInt(quantity);
-                cartData.products[existingProductIndex].totalPrice += parseInt(quantity) * cartProduct.productPrice;
+                cartData.products[existingProductIndex].quantity += parseInt(quantity, 10);
+                cartData.products[existingProductIndex].totalPrice += parseInt(quantity, 10) * cartProduct.productPrice;
             } else {
                 cartData.products.push(cartProduct);
             }
@@ -80,7 +94,7 @@ const addToCart = async (req, res) => {
 const loadCart = async (req, res) => {
     try {
         const userData = req.session.userId;
-        const cartCount = await Cart.countDocuments({ userId: req.session.userId })
+        const cartCount = await Cart.countDocuments({ userId: req.session.userId });
         const cartDetails = await Cart.findOne({ userId: userData }).populate({
             path: "products.productId",
             model: "Product"
@@ -88,8 +102,6 @@ const loadCart = async (req, res) => {
         const user = await User.findOne({ _id: userData });
 
         let offerData = await Offer.find({ startDate: { $lte: new Date() }, endDate: { $gte: new Date() } });
-
-
 
         let subTotal = 0;
         let cartId = null;
@@ -100,49 +112,53 @@ const loadCart = async (req, res) => {
                 let discountedPrice = itemPrice;
                 let appliedOffer = null;
 
-                const productOffer = offerData.find(offer =>
+           
+                const productOffers = offerData.filter(offer =>
                     offer.offerType === 'product' &&
                     offer.productId.includes(product.productId._id.toString())
                 );
 
-                const categoryOffer = offerData.find(offer =>
+                
+                const categoryOffers = offerData.filter(offer =>
                     offer.offerType === 'category' &&
                     offer.categoryId.includes(product.productId.category._id.toString())
                 );
 
+             
+                const highestProductDiscount = productOffers.reduce((maxDiscount, offer) => Math.max(maxDiscount, offer.discount), 0);
 
-                if (productOffer || categoryOffer) {
-                    if (productOffer && categoryOffer) {
-                        if (productOffer.discount > categoryOffer.discount) {
-                            appliedOffer = productOffer;
-                        } else {
-                            appliedOffer = categoryOffer;
-                        }
-                    } else if (productOffer) {
-                        appliedOffer = productOffer;
-                    } else {
-                        appliedOffer = categoryOffer;
-                    }
+               
+                const highestCategoryDiscount = categoryOffers.reduce((maxDiscount, offer) => Math.max(maxDiscount, offer.discount), 0);
 
-                    discountedPrice = Math.round(itemPrice - (itemPrice * appliedOffer.discount / 100));
+             
+                if (highestProductDiscount > highestCategoryDiscount) {
+                    const productOffer = productOffers.find(offer => offer.discount === highestProductDiscount);
+                    appliedOffer = productOffer;
+                    discountedPrice = Math.round(itemPrice - (itemPrice * productOffer.discount / 100));
+                } else if (highestCategoryDiscount > 0) {
+                    const categoryOffer = categoryOffers.find(offer => offer.discount === highestCategoryDiscount);
+                    appliedOffer = categoryOffer;
+                    discountedPrice = Math.round(itemPrice - (itemPrice * categoryOffer.discount / 100));
                 }
+
+              
                 subTotal += discountedPrice * product.quantity;
                 product.discountedPrice = discountedPrice;
                 product.appliedOffer = appliedOffer;
-                product.offerText = appliedOffer ? `${appliedOffer.discount}%off` : '';
+                product.offerText = appliedOffer ? `${appliedOffer.discount}% off` : '';
             });
             cartId = cartDetails._id;
         } else {
-
             return res.render('cart', { cartDetails, user, subTotal: 0, cartId, cartCount });
         }
 
         return res.render('cart', { cartDetails, user, subTotal, cartId, userData, cartCount });
     } catch (error) {
         console.log(error);
-        res.redirect('/500')
+        res.redirect('/500');
     }
 };
+
 
 const deleteCart = async (req, res) => {
     try {
