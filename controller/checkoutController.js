@@ -72,7 +72,7 @@ const loadCheckout = async (req, res) => {
         } else {
             return res.render('cart', { cartDetails, user, subTotal: 0, totalSavings: 0, cartId, coupon: couponData, moment });
         }
-        res.render('checkout', { userData, cartDetails, cartCount, user, subTotal, totalSavings: 0, cartId, coupon: couponData, moment })
+        res.render('checkout', { userData, cartDetails, cartCount, user, subTotal, totalSavings, cartId, coupon: couponData, moment })
     } catch (error) {
         console.log(error);
     }

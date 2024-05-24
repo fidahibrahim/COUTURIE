@@ -162,7 +162,7 @@
 
                                                 <div class="details-filter-row details-row-size">
                                                     <label for="size">Status:</label>
-                                                    <span>
+                                                    <span style="color: red;">
                                                         <%=product.status%>
                                                     </span>
                                                 </div><!-- End .details-filter-row -->
@@ -179,12 +179,6 @@
                                                 </div>
 
                                                 <div class="details-filter-row details-row-size">
-                                                    <label for="qty">Discount:</label>
-                                                    <span> ₹<%=product.discountPerItem%></span>
-                                                </div><!-- End .details-filter-row -->
-
-
-                                                <div class="details-filter-row details-row-size">
                                                     <label for="qty">Payment Method: </label>
                                                     <span>
                                                         <%=order.paymentMethod%>
@@ -197,7 +191,20 @@
                                                     <span>
                                                         <%=order.deliveryAddress%>
                                                     </span>
-                                                </div><!-- End .details-filter-row -->
+                                                </div>
+                                                <% if (product.savedAmount) { %>
+                                                    <div class="details-filter-row details-row-size" style="color: green;">
+                                                        <label style="color: green;" for="saved">Saved:</label>
+                                                        <span>₹<%= product.savedAmount.toFixed(2) %></span>
+                                                    </div>
+                                                <% } %>
+                                                <% if(product.discountPerItem){ %>
+                                                <div style="color: green;" class="details-filter-row details-row-size">
+                                                    <label style="color: green;" for="qty">Discount:</label>
+                                                    <span> ₹<%=product.discountPerItem%></span>
+                                                </div>
+                                                <% } %>
+
 
 
                                                 <div class="product-details-action">
@@ -219,7 +226,7 @@
                                                                     <%}else{%>
                                                                         <input type="hidden">
                                                                         <%}%>
-                                                </div><!-- End .product-details-action -->
+                                                </div>
                                             </div><!-- End .product-details -->
                                         </div><!-- End .col-md-6 -->
                                     </div><!-- End .row -->

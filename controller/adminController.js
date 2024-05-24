@@ -73,11 +73,6 @@ const loadDashboard = async (req, res) => {
 
         const totalOrders = totalOrderCount.length != 0 ? totalOrderCount[0].totalOrders : 0
 
-        // if(totalOrderCount.length != 0){
-        //     totalOrders = totalOrderCount[0].totalOrders
-        // }else{
-        //     totalOrders = 0
-        // }
 
         const totalSales = await orderModel.aggregate([
             {
@@ -158,8 +153,8 @@ const loadDashboard = async (req, res) => {
                 $match: {
                     'products.status': 'delivered',
                     createdAt: {
-                        $gte: new Date(currentYear, 0, 1), // Beginning of the current year
-                        $lte: new Date(currentYear, currentMonth, 0) // Last day of the current month
+                        $gte: new Date(currentYear, 0, 1), 
+                        $lte: new Date(currentYear, currentMonth, 0) 
                     }
                 }
             },

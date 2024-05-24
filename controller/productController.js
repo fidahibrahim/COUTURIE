@@ -1,7 +1,8 @@
 const category = require('../models/category');
 const product = require('../models/productModel');
 const path = require('path')
-const fs = require('fs')
+const fs = require('fs');
+const orderModel = require('../models/orderModel');
 
 const loadProduct = async (req, res) => {
     try {
@@ -97,19 +98,18 @@ const productStatus = async (req, res) => {
         const productData = await product.findById(productId);
         if (!productData) {
             return res.status(404).json({ error: "Product not found" });
-        }
-
+        } 
         const updatedProduct = await product.findByIdAndUpdate(
             productId,
             { $set: { is_Listed: !productData.is_Listed } },
             { new: true }
         );
 
-        res.send({ status: "success", product: updatedProduct });
+       return res.send({ status: "success", product: updatedProduct });
 
     } catch (error) {
+        console.log(error);
         res.redirect('/500')
-        res.status(500).json({ error: "Internal Server Error" });
     }
 };
 

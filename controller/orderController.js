@@ -327,6 +327,7 @@ const loadOrderDetails = async (req, res) => {
                 product.discountedPrice = discountedPrice;
                 product.appliedOffer = appliedOffer;
                 product.offerText = `${appliedOffer.discount}% off`;
+                product.savedAmount = Math.round(itemPrice - discountedPrice)
             }
         }
 
