@@ -364,65 +364,71 @@
         integrity="sha384-e4HfEwORxSSnA1XcV1oBYTMYuqU2ELI/FEr/+qNLnD4P6U7g4UjHg7MKt6FeFbGm"
         crossorigin="anonymous"></script>
 
-    <script>
-        let timer = 60;
-        let countdownTimer;
-
-        function startTimer() {
-            countdownTimer = setInterval(function () {
-                timer--;
-                document.getElementById("timer-countdown").textContent = timer;
-                if (timer <= 0) {
-                    clearInterval(countdownTimer);
-                    document.getElementById("timer").style.display = "none";
-                    document.getElementById("resend-btn").removeAttribute("disabled");
-                }
-            }, 1000);
-        }
-
-        function resendOtp() {
-            const email = document.querySelector('input[name="email"]').value;
-            document.getElementById("otp-message").textContent = '';
-
-            fetch('/resend-otp', {
-                method: "post",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email
-                })
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    
-                    document.getElementById("otp-message").textContent = "OTP resent successfully.";
-
-                    clearInterval(countdownTimer);
-
-                    timer = 60;
+        <script>
+            let timer = 60;
+            let countdownTimer;
+    
+            function startTimer() {
+                countdownTimer = setInterval(function () {
+                    timer--;
                     document.getElementById("timer-countdown").textContent = timer;
-                    document.getElementById("timer").style.display = "block";
-                    document.getElementById("resend-btn").setAttribute("disabled", "true");
-
-                    startTimer();
+                    if (timer <= 0) {
+                        clearInterval(countdownTimer);
+                        document.getElementById("timer").style.display = "none";
+                        document.getElementById("resend-btn").removeAttribute("disabled");
+                    }
+                }, 1000);
+            }
+    
+            function resendOtp() {
+                const email = document.querySelector('input[name="email"]').value;
+                document.getElementById("otp-message").textContent = '';
+    
+                fetch('/resend-otp', {
+                    method: "post",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email })
                 })
-                .catch(error => {
-                    console.error(error);
-                 
-                    document.getElementById("otp-message").textContent = "Failed to resend OTP. Please try again.";
-                });
-
-            console.log('Resend OTP clicked');
-        }
-
-        startTimer();
-    </script>
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(errorData => {
+                                throw new Error(errorData.message || 'Failed to resend OTP');
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Response data:', data); // Log the response data
+    
+                        document.getElementById("otp-message").textContent = data.message;
+    
+                        if (data.redirectUrl) {
+                            window.location.href = data.redirectUrl; // Perform client-side redirection
+                        } else {
+                            clearInterval(countdownTimer);
+    
+                            timer = 60;
+                            document.getElementById("timer-countdown").textContent = timer;
+                            document.getElementById("timer").style.display = "block";
+                            document.getElementById("resend-btn").setAttribute("disabled", "true");
+    
+                            startTimer();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error); // Log the error for debugging
+    
+                        document.getElementById("otp-message").textContent = error.message || "Failed to resend OTP. Please try again.";
+                    });
+    
+                console.log('Resend OTP clicked');
+            }
+    
+            startTimer();
+    
+        </script>
 
 
     <script>

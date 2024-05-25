@@ -239,7 +239,6 @@ const verifyOtp = async (req, res) => {
 };
 
 
-
 const resendOtp = async (req, res) => {
     try {
         const email = req.body.email;
@@ -247,20 +246,63 @@ const resendOtp = async (req, res) => {
         if (!email) {
             return res.status(400).json({ message: "Email is required" });
         }
+
         const user = await User.findOne({ email: email });
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        await UserVerification.deleteOne({ email: email });
-        await sendOtpVerification(user, res);
 
+        await UserVerification.deleteOne({ email: email });
+
+        const otpResendStatus = await resendsendOtpVerification(user);
+        if (otpResendStatus.success) {
+            return res.status(200).json({ message: "OTP resent successfully", redirectUrl: `/otp?email=${email} `});
+        } else {
+            return res.status(500).json({ message: "Failed to resend OTP" });
+        }
 
     } catch (error) {
+        console.error('Error in resendOtp:', error);
         return res.status(500).json({ message: "Internal server error" });
     }
 };
 
+const resendsendOtpVerification = async ({ email }) => {
+    try {
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+                user: process.env.USER_EMAIL,
+                pass: process.env.USER_PASS
+            }
+        });
 
+        const otp =` ${Math.floor(1000 + Math.random() * 9000)}`;
+        console.log('Generated OTP:', otp);
+
+        const emailOptions = {
+            from: 'fidahIbrahim2@gmail.com',
+            to: email,
+            subject: 'Verify your email',
+            html:` Your OTP is ${otp}`
+        };
+
+        const hashOtp = await bcrypt.hash(otp, 10);
+
+        const newOtpVerification = new UserVerification({ email: email, otp: hashOtp });
+        await newOtpVerification.save();
+        await transporter.sendMail(emailOptions);
+
+        return { success: true };
+
+    } catch (error) {
+        console.error('Error in sendOtpVerification:', error);
+        return { success: false };
+    }
+}
 
 const verifyLogin = async (req, res) => {
     try {
